@@ -16,11 +16,9 @@ public class CaseInsensitiveEqualityComparer : EqualityComparer<string> {
     public static CaseInsensitiveEqualityComparer Ordinal { get; } =
         new(StringComparison.OrdinalIgnoreCase);
 
-    public override bool Equals(string? x, string? y) {
-        return string.Equals(x, y, _comparison);
-    }
+    public override bool Equals(string? x, string? y) =>
+        string.Equals(x, y, _comparison);
 
-    public override int GetHashCode(string obj) {
+    public override int GetHashCode(string obj) =>
         throw new NotSupportedException();
-    }
 }

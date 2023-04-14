@@ -12,7 +12,7 @@ public readonly struct Variant<T1, T2> where T1 : notnull where T2 : notnull {
 
     private readonly T1? _value1 = default;
     private readonly T2? _value2 = default;
-
+    
     public readonly object Value =>
         _value1 is not null ? _value1 :
         _value2 is not null ? _value2 : throw new InvalidOperationException("Variant is empty");
@@ -33,35 +33,33 @@ public readonly struct Variant<T1, T2> where T1 : notnull where T2 : notnull {
         variant.Get<T2>();
 
     public static implicit operator Variant<T1, T2>(T1 value) =>
-        new Variant<T1, T2>(value);
+        new(value);
 
     public static implicit operator Variant<T1, T2>(T2 value) =>
-        new Variant<T1, T2>(value);
+        new(value);
 
     public readonly T Get<T>() {
         if (TryGet<T>(out var output)) {
             return output!;
-        } else {
-            throw new InvalidOperationException(
-                $"No value of type {typeof(T)} is being stored in {nameof(Variant<T1, T2>)}"
-            );
         }
+        throw new InvalidOperationException(
+            $"No value of type {typeof(T)} is being stored in {nameof(Variant<T1, T2>)}"
+        );
     }
 
     public readonly bool TryGet<T>(out T output) {
         if (_value1 is T value1) {
             output = value1;
             return true;
-        } else if (_value2 is T value2) {
+        }
+        if (_value2 is T value2) {
             output = value2;
             return true;
-        } else {
-            output = default!;
-            return false;
         }
+        output = default!;
+        return false;
     }
 
-    public readonly bool Is<T>() {
-        return _value1 is T && _value2 is null || _value1 is null && _value2 is T;
-    }
+    public readonly bool Is<T>() =>
+        _value1 is T && _value2 is null || _value1 is null && _value2 is T;
 }
