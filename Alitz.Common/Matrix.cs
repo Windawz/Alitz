@@ -4,10 +4,16 @@ using System.Collections.Generic;
 namespace Alitz;
 public class Matrix<T> {
     public Matrix(int width, int height) {
+        if (width < 0) {
+            throw new ArgumentOutOfRangeException(nameof(width));
+        }
+        if (height < 0) {
+            throw new ArgumentOutOfRangeException(nameof(height));
+        }
         Resize(width, height);
     }
 
-    public Matrix(int width, int height, T value) : this(width, height) {
+    public Matrix(int width, int height, T? value) : this(width, height) {
         Array.Fill(_elems, value);
     }
 
