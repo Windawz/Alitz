@@ -32,8 +32,8 @@ public readonly struct Entity : IEquatable<Entity> {
         VersionMask >> BitOperations.TrailingZeroCount(VersionMask)
     );
     private const ulong NullId = IdMask;
-    private const ulong IdMask = 0x_FFFF_FFFF;
-    private const ulong VersionMask = 0x_FFFF_FFFF_0000_0000;
+    private const ulong IdMask = 0x_7FFF_FFFF;
+    private const ulong VersionMask = 0x_7FFF_FFFF_0000_0000;
 
     private readonly ulong _data;
 
@@ -82,13 +82,13 @@ public readonly struct Entity : IEquatable<Entity> {
         data & IdMask;
 
     private static ulong GetVersion(ulong data) =>
-        (data & VersionMask) >> 32;
+        (data & VersionMask) >> BitOperations.TrailingZeroCount(VersionMask);
 
     private static void SetId(ref ulong data, ulong id) =>
         data |= id & IdMask;
 
     private static void SetVersion(ref ulong data, ulong version) =>
-        data |= version << 32 & VersionMask;
+        data |= version << BitOperations.TrailingZeroCount(VersionMask) & VersionMask;
 
     private static unsafe int InterpretAsInt32(ulong value) {
         var span = new ReadOnlySpan<byte>(&value, sizeof(ulong));
