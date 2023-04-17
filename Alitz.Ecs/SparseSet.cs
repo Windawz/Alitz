@@ -35,6 +35,7 @@ public class SparseSet<TComponent> where TComponent : struct {
 
     public TComponent this[Entity entity] {
         get {
+            Entity.ThrowIfNull(entity);
             (bool contains, _, int entityIndex) = RichContains(entity);
             if (!contains) {
                 throw new ArgumentOutOfRangeException(nameof(entity));
@@ -42,6 +43,7 @@ public class SparseSet<TComponent> where TComponent : struct {
             return _components[entityIndex];
         }
         set {
+            Entity.ThrowIfNull(entity);
             (bool contains, bool isInRange, int entityIndex) = RichContains(entity);
             if (!contains && !isInRange) {
                 ResizeSparseList(entity.Id + 1);
@@ -57,6 +59,7 @@ public class SparseSet<TComponent> where TComponent : struct {
     }
     
     public ref TComponent GetByRef(Entity entity) {
+        Entity.ThrowIfNull(entity);
         (bool contains, _, int entityIndex) = RichContains(entity);
         if (!contains) {
             throw new ArgumentOutOfRangeException(nameof(entity));
