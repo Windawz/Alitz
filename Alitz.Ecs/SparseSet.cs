@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Alitz.Ecs;
 public class SparseSet<TComponent> where TComponent : struct {
@@ -53,6 +54,14 @@ public class SparseSet<TComponent> where TComponent : struct {
             }
             _components[entityIndex] = value;
         }
+    }
+    
+    public ref TComponent GetByRef(Entity entity) {
+        (bool contains, _, int entityIndex) = RichContains(entity);
+        if (!contains) {
+            throw new ArgumentOutOfRangeException(nameof(entity));
+        }
+        return ref CollectionsMarshal.AsSpan(_components)[entityIndex];
     }
     
     public bool Contains(Entity entity) =>
