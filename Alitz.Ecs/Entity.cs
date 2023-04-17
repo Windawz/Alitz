@@ -96,7 +96,9 @@ public readonly struct Entity : IEquatable<Entity> {
     }
 
     private static unsafe ulong InterpretAsUInt64(int value) {
-        var span = new ReadOnlySpan<byte>(&value, sizeof(int));
+        // BitConverter.ToUInt64() requires at least 8 bytes in the span.
+        long longValue = value;
+        var span = new ReadOnlySpan<byte>(&longValue, sizeof(long));
         return BitConverter.ToUInt64(span);
     }
 }
