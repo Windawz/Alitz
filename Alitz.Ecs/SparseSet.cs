@@ -74,6 +74,7 @@ public class SparseSet<TComponent> where TComponent : struct {
         RichContains(entity).contains;
     
     public bool Remove(Entity entity) {
+        Entity.ThrowIfNull(entity);
         (bool contains, _, int entityIndex) = RichContains(entity);
         if (!contains) {
             return false;
