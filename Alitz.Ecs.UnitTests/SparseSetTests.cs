@@ -4,56 +4,85 @@ using System.Linq;
 namespace Alitz.Ecs.UnitTests;
 public class SparseSetTests {
     [Fact]
-    public void ComponentGetsAddedProperly() {
-        var set = PrepareSet(0, v => new ImmutableComponent(v));
-        Assert.Empty(set.Entities);
-        Assert.Empty(set.Components);
-        var entity = new Entity(42);
-        var oldComponent = new ImmutableComponent(42);
-        set[entity] = oldComponent;
-        Assert.Single(set.Entities);
-        Assert.Single(set.Components);
-        var component = set[entity];
-        Assert.Equal(oldComponent.Value, component.Value);
+    public void SetCreated() {
+        _ = new SparseSet<ImmutableComponent>();
     }
-
+    
     [Fact]
-    public void ComponentGotByReferenceMutatesProperly() {
-        var set = PrepareSet(3, v => new MutableComponent(v));
-        const int value = 42;
-        var entity = new Entity(0);
-        ref var component = ref set.GetByRef(entity);
-        component.Value = value;
-        Assert.Equal(value, set[entity].Value);
+    public void ComponentAdded() {
+        var set = PrepareSet<ImmutableComponent>();
+        Assert.Equal(0, set.Count);
+        set[new Entity(42)] = new ImmutableComponent(42);
+        Assert.Equal(1, set.Count);
     }
-
+    
     [Fact]
-    public void IndexingWithNullEntityThrowsNullEntityException() {
-        var set = PrepareSet(3, v => new ImmutableComponent(v));
+    public void MethodsThrowOnNullEntity() {
+        var set = PrepareSet<MutableComponent>(1);
         Assert.ThrowsAny<NullEntityException>(() => _ = set[Entity.Null]);
-        Assert.ThrowsAny<NullEntityException>(() => set.GetByRef(Entity.Null));
-        Assert.ThrowsAny<NullEntityException>(() => set[Entity.Null] = new ImmutableComponent(0));
+        Assert.ThrowsAny<NullEntityException>(() => set[Entity.Null] = new MutableComponent(42));
+        Assert.ThrowsAny<NullEntityException>(() => _ = set.GetByRef(Entity.Null));
+        Assert.ThrowsAny<NullEntityException>(() => set.Remove(Entity.Null));
     }
-
+    
     [Fact]
-    public void ComponentOfRemovedEntityGetsRemovedProperly() {
-        var set = PrepareSet(3, v => new ImmutableComponent(v));
-        int oldEntityCount = set.Entities.Count();
-        int oldComponentCount = set.Components.Count();
-        var firstEntity = set.Entities.First();
-        bool removed = set.Remove(firstEntity);
-        Assert.True(removed);
-        Assert.ThrowsAny<ArgumentOutOfRangeException>(() => _ = set[firstEntity]);
-        Assert.Equal(oldEntityCount - 1, set.Entities.Count());
-        Assert.Equal(oldComponentCount - 1, set.Components.Count());
+    public void ComponentGot() {
+        var set = PrepareSet<ImmutableComponent>(1);
+        var entity = set.Entities.First();
+        _ = set[entity];
     }
-
-    private static SparseSet<TComponent> PrepareSet<TComponent>(int count, Func<int, TComponent> factory)
+    
+    [Fact]
+    public void ComponentSet() {
+        var set = PrepareSet<ImmutableComponent>(1);
+        var entity = set.Entities.First();
+        int oldValue = set[entity].Value;
+        set[entity] = new ImmutableComponent(42);
+        Assert.NotEqual(oldValue, set[entity].Value);
+    }
+    
+    [Fact]
+    public void ComponentGotAndSetByRef() {
+        var set = PrepareSet<MutableComponent>(1);
+        var entity = set.Entities.First();
+        ref var component = ref set.GetByRef(entity);
+        component.Value = 42;
+        Assert.Equal(42, set[entity].Value);
+    }
+    
+    [Fact]
+    public void ComponentRemoved() {
+        var set = PrepareSet<ImmutableComponent>(1);
+        var entity = set.Entities.First();
+        Assert.True(set.Remove(entity));
+        Assert.Equal(0, set.Count);
+        Assert.ThrowsAny<ArgumentOutOfRangeException>(() => set[entity]);
+    }
+    
+    [Fact]
+    public void CountIsConsistent() {
+        var set = PrepareSet<ImmutableComponent>();
+        Assert.Equal(0, set.Count);
+        Assert.Equal(set.Count, set.Entities.Count());
+        Assert.Equal(set.Count, set.Components.Count());
+        var entity = new Entity(42);
+        set[entity] = new ImmutableComponent(42);
+        Assert.Equal(1, set.Count);
+        Assert.Equal(set.Count, set.Entities.Count());
+        Assert.Equal(set.Count, set.Components.Count());
+        set.Remove(entity);
+        Assert.Equal(0, set.Count);
+        Assert.Equal(set.Count, set.Entities.Count());
+        Assert.Equal(set.Count, set.Components.Count());
+    }
+    
+    private static SparseSet<TComponent> PrepareSet<TComponent>(int count = 0, Func<int, TComponent>? factory = null)
         where TComponent : struct {
+        factory ??= _ => new TComponent();
         var set = new SparseSet<TComponent>();
         for (int i = 0; i < count; i++) {
             var entity = new Entity(i);
-            var component = factory(Random.Shared.Next(-500, 501));
+            var component = factory(Random.Shared.Next());
             set[entity] = component;
         }
         return set;
