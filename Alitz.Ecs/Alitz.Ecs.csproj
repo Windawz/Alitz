@@ -21,7 +21,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Alitz.Common\Alitz.Common.csproj"/>
+        <ProjectReference Include="..\Alitz.Common\Alitz.Common.csproj" />
     </ItemGroup>
 
 </Project>
