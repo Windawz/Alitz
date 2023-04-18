@@ -13,10 +13,10 @@ public readonly struct Entity : IEquatable<Entity> {
     public Entity(int id) : this(id, 0) { }
 
     public Entity(int id, int version) {
-        if (id > IdMaxValue) {
+        if (id < IdMinValue || id > IdMaxValue) {
             throw new ArgumentOutOfRangeException(nameof(id));
         }
-        if (version > VersionMaxValue) {
+        if (version < VersionMinValue || version > VersionMaxValue) {
             throw new ArgumentOutOfRangeException(nameof(version));
         }
         ulong data = 0;
