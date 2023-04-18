@@ -17,6 +17,9 @@ public class SparseSet<TComponent> where TComponent : struct {
     private readonly List<Entity> _dense;
     private readonly List<int> _sparse;
     
+    public int Count =>
+        _components.Count;
+    
     public IEnumerable<Entity> Entities {
         get {
             foreach (Entity entity in _dense) {
