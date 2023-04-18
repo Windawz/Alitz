@@ -2,10 +2,10 @@
 using System.Linq;
 
 namespace Alitz.Ecs.UnitTests;
-public class SparseSetTests {
+public class ComponentSetTests {
     [Fact]
     public void SetCreated() {
-        _ = new SparseSet<ImmutableComponent>();
+        _ = new ComponentSet<ImmutableComponent>();
     }
     
     [Fact]
@@ -67,10 +67,10 @@ public class SparseSetTests {
         Assert.Equal(set.Count, set.Components.Count());
     }
     
-    private static SparseSet<TComponent> PrepareSet<TComponent>(int count = 0, Func<int, TComponent>? factory = null)
+    private static ComponentSet<TComponent> PrepareSet<TComponent>(int count = 0, Func<int, TComponent>? factory = null)
         where TComponent : struct {
         factory ??= _ => new TComponent();
-        var set = new SparseSet<TComponent>();
+        var set = new ComponentSet<TComponent>();
         for (int i = 0; i < count; i++) {
             var entity = new Entity(i);
             var component = factory(Random.Shared.Next());
