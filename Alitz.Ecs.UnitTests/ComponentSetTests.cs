@@ -17,15 +17,6 @@ public class SparseSetTests {
     }
     
     [Fact]
-    public void MethodsThrowOnNullEntity() {
-        var set = PrepareSet<MutableComponent>(1);
-        Assert.ThrowsAny<NullEntityException>(() => _ = set[Entity.Null]);
-        Assert.ThrowsAny<NullEntityException>(() => set[Entity.Null] = new MutableComponent(42));
-        Assert.ThrowsAny<NullEntityException>(() => _ = set.GetByRef(Entity.Null));
-        Assert.ThrowsAny<NullEntityException>(() => set.Remove(Entity.Null));
-    }
-    
-    [Fact]
     public void ComponentGot() {
         var set = PrepareSet<ImmutableComponent>(1);
         var entity = set.Entities.First();

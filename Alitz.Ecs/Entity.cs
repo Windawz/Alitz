@@ -3,13 +3,6 @@ using System.Numerics;
 
 namespace Alitz.Ecs;
 public readonly struct Entity : IEquatable<Entity> {
-    public Entity() {
-        ulong data = 0;
-        SetId(ref data, NullId);
-        SetVersion(ref data, 0);
-        _data = data;
-    }
-
     public Entity(int id) : this(id, 0) { }
 
     public Entity(int id, int version) {
@@ -27,17 +20,14 @@ public readonly struct Entity : IEquatable<Entity> {
 
     public const int IdMinValue = 0;
     public const int VersionMinValue = 0;
-    public static readonly int IdMaxValue = InterpretAsInt32(IdMask - 1);
+    public static readonly int IdMaxValue = InterpretAsInt32(IdMask);
     public static readonly int VersionMaxValue = InterpretAsInt32(
         VersionMask >> BitOperations.TrailingZeroCount(VersionMask)
     );
-    private const ulong NullId = IdMask;
     private const ulong IdMask = 0x_7FFF_FFFF;
     private const ulong VersionMask = 0x_7FFF_FFFF_0000_0000;
 
     private readonly ulong _data;
-
-    public static Entity Null { get; } = new();
 
     public int Id =>
         InterpretAsInt32(GetId(_data));
@@ -51,32 +41,14 @@ public readonly struct Entity : IEquatable<Entity> {
     public static bool operator !=(Entity lhs, Entity rhs) =>
         !lhs.Equals(rhs);
 
-    public static void ThrowIfNull(
-        Entity entity,
-        string? paramName = null,
-        string? message = null
-    ) {
-        if (entity == Null) {
-            throw new NullEntityException(
-                message ?? "Entity may not be null",
-                paramName ?? nameof(entity)
-            );
-        }
-    }
-
     public bool Equals(Entity other) =>
-        Id == other.Id && (IsIdNull(_data) || Version == other.Version);
+        Id == other.Id && Version == other.Version;
 
     public override bool Equals(object? obj) =>
         obj is Entity other && Equals(other);
 
     public override int GetHashCode() =>
-        IsIdNull(_data)
-            ? GetId(_data).GetHashCode()
-            : _data.GetHashCode();
-
-    private static bool IsIdNull(ulong data) =>
-        GetId(data) == NullId;
+        _data.GetHashCode();
 
     private static ulong GetId(ulong data) =>
         data & IdMask;

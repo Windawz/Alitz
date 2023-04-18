@@ -15,14 +15,8 @@ public class EntityTests {
     }
     
     [Fact]
-    public void DefaultConstructorReturnsNullEntity() {
-        Assert.Equal(Entity.Null, new Entity());
-    }
-    
-    [Fact]
     public void IdIsConsistent() {
         Assert.Equal(42, new Entity(42).Id);
-        Assert.Equal(Entity.Null.Id, new Entity().Id);
     }
     
     [Fact]
@@ -35,11 +29,6 @@ public class EntityTests {
     public void VersionIsZeroIfOmittedFromCtor() {
         Assert.Equal(0, new Entity().Version);
         Assert.Equal(0, new Entity(42).Version);
-    }
-    
-    [Fact]
-    public void CannotCreateEntityWithIdOfNullEntity() {
-        Assert.ThrowsAny<ArgumentOutOfRangeException>(() => new Entity(Entity.Null.Id));
     }
     
     [Fact]
@@ -109,15 +98,5 @@ public class EntityTests {
         Assert.False(lhs.Equals(null));
         // ReSharper disable once SuspiciousTypeConversion.Global
         Assert.False(lhs.Equals("Hello world!"));
-    }
-    
-    [Fact]
-    public void NullEntityHashCodeMatchesItsId() {
-        Assert.Equal(Entity.Null.Id, Entity.Null.GetHashCode());
-    }
-    
-    [Fact]
-    public void NonNullEntityHashCodeIsNotEqualToNullEntityHashCode() {
-        Assert.NotEqual(Entity.Null.GetHashCode(), new Entity(42).GetHashCode());
     }
 }
