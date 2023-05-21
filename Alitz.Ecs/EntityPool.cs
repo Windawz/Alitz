@@ -1,7 +1,7 @@
 ﻿namespace Alitz.Ecs; 
 public class EntityPool {
-    private readonly StackEntitySet _takenEntities = new();
-    private readonly StackEntitySet _recycledEntities = new();
+    private readonly EntitySet _takenEntities = new();
+    private readonly EntitySet _recycledEntities = new();
     
     public int TakenCount =>
         _takenEntities.Count;
@@ -9,10 +9,10 @@ public class EntityPool {
     public Entity Take() {
         Entity entity;
         if (_recycledEntities.Count > 0) {
-            Entity recycledEntity = _recycledEntities.Pop()!.Value;
+            Entity recycledEntity = Pop(_recycledEntities)!.Value;
             entity = new Entity(recycledEntity.Id, recycledEntity.Version + 1);
         } else if (_takenEntities.Count > 0) {
-            int id = _takenEntities.Peek()!.Value.Id + 1;
+            int id = Peek(_takenEntities)!.Value.Id + 1;
             entity = new Entity(id);
         } else {
             entity = new Entity(0);
@@ -33,19 +33,17 @@ public class EntityPool {
         }
     }
     
-    private class StackEntitySet : EntitySet {
-        public Entity? Peek() =>
-            Count > 0
-            ? DenseList[^1]
-            : null;
-        
-        public Entity? Pop() {
-            if (Count == 0) {
-                return null;
-            }
-            Entity entity = DenseList[^1];
-            TryRemoveEntity(entity);
-            return entity;
+    private static Entity? Peek(EntitySet entitySet) =>
+        entitySet.Count > 0
+        ? entitySet.Keys[^1]
+        : null;
+    
+    private static Entity? Pop(EntitySet entitySet) {
+        if (entitySet.Count == 0) {
+            return null;
         }
+        Entity entity = entitySet.Keys[^1];
+        entitySet.Remove(entity);
+        return entity;
     }
 }

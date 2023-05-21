@@ -3,117 +3,72 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Alitz.Ecs;
-public abstract class SparseSet {
-    protected const int InvalidDenseListIndex = -1;
+public class SparseSet<TKey, TIndexProvider> 
+    where TKey : struct 
+    where TIndexProvider : struct, IIndexProvider<TKey> {
+    
+    private const int SparseFillValue = -1;
 
-    protected SparseSet() {
-        DenseList = new List<Entity>();
-        SparseList = new List<int>();
-    }
-
-    protected List<Entity> DenseList { get; }
-    protected List<int> SparseList { get; }
+    private static readonly TIndexProvider IndexProvider = default;
+    private readonly List<TKey> _dense = new();
+    private readonly List<int> _sparse = new();
 
     public int Count =>
-        DenseList.Count;
+        _dense.Count;
+    
+    public IReadOnlyList<TKey> Keys =>
+        _dense;
 
-    public IEnumerable<Entity> Entities {
-        get {
-            foreach (Entity entity in DenseList) {
-                yield return entity;
-            }
+    public int Add(TKey key) {
+        int sparseIndex = AsSparseIndex(key);
+        int? denseIndex = TryGetDenseIndex(sparseIndex);
+        if (denseIndex is null) {
+            ResizeSparseList(sparseIndex + 1);
+            denseIndex = _sparse[sparseIndex];
         }
-    }
-
-    public bool Contains(Entity entity) =>
-        SparseListRichContains(entity).contains;
-
-    /// <summary>
-    /// Tries to remove the entity from the <see cref="DenseList"/> and replace
-    /// its index in the <see cref="SparseList"/> with <see cref="InvalidDenseListIndex"/>.
-    /// Returns either its former index in the <see cref="DenseList"/> or
-    /// <see cref="InvalidDenseListIndex"/> if no such entity was found.
-    /// </summary>
-    /// <param name="entity">Entity to be removed.</param>
-    /// <returns>Former <see cref="DenseList"/> index of the removed entity,
-    /// or <see cref="InvalidDenseListIndex"/> if no entity was removed.</returns>
-    protected int TryRemoveEntity(Entity entity) {
-        (bool contains, _, int entityIndex) = SparseListRichContains(entity);
-        if (!contains) {
-            return InvalidDenseListIndex;
+        if (denseIndex.Value == SparseFillValue) {
+            denseIndex = _sparse[sparseIndex] = _dense.Count;
+            _dense.Add(key);
         }
-        SparseList[entity.Id] = InvalidDenseListIndex;
-        DenseList.RemoveAt(entityIndex);
-        return entityIndex;
+        return denseIndex.Value;
     }
     
-    /// <summary>
-    /// Tries to add the entity into the <see cref="DenseList"/> and set its
-    /// <see cref="DenseList"/> index within the <see cref="SparseList"/>.
-    /// If the <see cref="SparseList"/> element supposed to contain the
-    /// <see cref="DenseList"/> index is not <see cref="InvalidDenseListIndex"/>,
-    /// does nothing, since the entity is already contained.
-    /// Returns the <see cref="DenseList"/> index of the entity that was added or was
-    /// already contained in the <see cref="DenseList"/>, but never <see cref="InvalidDenseListIndex"/>.
-    /// </summary>
-    /// <param name="entity">Entity to be added.</param>
-    /// <returns>The <see cref="DenseList"/> index of the entity added or contained.</returns>
-    protected int TryAddEntity(Entity entity) {
-        (bool contains, bool isInRange, int entityIndex) = SparseListRichContains(entity);
-        if (!contains && !isInRange) {
-            ResizeSparseList(entity.Id + 1);
-            entityIndex = SparseList[entity.Id];
+    public bool Contains(TKey key) {
+        int sparseIndex = AsSparseIndex(key);
+        return sparseIndex >= 0
+            && sparseIndex < _sparse.Count 
+            && _sparse[sparseIndex] != SparseFillValue;
+    }
+
+    public bool Remove(TKey key) {
+        int sparseIndex = AsSparseIndex(key);
+        int? denseIndex = TryGetDenseIndex(sparseIndex);
+        if (denseIndex is null) {
+            return false;
         }
-        if (entityIndex == InvalidDenseListIndex) {
-            entityIndex = SparseList[entity.Id] = DenseList.Count;
-            DenseList.Add(entity);
-        }
-        return entityIndex;
+        
+        SparseSetAlgorithms.SwapRemoveSparse(_sparse, sparseIndex, AsSparseIndex(_dense[^1]), SparseFillValue);
+        SparseSetAlgorithms.SwapRemoveDense(_dense, denseIndex.Value);
+        
+        return true;
     }
     
-    /// <summary>
-    /// Checks if the entity is effectively contained, or specifically that
-    /// the <see cref="SparseList"/> contains a corresponding <see cref="DenseList"/> index for that
-    /// entity. The first return value tuple element signifies whether the
-    /// entity is contained at all. If it's false, the rest of the tuple
-    /// elements are also false or invalid. The second parameter clarifies
-    /// whether the entity is contained/not contained, when used as
-    /// an index into the <see cref="SparseList"/>, due to falling within/outside the range of
-    /// the <see cref="SparseList"/>, or due to the corresponding <see cref="SparseList"/> element
-    /// not containing/containing a <see cref="InvalidDenseListIndex"/> respectively.
-    /// Finally, the third tuple element is the index into the <see cref="DenseList"/> if
-    /// the entity is contained, or <see cref="InvalidDenseListIndex"/> if not.
-    /// </summary>
-    /// <param name="entity">Entity to be checked for being contained.</param>
-    /// <returns>A tuple with detailed info about whether the
-    /// entity is contained, described in the summary.</returns>
-    protected (bool contains, bool isInRange, int entityIndex) SparseListRichContains(Entity entity) {
-        bool isInRange = entity.Id < SparseList.Count;
-        int entityIndex = isInRange ? SparseList[entity.Id] : InvalidDenseListIndex;
-        bool contains = isInRange && entityIndex != InvalidDenseListIndex;
-        return (contains, isInRange, entityIndex);
-    }
+    protected static int AsSparseIndex(TKey key) =>
+        IndexProvider.AsIndex(key);
     
-    /// <summary>
-    /// Sets the count of elements within the sparse list
-    /// to the exact count specified by the corresponding parameter.
-    /// If the new count is the same as the old one, does nothing.
-    /// If greater, the element count is increased, and new elements
-    /// are set to <see cref="InvalidDenseListIndex"/>.
-    /// If less, simply removes the extra elements.
-    /// </summary>
-    /// <param name="count">The new element count of the sparse list</param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when count is negative.</exception>
-    protected void ResizeSparseList(int count) {
+    protected int? TryGetDenseIndex(int sparseIndex) =>
+        _sparse[sparseIndex] != SparseFillValue ? _sparse[sparseIndex] : null;
+    
+    private void ResizeSparseList(int count) {
         if (count < 0) {
             throw new ArgumentOutOfRangeException(nameof(count));
         }
-        int currentCount = SparseList.Count;
+        int currentCount = _sparse.Count;
         if (count < currentCount) {
-            SparseList.RemoveRange(count, currentCount - count);
+            _sparse.RemoveRange(count, currentCount - count);
         } else {
-            SparseList.EnsureCapacity(count);
-            SparseList.AddRange(Enumerable.Repeat(InvalidDenseListIndex, count - currentCount));
+            _sparse.EnsureCapacity(count);
+            _sparse.AddRange(Enumerable.Repeat(SparseFillValue, count - currentCount));
         }
     }
 }
