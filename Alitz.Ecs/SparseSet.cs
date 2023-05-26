@@ -21,15 +21,13 @@ public class SparseSet<TKey, TIndexProvider>
 
     public int Add(TKey key) {
         int sparseIndex = AsSparseIndex(key);
-        int? denseIndex = TryGetDenseIndex(sparseIndex);
-        if (denseIndex is null) {
-            ResizeSparseList(sparseIndex + 1);
-            denseIndex = _sparse[sparseIndex];
-        }
-        if (denseIndex.Value == SparseFillValue) {
+        ResizeSparseList(sparseIndex + 1);
+        int denseIndex = TryGetDenseIndex(sparseIndex)
+            ?? _sparse[sparseIndex];
+        if (denseIndex == SparseFillValue) {
             denseIndex = _sparse[sparseIndex] = _dense.Count;
             _dense.Add(key);
-            return denseIndex.Value;
+            return denseIndex;
         } else {
             return -1;
         }
@@ -66,9 +64,10 @@ public class SparseSet<TKey, TIndexProvider>
             throw new ArgumentOutOfRangeException(nameof(count));
         }
         int currentCount = _sparse.Count;
+        
         if (count < currentCount) {
             _sparse.RemoveRange(count, currentCount - count);
-        } else {
+        } else if (count > currentCount) {
             _sparse.EnsureCapacity(count);
             _sparse.AddRange(Enumerable.Repeat(SparseFillValue, count - currentCount));
         }
