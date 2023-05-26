@@ -76,15 +76,9 @@ public class SparseSetTests {
     }
     
     public class UniqueMultiElementSetTests {
-        private const int MaxElementCount = 100;
-        private const int MinElementValue = 0;
-        private const int MaxElementValue = MaxElementCount - 1;
-        private const int RandomDataSetCount = 3;
-        
         public UniqueMultiElementSetTests() {
             _set = new SparseSet<int, Int32IndexProvider>();
-            int count = Random.Shared.Next(0, MaxElementCount);
-            for (int i = 0; i < count; i++) {
+            for (int i = 0; i < 100; i++) {
                 _set.Add(i);
             }
         }
@@ -92,13 +86,13 @@ public class SparseSetTests {
         private readonly SparseSet<int, Int32IndexProvider> _set;
         
         [Theory]
-        [RandomInt32Data(SetCount = RandomDataSetCount, MinValue = MinElementValue, MaxValue = MaxElementValue)]
+        [RandomInt32Data(SetCount = 3, MinValue = 0, MaxValue = 99)]
         public void AttemptToAddExistingElementReturnsNegativeOne(int addedElement) {
             Assert.Equal(-1, _set.Add(addedElement));
         }
         
         [Theory]
-        [RandomInt32Data(SetCount = RandomDataSetCount, MinValue = 0, MaxValue = MaxElementCount - 1)]
+        [RandomInt32Data(SetCount = 3, MinValue = 0, MaxValue = 99)]
         public void RemovingElementPutsTheLastElementIntoItsPosition(int index) {
             int element = _set.Keys[index];
             int lastElement = _set.Keys[^1];
