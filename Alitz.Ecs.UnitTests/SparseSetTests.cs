@@ -92,13 +92,13 @@ public class SparseSetTests {
         private readonly SparseSet<int, Int32IndexProvider> _set;
         
         [Theory]
-        [RandomInt32Data(setCount: RandomDataSetCount, minValue: MinElementValue, maxValue: MaxElementValue)]
+        [RandomInt32Data(SetCount = RandomDataSetCount, MinValue = MinElementValue, MaxValue = MaxElementValue)]
         public void AttemptToAddExistingElementReturnsNegativeOne(int addedElement) {
             Assert.Equal(-1, _set.Add(addedElement));
         }
         
         [Theory]
-        [RandomInt32Data(setCount: RandomDataSetCount, minValue: 0, maxValue: MaxElementCount - 1)]
+        [RandomInt32Data(SetCount = RandomDataSetCount, MinValue = 0, MaxValue = MaxElementCount - 1)]
         public void RemovingElementPutsTheLastElementIntoItsPosition(int index) {
             int element = _set.Keys[index];
             int lastElement = _set.Keys[^1];
