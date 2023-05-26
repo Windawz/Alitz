@@ -25,7 +25,9 @@ public class SparseDictionary<TKey, TIndexProvider, TValue>
     
     public int Add(TKey key, TValue value) {
         int index = _sparseSet.Add(key);
-        _values.Add(value);
+        if (index != -1) {
+            _values.Add(value);
+        }
         return index;
     }
     
