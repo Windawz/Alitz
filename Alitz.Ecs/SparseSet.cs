@@ -29,8 +29,10 @@ public class SparseSet<TKey, TIndexProvider>
         if (denseIndex.Value == SparseFillValue) {
             denseIndex = _sparse[sparseIndex] = _dense.Count;
             _dense.Add(key);
+            return denseIndex.Value;
+        } else {
+            return -1;
         }
-        return denseIndex.Value;
     }
     
     public bool Contains(TKey key) {
