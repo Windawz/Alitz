@@ -6,7 +6,7 @@ using Xunit.Sdk;
 
 namespace Alitz.UnitTests.Utilities;
 public class RandomInt32DataAttribute : DataAttribute {
-    private RandomInt32DataAttribute(
+    public RandomInt32DataAttribute(
         int? seed = null,
         int setCount = 1,
         int minValue = Int32.MinValue,
