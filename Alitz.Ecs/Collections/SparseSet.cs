@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Alitz.Ecs;
+namespace Alitz.Ecs.Collections;
 public class SparseSet<TKey, TIndexProvider>
     where TKey : struct
     where TIndexProvider : struct, IIndexProvider<TKey> {

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Alitz.Ecs; 
+namespace Alitz.Ecs.Collections;
 internal static class SparseSetAlgorithms {
     public static void SwapRemoveSparse(List<int> sparse, int sparseIndex, int lastSparseIndex, int sparseFillValue) {
         sparse[sparseIndex] = sparse[lastSparseIndex];
         sparse[lastSparseIndex] = sparseFillValue;
     }
-    
+
     public static void SwapRemoveDense<T>(List<T> dense, int denseIndex) {
         if (denseIndex < 0 || denseIndex >= dense.Count) {
             throw new ArgumentOutOfRangeException();

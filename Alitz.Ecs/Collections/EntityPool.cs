@@ -1,11 +1,11 @@
-﻿namespace Alitz.Ecs; 
+﻿namespace Alitz.Ecs.Collections;
 public class EntityPool {
-    private readonly EntitySet _takenEntities = new();
     private readonly EntitySet _recycledEntities = new();
-    
+    private readonly EntitySet _takenEntities = new();
+
     public int TakenCount =>
         _takenEntities.Count;
-    
+
     public Entity Take() {
         Entity entity;
         if (_recycledEntities.Count > 0) {
@@ -20,7 +20,7 @@ public class EntityPool {
         _takenEntities.Add(entity);
         return entity;
     }
-    
+
     public bool Taken(Entity entity) =>
         _takenEntities.Contains(entity);
 
@@ -32,12 +32,12 @@ public class EntityPool {
             return false;
         }
     }
-    
+
     private static Entity? Peek(EntitySet entitySet) =>
         entitySet.Count > 0
-        ? entitySet.Keys[^1]
-        : null;
-    
+            ? entitySet.Keys[^1]
+            : null;
+
     private static Entity? Pop(EntitySet entitySet) {
         if (entitySet.Count == 0) {
             return null;
