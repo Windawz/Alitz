@@ -1,14 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Alitz.Ecs.Collections;
-public class ComponentDictionary<TComponent> :
-    SparseDictionary<Entity, EntityIndexProvider, TComponent>,
-    IComponentDictionary
+﻿namespace Alitz.Ecs.Collections;
+public class ComponentDictionary<TComponent> : SparseDictionary<Entity, TComponent>, IComponentDictionary<TComponent>
     where TComponent : struct {
-    Type IComponentDictionary.ComponentType =>
-        typeof(TComponent);
-
-    IReadOnlyList<Entity> IComponentDictionary.Entities =>
-        Keys;
+    public ComponentDictionary() : base(IndexExtractors.EntityIndexExtractor) { }
 }

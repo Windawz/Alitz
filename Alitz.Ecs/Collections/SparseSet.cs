@@ -1,74 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 namespace Alitz.Ecs.Collections;
-public class SparseSet<TKey, TIndexProvider>
-    where TKey : struct
-    where TIndexProvider : struct, IIndexProvider<TKey> {
-    private const int SparseFillValue = -1;
+public class SparseSet<T> : ISparseSet<T> {
+    public SparseSet(IndexExtractor<T> indexExtractor) {
+        IndexExtractor = indexExtractor;
+    }
 
-    private static readonly TIndexProvider IndexProvider = default;
-    private readonly List<TKey> _dense = new();
-    private readonly List<int> _sparse = new();
+    protected IList<int> Sparse { get; } = new List<int>();
+    protected IList<T> Dense { get; } = new List<T>();
+    protected IndexExtractor<T> IndexExtractor { get; }
 
     public int Count =>
-        _dense.Count;
+        Dense.Count;
 
-    public IReadOnlyList<TKey> Keys =>
-        _dense;
+    public IEnumerable<T> Values =>
+        Dense;
 
-    public int Add(TKey key) {
-        int sparseIndex = AsSparseIndex(key);
-        ResizeSparseList(sparseIndex + 1);
-        int denseIndex = TryGetDenseIndex(sparseIndex)
-            ?? _sparse[sparseIndex];
-        if (denseIndex == SparseFillValue) {
-            denseIndex = _sparse[sparseIndex] = _dense.Count;
-            _dense.Add(key);
-            return denseIndex;
+    public bool TryAdd(T value) {
+        if (SparseSetAlgorithms.TryAddSparse(Sparse, value, IndexExtractor, Dense.Count, out _)) {
+            SparseSetAlgorithms.AddDense(Dense, value);
+            return true;
         } else {
-            return -1;
-        }
-    }
-
-    public bool Contains(TKey key) {
-        int sparseIndex = AsSparseIndex(key);
-        return sparseIndex >= 0
-            && sparseIndex < _sparse.Count
-            && _sparse[sparseIndex] != SparseFillValue;
-    }
-
-    public bool Remove(TKey key) {
-        int sparseIndex = AsSparseIndex(key);
-        int? denseIndex = TryGetDenseIndex(sparseIndex);
-        if (denseIndex is null) {
             return false;
         }
-
-        SparseSetAlgorithms.SwapRemoveSparse(_sparse, sparseIndex, AsSparseIndex(_dense[^1]), SparseFillValue);
-        SparseSetAlgorithms.SwapRemoveDense(_dense, denseIndex.Value);
-
-        return true;
     }
 
-    protected static int AsSparseIndex(TKey key) =>
-        IndexProvider.AsIndex(key);
+    public bool Contains(T value) =>
+        SparseSetAlgorithms.Contains(Sparse, value, IndexExtractor);
 
-    protected int? TryGetDenseIndex(int sparseIndex) =>
-        _sparse[sparseIndex] != SparseFillValue ? _sparse[sparseIndex] : null;
-
-    private void ResizeSparseList(int count) {
-        if (count < 0) {
-            throw new ArgumentOutOfRangeException(nameof(count));
+    public bool Remove(T value) {
+        if (SparseSetAlgorithms.TryGetSparseIndexBoundsChecked(value, IndexExtractor, Sparse.Count, out int sparseIndex)
+            && SparseSetAlgorithms.TryGetDenseIndexBoundsChecked(Sparse, sparseIndex, out int denseIndex)) {
+            SparseSetAlgorithms.RemoveSparse(
+                Sparse,
+                sparseIndex,
+                SparseSetAlgorithms.GetLastSparseIndex(Dense, IndexExtractor)
+            );
+            SparseSetAlgorithms.RemoveDense(Dense, denseIndex);
+            return true;
         }
-        int currentCount = _sparse.Count;
+        return false;
+    }
 
-        if (count < currentCount) {
-            _sparse.RemoveRange(count, currentCount - count);
-        } else if (count > currentCount) {
-            _sparse.EnsureCapacity(count);
-            _sparse.AddRange(Enumerable.Repeat(SparseFillValue, count - currentCount));
-        }
+    public void Clear() {
+        SparseSetAlgorithms.ClearSparse(Sparse);
+        SparseSetAlgorithms.ClearDense(Dense);
     }
 }

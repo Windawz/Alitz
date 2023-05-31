@@ -1,7 +1,7 @@
 ﻿namespace Alitz.Ecs.Collections;
 public class EntityPool {
-    private readonly EntitySet _recycledEntities = new();
-    private readonly EntitySet _takenEntities = new();
+    private readonly StackSparseSet<Entity> _recycledEntities = new(IndexExtractors.EntityIndexExtractor);
+    private readonly StackSparseSet<Entity> _takenEntities = new(IndexExtractors.EntityIndexExtractor);
 
     public int TakenCount =>
         _takenEntities.Count;
@@ -9,10 +9,11 @@ public class EntityPool {
     public Entity Take() {
         Entity entity;
         if (_recycledEntities.Count > 0) {
-            Entity recycledEntity = Pop(_recycledEntities)!.Value;
+            _ = _recycledEntities.TryPop(out var recycledEntity);
             entity = new Entity(recycledEntity.Id, recycledEntity.Version + 1);
         } else if (_takenEntities.Count > 0) {
-            int id = Peek(_takenEntities)!.Value.Id + 1;
+            _ = _takenEntities.TryPeek(out var takenEntity);
+            int id = takenEntity.Id + 1;
             entity = new Entity(id);
         } else {
             entity = new Entity(0);
@@ -33,17 +34,26 @@ public class EntityPool {
         }
     }
 
-    private static Entity? Peek(EntitySet entitySet) =>
-        entitySet.Count > 0
-            ? entitySet.Keys[^1]
-            : null;
+    private class StackSparseSet<T> : SparseSet<T> {
+        public StackSparseSet(IndexExtractor<T> indexExtractor) : base(indexExtractor) { }
 
-    private static Entity? Pop(EntitySet entitySet) {
-        if (entitySet.Count == 0) {
-            return null;
+        public bool TryPeek(out T? value) {
+            if (Count > 0) {
+                value = Dense[^1];
+                return true;
+            }
+            value = default;
+            return false;
         }
-        Entity entity = entitySet.Keys[^1];
-        entitySet.Remove(entity);
-        return entity;
+
+        public bool TryPop(out T? value) {
+            if (Count == 0) {
+                value = default;
+                return false;
+            }
+            value = Dense[^1];
+            Remove(value);
+            return true;
+        }
     }
 }
