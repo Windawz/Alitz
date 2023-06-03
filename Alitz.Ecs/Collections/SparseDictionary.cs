@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace Alitz.Ecs.Collections;
-using static Validators;
+using static Validation;
 
 public class SparseDictionary<TKey, TValue> : ISparseDictionary<TKey, TValue>, ISparseDictionary
 {

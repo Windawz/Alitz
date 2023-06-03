@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace Alitz;
-public static class Validators
+public static class Validation
 {
     public static T ValidateType<T>(object value, string? exceptionParamName = null, string? exceptionMessage = null)
     {

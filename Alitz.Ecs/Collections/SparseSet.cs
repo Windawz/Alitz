@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace Alitz.Ecs.Collections;
-using static Validators;
+using static Validation;
 
 public class SparseSet<T> : ISparseSet<T>, ISparseSet
 {
