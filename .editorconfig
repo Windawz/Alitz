@@ -1,5 +1,4 @@
-
-[*]
+﻿[*]
 charset = utf-8-bom
 end_of_line = crlf
 trim_trailing_whitespace = false
@@ -8,11 +7,6 @@ indent_style = space
 indent_size = 4
 
 # Microsoft .NET properties
-csharp_new_line_before_catch = false
-csharp_new_line_before_else = false
-csharp_new_line_before_finally = false
-csharp_new_line_before_members_in_object_initializers = false
-csharp_new_line_before_open_brace = none
 csharp_preferred_modifier_order = public, internal, required, protected, private, file, new, static, virtual, sealed, override, abstract, extern, unsafe, volatile, async, readonly:suggestion
 csharp_style_expression_bodied_accessors = true:suggestion
 csharp_style_expression_bodied_methods = true:none
@@ -42,7 +36,7 @@ dotnet_naming_symbols.local_functions_symbols.applicable_kinds = local_function
 dotnet_naming_symbols.method_symbols.applicable_accessibilities = *
 dotnet_naming_symbols.method_symbols.applicable_kinds = method
 dotnet_naming_symbols.unity_serialized_field_symbols.applicable_accessibilities = *
-dotnet_naming_symbols.unity_serialized_field_symbols.applicable_kinds = 
+dotnet_naming_symbols.unity_serialized_field_symbols.applicable_kinds =
 dotnet_naming_symbols.unity_serialized_field_symbols.resharper_applicable_kinds = unity_serialised_field
 dotnet_naming_symbols.unity_serialized_field_symbols.resharper_required_modifiers = instance
 dotnet_separate_import_directive_groups = true
@@ -80,40 +74,41 @@ resharper_csharp_wrap_arguments_style = chop_if_long
 resharper_csharp_wrap_before_binary_opsign = true
 resharper_csharp_wrap_before_declaration_rpar = true
 resharper_csharp_wrap_before_first_type_parameter_constraint = true
-resharper_csharp_wrap_before_invocation_rpar = true
 resharper_csharp_wrap_extends_list_style = chop_if_long
 resharper_csharp_wrap_parameters_style = chop_if_long
 resharper_indent_braces_inside_statement_conditions = false
 resharper_indent_preprocessor_if = usual_indent
 resharper_indent_preprocessor_other = usual_indent
-resharper_instance_members_qualify_declared_in = 
-resharper_keep_existing_declaration_parens_arrangement = false
-resharper_keep_existing_expr_member_arrangement = false
-resharper_keep_existing_switch_expression_arrangement = false
+resharper_instance_members_qualify_declared_in =
+resharper_keep_existing_arrangement = false
 resharper_local_function_body = expression_body
 resharper_max_array_initializer_elements_on_line = 3
 resharper_max_formal_parameters_on_line = 8
 resharper_max_initializer_elements_on_line = 3
 resharper_max_invocation_arguments_on_line = 8
 resharper_nested_ternary_style = compact
+resharper_new_line_before_while = true
 resharper_parentheses_redundancy_style = remove
 resharper_place_accessorholder_attribute_on_same_line = false
 resharper_place_accessor_attribute_on_same_line = false
 resharper_place_expr_method_on_single_line = false
 resharper_place_expr_property_on_single_line = false
 resharper_place_field_attribute_on_same_line = false
+resharper_place_simple_accessor_on_single_line = false
 resharper_place_simple_anonymousmethod_on_single_line = false
-resharper_place_simple_initializer_on_single_line = false
+resharper_place_simple_embedded_statement_on_same_line = false
+resharper_place_simple_switch_expression_on_single_line = true
 resharper_show_autodetect_configure_formatting_tip = false
 resharper_trailing_comma_in_multiline_lists = true
 resharper_trailing_comma_in_singleline_lists = true
 resharper_use_indent_from_vs = false
-resharper_wrap_array_initializer_style = chop_always
+resharper_wrap_array_initializer_style = chop_if_long
 resharper_wrap_before_linq_expression = true
 resharper_wrap_chained_binary_expressions = chop_if_long
 resharper_wrap_chained_binary_patterns = chop_if_long
 resharper_wrap_chained_method_calls = chop_if_long
-resharper_wrap_object_and_collection_initializer_style = chop_always
+resharper_wrap_list_pattern = chop_if_long
+resharper_wrap_switch_expression = chop_if_long
 resharper_wrap_verbatim_interpolated_strings = chop_if_long
 
 # ReSharper inspection severities
