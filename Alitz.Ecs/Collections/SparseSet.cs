@@ -24,7 +24,7 @@ public class SparseSet<T> : ISparseSet<T>, ISparseSet
         {
             foreach (var value in Values)
             {
-                yield return value;
+                yield return value!;
             }
         }
     }

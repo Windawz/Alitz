@@ -33,7 +33,7 @@ public class SparseDictionary<TKey, TValue> : ISparseDictionary<TKey, TValue>, I
         {
             foreach (var key in Keys)
             {
-                yield return key;
+                yield return key!;
             }
         }
     }
@@ -44,7 +44,7 @@ public class SparseDictionary<TKey, TValue> : ISparseDictionary<TKey, TValue>, I
         {
             foreach (var value in Values)
             {
-                yield return value;
+                yield return value!;
             }
         }
     }
