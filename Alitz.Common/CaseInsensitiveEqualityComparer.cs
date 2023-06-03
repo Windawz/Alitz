@@ -2,19 +2,18 @@
 using System.Collections.Generic;
 
 namespace Alitz;
-public class CaseInsensitiveEqualityComparer : EqualityComparer<string> {
-    private CaseInsensitiveEqualityComparer(StringComparison comparison) {
+public class CaseInsensitiveEqualityComparer : EqualityComparer<string>
+{
+    private CaseInsensitiveEqualityComparer(StringComparison comparison)
+    {
         _comparison = comparison;
     }
 
     private readonly StringComparison _comparison;
 
-    public new static CaseInsensitiveEqualityComparer Default { get; } =
-        new(StringComparison.CurrentCultureIgnoreCase);
-    public static CaseInsensitiveEqualityComparer Invariant { get; } =
-        new(StringComparison.InvariantCultureIgnoreCase);
-    public static CaseInsensitiveEqualityComparer Ordinal { get; } =
-        new(StringComparison.OrdinalIgnoreCase);
+    public new static CaseInsensitiveEqualityComparer Default { get; } = new(StringComparison.CurrentCultureIgnoreCase);
+    public static CaseInsensitiveEqualityComparer Invariant { get; } = new(StringComparison.InvariantCultureIgnoreCase);
+    public static CaseInsensitiveEqualityComparer Ordinal { get; } = new(StringComparison.OrdinalIgnoreCase);
 
     public override bool Equals(string? x, string? y) =>
         string.Equals(x, y, _comparison);
