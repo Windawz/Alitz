@@ -4,12 +4,15 @@ using System.Collections.Generic;
 namespace Alitz.Ecs.Collections;
 public interface ISparseDictionary<TKey, TValue> : ISparseDictionary {
     new IEnumerable<TKey> Keys { get; }
-
     new IEnumerable<TValue> Values { get; }
 
     TValue this[TKey key] { get; set; }
-    Type ISparseDictionary.KeyType => typeof(TKey);
-    Type ISparseDictionary.ValueType => typeof(TValue);
+
+    Type ISparseDictionary.KeyType =>
+        typeof(TKey);
+
+    Type ISparseDictionary.ValueType =>
+        typeof(TValue);
 
     IEnumerable<object> ISparseDictionary.Keys {
         get {
@@ -48,14 +51,9 @@ public interface ISparseDictionary<TKey, TValue> : ISparseDictionary {
         TrySet((TKey)key, (TValue)value);
 
     bool TryAdd(TKey key, TValue value);
-
     bool Contains(TKey key);
-
     bool Remove(TKey key);
-
     bool TryGet(TKey key, out TValue value);
-
     bool TrySet(TKey key, TValue value);
-
     ref TValue GetByRef(TKey key);
 }

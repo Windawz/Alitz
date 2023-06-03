@@ -8,10 +8,7 @@ public interface ISparseSet {
     IEnumerable<object> Values { get; }
 
     bool TryAdd(object value);
-
     bool Remove(object value);
-
     bool Contains(object value);
-
     void Clear();
 }

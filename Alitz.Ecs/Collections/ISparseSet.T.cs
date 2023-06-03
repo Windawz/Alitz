@@ -4,7 +4,8 @@ using System.Collections.Generic;
 namespace Alitz.Ecs.Collections;
 public interface ISparseSet<T> : ISparseSet {
     new IEnumerable<T> Values { get; }
-    Type ISparseSet.ValueType => typeof(T);
+    Type ISparseSet.ValueType =>
+        typeof(T);
 
     IEnumerable<object> ISparseSet.Values {
         get {
@@ -24,8 +25,6 @@ public interface ISparseSet<T> : ISparseSet {
         Remove((T)value);
 
     bool TryAdd(T value);
-
     bool Contains(T value);
-
     bool Remove(T value);
 }
