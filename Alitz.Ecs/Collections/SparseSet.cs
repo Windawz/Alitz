@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Alitz.Ecs.Collections;
-public class SparseSet<T> : ISparseSet<T>
+using static Validators;
+
+public class SparseSet<T> : ISparseSet<T>, ISparseSet
 {
     public SparseSet(IndexExtractor<T> indexExtractor)
     {
@@ -11,6 +14,29 @@ public class SparseSet<T> : ISparseSet<T>
     protected IList<int> Sparse { get; } = new List<int>();
     protected IList<T> Dense { get; } = new List<T>();
     protected IndexExtractor<T> IndexExtractor { get; }
+
+    Type ISparseSet.ValueType =>
+        typeof(T);
+
+    IEnumerable<object> ISparseSet.Values
+    {
+        get
+        {
+            foreach (var value in Values)
+            {
+                yield return value;
+            }
+        }
+    }
+
+    bool ISparseSet.TryAdd(object value) =>
+        TryAdd(ValidateType<T>(value));
+
+    bool ISparseSet.Remove(object value) =>
+        Remove(ValidateType<T>(value));
+
+    bool ISparseSet.Contains(object value) =>
+        Contains(ValidateType<T>(value));
 
     public int Count =>
         Dense.Count;

@@ -4,7 +4,9 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace Alitz.Ecs.Collections;
-public class SparseDictionary<TKey, TValue> : ISparseDictionary<TKey, TValue>
+using static Validators;
+
+public class SparseDictionary<TKey, TValue> : ISparseDictionary<TKey, TValue>, ISparseDictionary
 {
     public SparseDictionary(IndexExtractor<TKey> keyIndexExtractor)
     {
@@ -18,6 +20,63 @@ public class SparseDictionary<TKey, TValue> : ISparseDictionary<TKey, TValue>
     private readonly IndexExtractor<TKey> _keyIndexExtractor;
 
     private readonly IList<int> _sparse = new List<int>();
+
+    Type ISparseDictionary.KeyType =>
+        typeof(TKey);
+
+    Type ISparseDictionary.ValueType =>
+        typeof(TValue);
+
+    IEnumerable<object> ISparseDictionary.Keys
+    {
+        get
+        {
+            foreach (var key in Keys)
+            {
+                yield return key;
+            }
+        }
+    }
+
+    IEnumerable<object> ISparseDictionary.Values
+    {
+        get
+        {
+            foreach (var value in Values)
+            {
+                yield return value;
+            }
+        }
+    }
+
+    object ISparseDictionary.this[object key]
+    {
+        get => this[ValidateType<TKey>(key)]!;
+        set => this[ValidateType<TKey>(key)] = ValidateType<TValue>(value);
+    }
+
+    bool ISparseDictionary.TryAdd(object key, object value) =>
+        TryAdd(ValidateType<TKey>(key, nameof(key)), ValidateType<TValue>(value, nameof(value)));
+
+    bool ISparseDictionary.Contains(object key) =>
+        Contains(ValidateType<TKey>(key));
+
+    bool ISparseDictionary.Remove(object key) =>
+        Remove(ValidateType<TKey>(key));
+
+    bool ISparseDictionary.TryGet(object key, out object value)
+    {
+        if (TryGet(ValidateType<TKey>(key), out var typedValue))
+        {
+            value = typedValue!;
+            return true;
+        }
+        value = default!;
+        return false;
+    }
+
+    bool ISparseDictionary.TrySet(object key, object value) =>
+        TrySet(ValidateType<TKey>(key), ValidateType<TValue>(value));
 
     public TValue this[TKey key]
     {
@@ -38,7 +97,6 @@ public class SparseDictionary<TKey, TValue> : ISparseDictionary<TKey, TValue>
             }
         }
     }
-
     public int Count =>
         _denseKeys.Count;
 
