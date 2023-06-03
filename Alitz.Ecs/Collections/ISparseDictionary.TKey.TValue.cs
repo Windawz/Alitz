@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 
 namespace Alitz.Ecs.Collections;
-public interface ISparseDictionary<TKey, TValue> : ISparseDictionary {
+public interface ISparseDictionary<TKey, TValue> : ISparseDictionary
+{
     new IEnumerable<TKey> Keys { get; }
     new IEnumerable<TValue> Values { get; }
 
@@ -14,23 +15,30 @@ public interface ISparseDictionary<TKey, TValue> : ISparseDictionary {
     Type ISparseDictionary.ValueType =>
         typeof(TValue);
 
-    IEnumerable<object> ISparseDictionary.Keys {
-        get {
-            foreach (var key in Keys) {
+    IEnumerable<object> ISparseDictionary.Keys
+    {
+        get
+        {
+            foreach (var key in Keys)
+            {
                 yield return key!;
             }
         }
     }
 
-    IEnumerable<object> ISparseDictionary.Values {
-        get {
-            foreach (var value in Values) {
+    IEnumerable<object> ISparseDictionary.Values
+    {
+        get
+        {
+            foreach (var value in Values)
+            {
                 yield return value!;
             }
         }
     }
 
-    object ISparseDictionary.this[object key] {
+    object ISparseDictionary.this[object key]
+    {
         get => this[(TKey)key]!;
         set => this[(TKey)key] = (TValue)value;
     }

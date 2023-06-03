@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 
 namespace Alitz.Ecs.Collections;
-public interface ISparseSet {
+public interface ISparseSet
+{
     Type ValueType { get; }
     int Count { get; }
     IEnumerable<object> Values { get; }

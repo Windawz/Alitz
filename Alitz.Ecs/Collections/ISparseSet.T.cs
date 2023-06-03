@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 
 namespace Alitz.Ecs.Collections;
-public interface ISparseSet<T> : ISparseSet {
+public interface ISparseSet<T> : ISparseSet
+{
     new IEnumerable<T> Values { get; }
     Type ISparseSet.ValueType =>
         typeof(T);
 
-    IEnumerable<object> ISparseSet.Values {
-        get {
-            foreach (var value in Values) {
+    IEnumerable<object> ISparseSet.Values
+    {
+        get
+        {
+            foreach (var value in Values)
+            {
                 yield return value!;
             }
         }

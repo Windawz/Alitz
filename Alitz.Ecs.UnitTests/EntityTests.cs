@@ -1,52 +1,59 @@
 ﻿using System;
 
-namespace Alitz.Ecs.UnitTests; 
-public class EntityTests {
+namespace Alitz.Ecs.UnitTests;
+public class EntityTests
+{
     [Fact]
-    public void MaxValuesArePositive() {
+    public void MaxValuesArePositive()
+    {
         Assert.True(Entity.IdMaxValue > 0);
         Assert.True(Entity.VersionMaxValue > 0);
     }
-    
+
     [Fact]
-    public void MaxValuesAreGreaterThanMinValues() {
+    public void MaxValuesAreGreaterThanMinValues()
+    {
         Assert.True(Entity.IdMaxValue > Entity.IdMinValue);
         Assert.True(Entity.VersionMaxValue > Entity.VersionMinValue);
     }
-    
+
     [Fact]
-    public void IdIsConsistent() {
+    public void IdIsConsistent() =>
         Assert.Equal(42, new Entity(42).Id);
-    }
-    
+
     [Fact]
-    public void VersionIsConsistent() {
+    public void VersionIsConsistent()
+    {
         var entity = new Entity(42, 33);
         Assert.Equal(33, entity.Version);
     }
-    
+
     [Fact]
-    public void VersionIsZeroIfOmittedFromCtor() {
+    public void VersionIsZeroIfOmittedFromCtor()
+    {
         Assert.Equal(0, new Entity().Version);
         Assert.Equal(0, new Entity(42).Version);
     }
-    
+
     [Fact]
-    public void CannotExceedMaxAndMinValuesOnCreation() {
+    public void CannotExceedMaxAndMinValuesOnCreation()
+    {
         Assert.ThrowsAny<ArgumentOutOfRangeException>(() => _ = new Entity(Entity.IdMaxValue + 1));
         Assert.ThrowsAny<ArgumentOutOfRangeException>(() => _ = new Entity(42, Entity.VersionMaxValue + 1));
         Assert.ThrowsAny<ArgumentOutOfRangeException>(() => _ = new Entity(Entity.IdMinValue - 1));
         Assert.ThrowsAny<ArgumentOutOfRangeException>(() => _ = new Entity(42, Entity.VersionMinValue - 1));
     }
-    
+
     [Fact]
-    public void CreatingWithMaxValuesDoesNotThrow() {
+    public void CreatingWithMaxValuesDoesNotThrow()
+    {
         _ = new Entity(Entity.IdMaxValue);
         _ = new Entity(42, Entity.VersionMaxValue);
     }
-    
+
     [Fact]
-    public void EqualityWorks() {
+    public void EqualityWorks()
+    {
         var lhs = new Entity(42);
         // ReSharper disable once EqualExpressionComparison
         Assert.True(lhs == lhs);
@@ -55,41 +62,32 @@ public class EntityTests {
         Assert.True(lhs == rhs1);
         Assert.False(lhs == rhs2);
     }
-    
+
     [Fact]
-    public void InequalityWorks() {
+    public void InequalityWorks()
+    {
         var lhs = new Entity(42);
         var rhs1 = new Entity(42);
         var rhs2 = new Entity(43);
         Assert.False(lhs != rhs1);
         Assert.True(lhs != rhs2);
     }
-    
+
     [Fact]
-    public void EqualsMethodMatchesOperatorBehavior() {
+    public void EqualsMethodMatchesOperatorBehavior()
+    {
         var lhs = new Entity(42);
         var rhs1 = new Entity(42);
         var rhs2 = new Entity(43);
-        Assert.Equal(
-            lhs == rhs1,
-            lhs.Equals(rhs1)
-        );
-        Assert.Equal(
-            lhs == rhs2,
-            lhs.Equals(rhs2)
-        );
-        Assert.Equal(
-            lhs != rhs1,
-            !lhs.Equals(rhs1)
-        );
-        Assert.Equal(
-            lhs != rhs2,
-            !lhs.Equals(rhs2)
-        );
+        Assert.Equal(lhs == rhs1, lhs.Equals(rhs1));
+        Assert.Equal(lhs == rhs2, lhs.Equals(rhs2));
+        Assert.Equal(lhs != rhs1, !lhs.Equals(rhs1));
+        Assert.Equal(lhs != rhs2, !lhs.Equals(rhs2));
     }
-    
+
     [Fact]
-    public void ObjectEqualityWorks() {
+    public void ObjectEqualityWorks()
+    {
         var lhs = new Entity(42);
         object rhs1 = new Entity(42);
         object rhs2 = new Entity(43);

@@ -2,14 +2,18 @@
 using System.Numerics;
 
 namespace Alitz.Ecs;
-public readonly struct Entity : IEquatable<Entity> {
+public readonly struct Entity : IEquatable<Entity>
+{
     public Entity(int id) : this(id, 0) { }
 
-    public Entity(int id, int version) {
-        if (id < IdMinValue || id > IdMaxValue) {
+    public Entity(int id, int version)
+    {
+        if (id < IdMinValue || id > IdMaxValue)
+        {
             throw new ArgumentOutOfRangeException(nameof(id));
         }
-        if (version < VersionMinValue || version > VersionMaxValue) {
+        if (version < VersionMinValue || version > VersionMaxValue)
+        {
             throw new ArgumentOutOfRangeException(nameof(version));
         }
         ulong data = 0;
@@ -22,8 +26,7 @@ public readonly struct Entity : IEquatable<Entity> {
     public const int VersionMinValue = 0;
     public static readonly int IdMaxValue = InterpretAsInt32(IdMask);
     public static readonly int VersionMaxValue = InterpretAsInt32(
-        VersionMask >> BitOperations.TrailingZeroCount(VersionMask)
-    );
+        VersionMask >> BitOperations.TrailingZeroCount(VersionMask));
     private const ulong IdMask = 0x_7FFF_FFFF;
     private const ulong VersionMask = 0x_7FFF_FFFF_0000_0000;
 
@@ -62,12 +65,14 @@ public readonly struct Entity : IEquatable<Entity> {
     private static void SetVersion(ref ulong data, ulong version) =>
         data |= version << BitOperations.TrailingZeroCount(VersionMask) & VersionMask;
 
-    private static unsafe int InterpretAsInt32(ulong value) {
+    private static unsafe int InterpretAsInt32(ulong value)
+    {
         var span = new ReadOnlySpan<byte>(&value, sizeof(ulong));
         return BitConverter.ToInt32(span);
     }
 
-    private static unsafe ulong InterpretAsUInt64(int value) {
+    private static unsafe ulong InterpretAsUInt64(int value)
+    {
         // BitConverter.ToUInt64() requires at least 8 bytes in the span.
         long longValue = value;
         var span = new ReadOnlySpan<byte>(&longValue, sizeof(long));

@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 
 namespace Alitz.Ecs.Collections;
-public interface ISparseDictionary {
+public interface ISparseDictionary
+{
     Type KeyType { get; }
     Type ValueType { get; }
     int Count { get; }

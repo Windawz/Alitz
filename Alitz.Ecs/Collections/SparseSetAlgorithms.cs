@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 
 namespace Alitz.Ecs.Collections;
-public static class SparseSetAlgorithms {
+public static class SparseSetAlgorithms
+{
     private const int SparseFillValue = -1;
 
     public static bool TryAddSparse<T>(
@@ -11,14 +12,18 @@ public static class SparseSetAlgorithms {
         IndexExtractor<T> indexExtractor,
         int denseCount,
         out int denseIndex
-    ) {
+    )
+    {
         int sparseIndex = indexExtractor(value);
         ResizeSparse(sparse, sparseIndex + 1);
         bool hasAdded;
-        if (!TryGetDenseIndexBoundsChecked(sparse, sparseIndex, out denseIndex)) {
+        if (!TryGetDenseIndexBoundsChecked(sparse, sparseIndex, out denseIndex))
+        {
             denseIndex = sparse[sparseIndex] = denseCount;
             hasAdded = true;
-        } else {
+        }
+        else
+        {
             hasAdded = false;
         }
         return hasAdded;
@@ -30,12 +35,14 @@ public static class SparseSetAlgorithms {
     public static bool Contains<T>(IList<int> sparse, T value, IndexExtractor<T> indexExtractor) =>
         TryGetDenseIndexBoundsChecked(sparse, indexExtractor(value), out _);
 
-    public static void RemoveSparse(IList<int> sparse, int sparseIndex, int lastSparseIndex) {
+    public static void RemoveSparse(IList<int> sparse, int sparseIndex, int lastSparseIndex)
+    {
         sparse[lastSparseIndex] = sparse[sparseIndex];
         sparse[sparseIndex] = SparseFillValue;
     }
 
-    public static void RemoveDense<T>(IList<T> dense, int denseIndex) {
+    public static void RemoveDense<T>(IList<T> dense, int denseIndex)
+    {
         dense[denseIndex] = dense[^1];
         dense.RemoveAt(dense.Count - 1);
     }
@@ -46,17 +53,22 @@ public static class SparseSetAlgorithms {
     public static void ClearDense<T>(IList<T> dense) =>
         dense.Clear();
 
-    public static void ResizeSparse(IList<int> sparse, int desiredCount) {
-        if (desiredCount < 0) {
+    public static void ResizeSparse(IList<int> sparse, int desiredCount)
+    {
+        if (desiredCount < 0)
+        {
             throw new ArgumentOutOfRangeException(nameof(desiredCount));
         }
-        while (sparse.Count > desiredCount) {
+        while (sparse.Count > desiredCount)
+        {
             sparse.RemoveAt(desiredCount);
         }
-        if (sparse is List<int> sparseList) {
+        if (sparse is List<int> sparseList)
+        {
             sparseList.EnsureCapacity(desiredCount);
         }
-        while (sparse.Count < desiredCount) {
+        while (sparse.Count < desiredCount)
+        {
             sparse.Add(SparseFillValue);
         }
     }
@@ -69,7 +81,8 @@ public static class SparseSetAlgorithms {
         IndexExtractor<T> indexExtractor,
         int sparseCount,
         out int sparseIndex
-    ) {
+    )
+    {
         sparseIndex = GetSparseIndex(value, indexExtractor);
         return IsSparseIndexInBounds(sparseCount, sparseIndex);
     }
@@ -79,29 +92,36 @@ public static class SparseSetAlgorithms {
         T value,
         IndexExtractor<T> indexExtractor,
         out int denseIndex
-    ) {
+    )
+    {
         denseIndex = default;
         int sparseIndex = GetSparseIndex(value, indexExtractor);
-        if (TryGetDenseIndexBoundsChecked(sparse, sparseIndex, out denseIndex)) {
+        if (TryGetDenseIndexBoundsChecked(sparse, sparseIndex, out denseIndex))
+        {
             return true;
         }
         return false;
     }
 
-    public static bool TryGetDenseIndexBoundsChecked(IList<int> sparse, int sparseIndex, out int denseIndex) {
+    public static bool TryGetDenseIndexBoundsChecked(IList<int> sparse, int sparseIndex, out int denseIndex)
+    {
         denseIndex = default;
-        if (!IsSparseIndexInBounds(sparseIndex, sparse.Count)) {
+        if (!IsSparseIndexInBounds(sparseIndex, sparse.Count))
+        {
             return false;
         }
-        if (TryGetDenseIndex(sparse, sparseIndex, out denseIndex)) {
+        if (TryGetDenseIndex(sparse, sparseIndex, out denseIndex))
+        {
             return true;
         }
         return false;
     }
 
-    public static bool TryGetDenseIndex(IList<int> sparse, int sparseIndex, out int denseIndex) {
+    public static bool TryGetDenseIndex(IList<int> sparse, int sparseIndex, out int denseIndex)
+    {
         denseIndex = GetDenseIndex(sparse, sparseIndex);
-        if (denseIndex == SparseFillValue) {
+        if (denseIndex == SparseFillValue)
+        {
             return false;
         }
         return true;
