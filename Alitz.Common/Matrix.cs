@@ -19,7 +19,8 @@ public class Matrix<T> {
 
     private T[] _elems = null!;
 
-    public int Count => _elems.Length;
+    public int Count =>
+        _elems.Length;
     public int Width { get; private set; }
     public int Height { get; private set; }
 
@@ -38,7 +39,7 @@ public class Matrix<T> {
             }
         }
     }
-    
+
     public IEnumerable<T> Elements {
         get {
             for (int i = 0; i < _elems.Length; i++) {
@@ -51,7 +52,7 @@ public class Matrix<T> {
         get => _elems[GetAbsoluteIndex(x, y)];
         set => _elems[GetAbsoluteIndex(x, y)] = value;
     }
-    
+
     public T this[int index] {
         get => _elems[index];
         set => _elems[index] = value;

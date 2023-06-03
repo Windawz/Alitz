@@ -12,7 +12,7 @@ public readonly struct Variant<T1, T2> where T1 : notnull where T2 : notnull {
 
     private readonly T1? _value1 = default;
     private readonly T2? _value2 = default;
-    
+
     public readonly object Value =>
         _value1 is not null ? _value1 :
         _value2 is not null ? _value2 : throw new InvalidOperationException("Variant is empty");

@@ -12,9 +12,9 @@ public class RandomInt32DataAttribute : DataAttribute {
         MinValue = int.MinValue;
         MaxValue = int.MaxValue;
     }
-    
+
     private readonly int _setCount;
-    
+
     public int? Seed { get; init; }
     public int SetCount {
         get => _setCount;
@@ -23,17 +23,17 @@ public class RandomInt32DataAttribute : DataAttribute {
                 throw new ArgumentOutOfRangeException(nameof(value));
             }
             _setCount = value;
-        } 
+        }
     }
     public int MinValue { get; init; }
     public int MaxValue { get; init; }
-    
+
     /// <inheritdoc />
     public override IEnumerable<object[]> GetData(MethodInfo testMethod) {
         var random = Seed is null ? new Random() : new Random(Seed.Value);
         int parameterCount = testMethod.GetParameters().Length;
         for (int i = 0; i < SetCount; i++) {
-            var arguments = new object[parameterCount];
+            object[] arguments = new object[parameterCount];
             for (int j = 0; j < arguments.Length; j++) {
                 arguments[j] = random.Next(MinValue, MaxValue);
             }

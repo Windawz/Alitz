@@ -14,7 +14,7 @@ public static class MatrixTests {
         [InlineData(100, 200)]
         public void IsSizeProperlyDependentOnElementCount(int width, int height) =>
             Assert.Equal(width * height, new Matrix<T>(width, height).Count);
-        
+
         [Theory]
         [InlineData(2, 6)]
         [InlineData(0, 0)]
