@@ -1,4 +1,6 @@
-﻿using Alitz.Ecs.Collections;
+﻿using System.Linq;
+
+using Alitz.Ecs.Collections;
 
 namespace Alitz.Ecs.UnitTests;
 public class SparseSetTests
@@ -11,6 +13,10 @@ public class SparseSetTests
 
     private readonly EntitySpace _entitySpace;
     private readonly SparseSet<Entity> _set;
+
+    [Fact]
+    public void EmptyCtor_CreatedEmpty() =>
+        Assert.Multiple(() => Assert.Equal(0, _set.Count), () => Assert.Empty(_set.Values));
 
     [Fact]
     public void Contains_TrueForAddedValue()
@@ -81,5 +87,20 @@ public class SparseSetTests
         Assert.Equal(1, _set.Count);
         _set.TryAdd(otherEntity);
         Assert.Equal(2, _set.Count);
+    }
+
+    [Fact]
+    public void Clear_ResultIdenticalToEmptyInstance()
+    {
+        foreach (int _ in Enumerable.Range(0, 5))
+        {
+            _set.TryAdd(_entitySpace.Create());
+        }
+        SparseSet<Entity> emptySet = new(IndexExtractor.Entity);
+        _set.Clear();
+        Assert.Multiple(
+            () => Assert.True(
+                _set.Values.OrderBy(entity => entity.Id).SequenceEqual(emptySet.Values.OrderBy(entity => entity.Id))),
+            () => Assert.Equal(emptySet.Count, _set.Count));
     }
 }
