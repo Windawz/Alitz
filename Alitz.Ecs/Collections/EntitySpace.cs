@@ -1,13 +1,18 @@
-﻿namespace Alitz.Ecs.Collections;
-public class EntityPool
+﻿using System.Collections.Generic;
+
+namespace Alitz.Ecs.Collections;
+internal class EntitySpace
 {
     private readonly StackSparseSet<Entity> _recycledEntities = new(IndexExtractors.EntityIndexExtractor);
     private readonly StackSparseSet<Entity> _takenEntities = new(IndexExtractors.EntityIndexExtractor);
 
-    public int TakenCount =>
+    public int Count =>
         _takenEntities.Count;
 
-    public Entity Take()
+    public IEnumerable<Entity> Entities =>
+        _takenEntities.Values;
+
+    public Entity Create()
     {
         Entity entity;
         if (_recycledEntities.Count > 0)
@@ -29,10 +34,10 @@ public class EntityPool
         return entity;
     }
 
-    public bool Taken(Entity entity) =>
+    public bool Exists(Entity entity) =>
         _takenEntities.Contains(entity);
 
-    public bool Recycle(Entity entity)
+    public bool Destroy(Entity entity)
     {
         if (_takenEntities.Remove(entity))
         {
@@ -40,33 +45,5 @@ public class EntityPool
             return true;
         }
         return false;
-    }
-
-    private class StackSparseSet<T> : SparseSet<T>
-    {
-        public StackSparseSet(IndexExtractor<T> indexExtractor) : base(indexExtractor) { }
-
-        public bool TryPeek(out T? value)
-        {
-            if (Count > 0)
-            {
-                value = Dense[^1];
-                return true;
-            }
-            value = default;
-            return false;
-        }
-
-        public bool TryPop(out T? value)
-        {
-            if (Count == 0)
-            {
-                value = default;
-                return false;
-            }
-            value = Dense[^1];
-            Remove(value);
-            return true;
-        }
     }
 }
