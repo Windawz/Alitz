@@ -6,7 +6,7 @@ using Alitz.Ecs.Collections;
 namespace Alitz.Ecs;
 public class Environment
 {
-    private readonly Dictionary<Type, ISparseDictionary> _dictionaries = new();
+    private readonly Dictionary<Type, IDictionary> _dictionaries = new();
     private readonly EntitySpace _entitySpace = new();
 
     public IEnumerable<Entity> Entities =>
@@ -21,7 +21,7 @@ public class Environment
     public void DestroyEntity(Entity entity) =>
         _entitySpace.Destroy(entity);
 
-    public ISparseDictionary<Entity, TComponent> GetComponent<TComponent>() where TComponent : struct
+    public Collections.IDictionary<Entity, TComponent> GetComponent<TComponent>() where TComponent : struct
     {
         var componentType = typeof(TComponent);
         if (!_dictionaries.ContainsKey(componentType))
@@ -29,6 +29,6 @@ public class Environment
             var dictionary = new EntityAwareComponentDictionary<TComponent>(_entitySpace);
             _dictionaries.Add(componentType, dictionary);
         }
-        return (ISparseDictionary<Entity, TComponent>)_dictionaries[componentType];
+        return (Collections.IDictionary<Entity, TComponent>)_dictionaries[componentType];
     }
 }

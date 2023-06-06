@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace Alitz.Ecs.Collections;
-public static class SparseSetAlgorithms
+internal static class SparseSetAlgorithms
 {
     private const int SparseFillValue = -1;
 

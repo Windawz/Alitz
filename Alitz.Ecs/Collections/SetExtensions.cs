@@ -1,9 +1,9 @@
 ﻿using System;
 
 namespace Alitz.Ecs.Collections;
-public static class SparseSetExtensions
+public static class SetExtensions
 {
-    public static void Add<T>(this ISparseSet<T> set, T value)
+    public static void Add<T>(this ISet<T> set, T value)
     {
         if (!set.TryAdd(value))
         {

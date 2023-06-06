@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace Alitz.Ecs.Collections;
-public interface ISparseDictionary
+public interface IDictionary
 {
     Type KeyType { get; }
     Type ValueType { get; }

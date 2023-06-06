@@ -8,5 +8,5 @@ public class SparseSetTests
         _set = new SparseSet<int>(IndexExtractors.Int32IndexExtractor);
     }
 
-    private readonly ISparseSet<int> _set;
+    private readonly SparseSet<int> _set;
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace Alitz.Ecs.Collections;
-internal class EntityAwareComponentDictionary<TComponent> : ISparseDictionary<Entity, TComponent>, ISparseDictionary
+internal class EntityAwareComponentDictionary<TComponent> : IDictionary<Entity, TComponent>, IDictionary
     where TComponent : struct
 {
     public EntityAwareComponentDictionary(EntitySpace entitySpace)
@@ -13,38 +13,38 @@ internal class EntityAwareComponentDictionary<TComponent> : ISparseDictionary<En
     private readonly SparseDictionary<Entity, TComponent> _dictionary = new(IndexExtractors.EntityIndexExtractor);
     private readonly EntitySpace _entitySpace;
 
-    Type ISparseDictionary.KeyType =>
-        ((ISparseDictionary)_dictionary).KeyType;
+    Type IDictionary.KeyType =>
+        ((IDictionary)_dictionary).KeyType;
 
-    Type ISparseDictionary.ValueType =>
-        ((ISparseDictionary)_dictionary).ValueType;
+    Type IDictionary.ValueType =>
+        ((IDictionary)_dictionary).ValueType;
 
-    IEnumerable<object> ISparseDictionary.Keys =>
-        ((ISparseDictionary)_dictionary).Keys;
+    IEnumerable<object> IDictionary.Keys =>
+        ((IDictionary)_dictionary).Keys;
 
-    IEnumerable<object> ISparseDictionary.Values =>
-        ((ISparseDictionary)_dictionary).Values;
+    IEnumerable<object> IDictionary.Values =>
+        ((IDictionary)_dictionary).Values;
 
-    object ISparseDictionary.this[object key]
+    object IDictionary.this[object key]
     {
-        get => ((ISparseDictionary)_dictionary)[ValidateEntity(key)];
-        set => ((ISparseDictionary)_dictionary)[ValidateEntity(key)] = value;
+        get => ((IDictionary)_dictionary)[ValidateEntity(key)];
+        set => ((IDictionary)_dictionary)[ValidateEntity(key)] = value;
     }
 
-    bool ISparseDictionary.TryAdd(object key, object value) =>
-        ((ISparseDictionary)_dictionary).TryAdd(ValidateEntity(key), value);
+    bool IDictionary.TryAdd(object key, object value) =>
+        ((IDictionary)_dictionary).TryAdd(ValidateEntity(key), value);
 
-    bool ISparseDictionary.Contains(object key) =>
-        ((ISparseDictionary)_dictionary).Contains(ValidateEntity(key));
+    bool IDictionary.Contains(object key) =>
+        ((IDictionary)_dictionary).Contains(ValidateEntity(key));
 
-    bool ISparseDictionary.Remove(object key) =>
-        ((ISparseDictionary)_dictionary).Remove(ValidateEntity(key));
+    bool IDictionary.Remove(object key) =>
+        ((IDictionary)_dictionary).Remove(ValidateEntity(key));
 
-    bool ISparseDictionary.TryGet(object key, out object value) =>
-        ((ISparseDictionary)_dictionary).TryGet(ValidateEntity(key), out value);
+    bool IDictionary.TryGet(object key, out object value) =>
+        ((IDictionary)_dictionary).TryGet(ValidateEntity(key), out value);
 
-    bool ISparseDictionary.TrySet(object key, object value) =>
-        ((ISparseDictionary)_dictionary).TrySet(ValidateEntity(key), value);
+    bool IDictionary.TrySet(object key, object value) =>
+        ((IDictionary)_dictionary).TrySet(ValidateEntity(key), value);
 
     public int Count =>
         _dictionary.Count;

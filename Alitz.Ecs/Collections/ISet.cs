@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace Alitz.Ecs.Collections;
-public interface ISparseSet
+public interface ISet
 {
     Type ValueType { get; }
     int Count { get; }

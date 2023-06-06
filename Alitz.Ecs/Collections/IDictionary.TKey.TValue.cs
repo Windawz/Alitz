@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 namespace Alitz.Ecs.Collections;
-public interface ISparseDictionary<TKey, TValue>
+public interface IDictionary<TKey, TValue>
 {
     int Count { get; }
     IEnumerable<TKey> Keys { get; }
