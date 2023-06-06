@@ -3,8 +3,8 @@
 namespace Alitz.Ecs.Collections;
 public class EntitySpace
 {
-    private readonly StackSparseSet<Entity> _recycledEntities = new(IndexExtractors.EntityIndexExtractor);
-    private readonly StackSparseSet<Entity> _takenEntities = new(IndexExtractors.EntityIndexExtractor);
+    private readonly StackSparseSet<Entity> _recycledEntities = new(IndexExtractor.Entity);
+    private readonly StackSparseSet<Entity> _takenEntities = new(IndexExtractor.Entity);
 
     public int Count =>
         _takenEntities.Count;

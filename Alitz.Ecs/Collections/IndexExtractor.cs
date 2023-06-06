@@ -1,2 +1,5 @@
 ﻿namespace Alitz.Ecs.Collections;
-public delegate int IndexExtractor<T>(T value);
+public static class IndexExtractor
+{
+    public static IndexExtractor<Entity> Entity { get; } = static value => value.Id;
+}

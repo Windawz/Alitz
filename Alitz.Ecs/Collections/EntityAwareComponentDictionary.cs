@@ -10,7 +10,7 @@ internal class EntityAwareComponentDictionary<TComponent> : IDictionary<Entity, 
         _entitySpace = entitySpace;
     }
 
-    private readonly SparseDictionary<Entity, TComponent> _dictionary = new(IndexExtractors.EntityIndexExtractor);
+    private readonly SparseDictionary<Entity, TComponent> _dictionary = new(IndexExtractor.Entity);
     private readonly EntitySpace _entitySpace;
 
     Type IDictionary.KeyType =>
