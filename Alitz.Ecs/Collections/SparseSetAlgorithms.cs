@@ -84,7 +84,7 @@ internal static class SparseSetAlgorithms
     )
     {
         sparseIndex = GetSparseIndex(value, indexExtractor);
-        return IsSparseIndexInBounds(sparseCount, sparseIndex);
+        return IsSparseIndexInBounds(sparseIndex, sparseCount);
     }
 
     public static bool TryGetDenseIndexBoundsChecked<T>(
