@@ -5,71 +5,81 @@ public class SparseSetTests
 {
     public SparseSetTests()
     {
-        _set = new SparseSet<int>(IndexExtractors.Int32IndexExtractor);
+        _entitySpace = new EntitySpace();
+        _set = new SparseSet<Entity>(IndexExtractor.Entity);
     }
 
-    private readonly SparseSet<int> _set;
+    private readonly EntitySpace _entitySpace;
+    private readonly SparseSet<Entity> _set;
 
     [Fact]
     public void Contains_TrueForAddedValue()
     {
-        _set.TryAdd(42);
-        Assert.True(_set.Contains(42));
+        var entity = _entitySpace.Create();
+        _set.TryAdd(entity);
+        Assert.True(_set.Contains(entity));
     }
 
     [Fact]
     public void Contains_FalseForNeverAddedValue() =>
-        Assert.False(_set.Contains(42));
+        Assert.False(_set.Contains(_entitySpace.Create()));
 
     [Fact]
     public void Contains_FalseForRemovedValue()
     {
-        _set.Add(42);
-        _set.Remove(42);
-        Assert.False(_set.Contains(42));
+        var entity = _entitySpace.Create();
+        _set.Add(entity);
+        _set.Remove(entity);
+        Assert.False(_set.Contains(entity));
     }
 
     [Fact]
     public void Remove_TrueIfContains()
     {
-        _set.TryAdd(42);
-        Assert.True(_set.Remove(42));
+        var entity = _entitySpace.Create();
+        _set.TryAdd(entity);
+        Assert.True(_set.Remove(entity));
     }
 
     [Fact]
     public void Remove_FalseIfDoesNotContain() =>
-        Assert.False(_set.Remove(42));
+        Assert.False(_set.Remove(_entitySpace.Create()));
 
     [Fact]
     public void Remove_CountDecreases()
     {
-        _set.Add(42);
-        _set.Add(63);
+        var entity = _entitySpace.Create();
+        var otherEntity = _entitySpace.Create();
+        _set.Add(entity);
+        _set.Add(otherEntity);
         Assert.Equal(2, _set.Count);
-        _set.Remove(42);
+        _set.Remove(entity);
         Assert.Equal(1, _set.Count);
-        _set.Remove(63);
+        _set.Remove(otherEntity);
         Assert.Equal(0, _set.Count);
     }
 
     [Fact]
     public void TryAdd_TrueIfDoesNotContain() =>
-        Assert.True(_set.TryAdd(42));
+        Assert.True(_set.TryAdd(_entitySpace.Create()));
 
     [Fact]
     public void TryAdd_FalseIfContains()
     {
-        _set.TryAdd(42);
-        Assert.False(_set.TryAdd(42));
+        var entity = _entitySpace.Create();
+        _set.TryAdd(entity);
+        Assert.False(_set.TryAdd(entity));
     }
 
     [Fact]
     public void TryAdd_CountIncreases()
     {
+        var entity = _entitySpace.Create();
+        var otherEntity = _entitySpace.Create();
         Assert.Equal(0, _set.Count);
-        _set.TryAdd(42);
+        _set.TryAdd(entity);
         Assert.Equal(1, _set.Count);
-        _set.TryAdd(63);
+        _set.TryAdd(otherEntity);
         Assert.Equal(2, _set.Count);
     }
 }
