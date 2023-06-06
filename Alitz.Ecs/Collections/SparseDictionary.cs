@@ -97,6 +97,7 @@ public class SparseDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
             }
         }
     }
+
     public int Count =>
         _denseKeys.Count;
 
