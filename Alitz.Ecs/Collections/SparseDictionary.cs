@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 namespace Alitz.Ecs.Collections;
 using static Validation;
 
-public class SparseDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary
+public class SparseDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary<TKey>
 {
     public SparseDictionary(IndexExtractor<TKey> keyIndexExtractor)
     {
@@ -20,63 +20,6 @@ public class SparseDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
     private readonly IndexExtractor<TKey> _keyIndexExtractor;
 
     private readonly IList<int> _sparse = new List<int>();
-
-    Type IDictionary.KeyType =>
-        typeof(TKey);
-
-    Type IDictionary.ValueType =>
-        typeof(TValue);
-
-    IEnumerable<object> IDictionary.Keys
-    {
-        get
-        {
-            foreach (var key in Keys)
-            {
-                yield return key!;
-            }
-        }
-    }
-
-    IEnumerable<object> IDictionary.Values
-    {
-        get
-        {
-            foreach (var value in Values)
-            {
-                yield return value!;
-            }
-        }
-    }
-
-    object IDictionary.this[object key]
-    {
-        get => this[ValidateType<TKey>(key)]!;
-        set => this[ValidateType<TKey>(key)] = ValidateType<TValue>(value);
-    }
-
-    bool IDictionary.TryAdd(object key, object value) =>
-        TryAdd(ValidateType<TKey>(key, nameof(key)), ValidateType<TValue>(value, nameof(value)));
-
-    bool IDictionary.Contains(object key) =>
-        Contains(ValidateType<TKey>(key));
-
-    bool IDictionary.Remove(object key) =>
-        Remove(ValidateType<TKey>(key));
-
-    bool IDictionary.TryGet(object key, out object value)
-    {
-        if (TryGet(ValidateType<TKey>(key), out var typedValue))
-        {
-            value = typedValue!;
-            return true;
-        }
-        value = default!;
-        return false;
-    }
-
-    bool IDictionary.TrySet(object key, object value) =>
-        TrySet(ValidateType<TKey>(key), ValidateType<TValue>(value));
 
     public TValue this[TKey key]
     {
@@ -173,4 +116,58 @@ public class SparseDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
         }
         throw new ArgumentOutOfRangeException(nameof(key));
     }
+
+    Type IDictionary<TKey>.ValueType =>
+        typeof(TValue);
+
+    IEnumerable<TKey> IDictionary<TKey>.Keys
+    {
+        get
+        {
+            foreach (var key in Keys)
+            {
+                yield return key!;
+            }
+        }
+    }
+
+    IEnumerable<object> IDictionary<TKey>.Values
+    {
+        get
+        {
+            foreach (var value in Values)
+            {
+                yield return value!;
+            }
+        }
+    }
+
+    object IDictionary<TKey>.this[TKey key]
+    {
+        get => this[key]!;
+        set => this[key] = ValidateType<TValue>(value);
+    }
+
+    bool IDictionary<TKey>.TryAdd(TKey key, object value) =>
+        TryAdd(key, ValidateType<TValue>(value, nameof(value)));
+
+    bool IDictionary<TKey>.Contains(TKey key) =>
+        Contains(key);
+
+    bool IDictionary<TKey>.Remove(TKey key) =>
+        Remove(key);
+
+    bool IDictionary<TKey>.TryGet(TKey key, out object value)
+    {
+        if (TryGet(key, out var typedValue))
+        {
+            value = typedValue!;
+            return true;
+        }
+        value = default!;
+        return false;
+    }
+
+    bool IDictionary<TKey>.TrySet(TKey key, object value) =>
+        TrySet(key, ValidateType<TValue>(value));
 }
