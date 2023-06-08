@@ -14,7 +14,7 @@ internal static class SparseSetAlgorithms
         out int denseIndex
     )
     {
-        int sparseIndex = indexExtractor(value);
+        int sparseIndex = GetSparseIndex(value, indexExtractor);
         ResizeSparse(sparse, sparseIndex + 1);
         bool hasAdded;
         if (!TryGetDenseIndexBoundsChecked(sparse, sparseIndex, out denseIndex))
@@ -33,7 +33,7 @@ internal static class SparseSetAlgorithms
         dense.Add(value);
 
     public static bool Contains<T>(IList<int> sparse, T value, IndexExtractor<T> indexExtractor) =>
-        TryGetDenseIndexBoundsChecked(sparse, indexExtractor(value), out _);
+        TryGetDenseIndexBoundsChecked(sparse, GetSparseIndex(value, indexExtractor), out _);
 
     public static void RemoveSparse(IList<int> sparse, int sparseIndex, int lastSparseIndex)
     {
@@ -74,7 +74,7 @@ internal static class SparseSetAlgorithms
     }
 
     public static int GetSparseIndex<T>(T value, IndexExtractor<T> indexExtractor) =>
-        indexExtractor(value);
+        indexExtractor.Extract(value);
 
     public static bool TryGetSparseIndexBoundsChecked<T>(
         T value,
@@ -134,5 +134,5 @@ internal static class SparseSetAlgorithms
         sparseIndex >= 0 && sparseIndex < sparseCount;
 
     public static int GetLastSparseIndex<T>(IList<T> dense, IndexExtractor<T> indexExtractor) =>
-        indexExtractor(dense[^1]);
+        GetSparseIndex(dense[^1], indexExtractor);
 }
