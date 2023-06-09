@@ -4,7 +4,7 @@ using System.Reflection;
 
 using Xunit.Sdk;
 
-namespace Alitz.UnitTests.Utilities;
+namespace Alitz.UnitTests;
 public class RandomInt32DataAttribute : DataAttribute
 {
     public RandomInt32DataAttribute()

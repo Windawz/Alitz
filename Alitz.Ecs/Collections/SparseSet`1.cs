@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Alitz.Ecs.Collections;
+namespace Alitz;
 using static Validation;
 
 public class SparseSet<T> : ISet<T>, ISet

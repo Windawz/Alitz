@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Alitz.Ecs.Collections;
+namespace Alitz;
 public static class DictionaryExtensions
 {
     public static void Add<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key) =>

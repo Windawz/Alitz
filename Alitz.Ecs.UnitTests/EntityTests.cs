@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Alitz.Ecs.UnitTests;
+namespace Alitz.UnitTests;
 public class EntityTests
 {
     [Fact]

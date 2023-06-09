@@ -1,8 +1,6 @@
 ﻿using System;
 
-using Alitz.Ecs.Collections;
-
-namespace Alitz.Ecs.UnitTests;
+namespace Alitz.UnitTests;
 public class IndexExtractorTests
 {
     public class NegativeReturnValueTests

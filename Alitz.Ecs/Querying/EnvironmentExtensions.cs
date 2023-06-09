@@ -1,4 +1,4 @@
-﻿namespace Alitz.Ecs.Querying;
+﻿namespace Alitz;
 public static partial class EnvironmentExtensions
 {
     public static bool TryGetComponent<TComponent>(this Environment environment, Entity entity, out TComponent component)

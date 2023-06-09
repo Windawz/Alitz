@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Alitz.Ecs.Collections;
+namespace Alitz;
 public class EntitySpace
 {
     private readonly StackSparseSet<Entity> _recycledEntities = new(IndexExtractor.Entity);

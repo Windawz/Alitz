@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace Alitz.Ecs.Collections;
+namespace Alitz;
 using static Validation;
 
 public class SparseDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary<TKey>

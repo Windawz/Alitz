@@ -3,9 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-using Alitz.Ecs.Collections;
-
-namespace Alitz.Ecs.Querying;
+namespace Alitz;
 internal readonly struct IntersectionEnumerator : IEnumerator<Entity>
 {
     public IntersectionEnumerator(IDictionary<Entity> dictionary, params IDictionary<Entity>[] dictionaries)

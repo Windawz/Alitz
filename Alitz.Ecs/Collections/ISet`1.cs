@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Alitz.Ecs.Collections;
+namespace Alitz;
 public interface ISet<T>
 {
     int Count { get; }

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Alitz.Ecs.Collections;
-
-namespace Alitz.Ecs;
+namespace Alitz;
 public partial class Environment
 {
     private readonly Dictionary<Type, IDictionary<Entity>> _dictionaries = new();

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Alitz.Ecs;
+namespace Alitz;
 public class EntityDoesNotExistException : Exception
 {
     public EntityDoesNotExistException(Entity entity)

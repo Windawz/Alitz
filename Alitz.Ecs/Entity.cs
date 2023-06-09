@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 
-namespace Alitz.Ecs;
+namespace Alitz;
 public readonly struct Entity : IEquatable<Entity>
 {
     public Entity(int id) : this(id, 0) { }

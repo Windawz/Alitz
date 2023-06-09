@@ -1,8 +1,6 @@
 ﻿using System.Linq;
 
-using Alitz.Ecs.Collections;
-
-namespace Alitz.Ecs.UnitTests;
+namespace Alitz.UnitTests;
 public class SparseSetTests
 {
     public SparseSetTests()

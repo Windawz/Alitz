@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Alitz.Ecs.Collections;
-
-namespace Alitz.Ecs;
+namespace Alitz;
 public partial class Environment
 {
-    public class ComponentDictionary<TComponent> : Collections.IDictionary<Entity, TComponent>, IDictionary<Entity>
+    public class ComponentDictionary<TComponent> : IDictionary<Entity, TComponent>, IDictionary<Entity>
         where TComponent : struct
     {
         public ComponentDictionary(EntitySpace entitySpace)
