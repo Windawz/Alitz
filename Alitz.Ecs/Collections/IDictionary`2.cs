@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Alitz;
+namespace Alitz.Collections;
 public interface IDictionary<TKey, TValue>
 {
     int Count { get; }

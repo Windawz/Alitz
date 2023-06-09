@@ -1,4 +1,4 @@
-﻿namespace Alitz;
+﻿namespace Alitz.Querying;
 public static partial class EnvironmentExtensions
 {
     public delegate void ForEachAction<TComponent1>(Entity entity, ref TComponent1 component1) where TComponent1 : struct;

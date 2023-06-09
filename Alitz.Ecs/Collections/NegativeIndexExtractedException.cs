@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Alitz;
+namespace Alitz.Collections;
 public class NegativeIndexExtractedException : Exception
 {
     public NegativeIndexExtractedException(Delegate extractorFunc)

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using Alitz.Collections;
+
 namespace Alitz;
 public partial class Environment
 {

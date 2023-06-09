@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 
+using Alitz.Collections;
+
 namespace Alitz.UnitTests;
 public class SparseDictionaryTests
 {

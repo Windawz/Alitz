@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Alitz;
+namespace Alitz.Collections;
 internal static class SparseSetAlgorithms
 {
     private const int SparseFillValue = -1;

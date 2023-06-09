@@ -1,4 +1,4 @@
-﻿namespace Alitz;
+﻿namespace Alitz.Collections;
 internal class StackSparseSet<T> : SparseSet<T>
 {
     public StackSparseSet(IndexExtractor<T> indexExtractor) : base(indexExtractor) { }

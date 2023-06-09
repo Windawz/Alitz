@@ -1,5 +1,7 @@
 ﻿using System;
 
+using Alitz.Collections;
+
 namespace Alitz.UnitTests;
 public class IndexExtractorTests
 {

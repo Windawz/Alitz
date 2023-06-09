@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Alitz;
+namespace Alitz.Collections;
 public class IndexExtractor<T>
 {
     public IndexExtractor(Func<T, int> extractorFunc)

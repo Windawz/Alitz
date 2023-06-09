@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Alitz;
+namespace Alitz.Collections;
 public static class SetExtensions
 {
     public static void Add<T>(this ISet<T> set, T value)

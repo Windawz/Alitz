@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Alitz;
+namespace Alitz.Collections;
 public interface ISet
 {
     Type ValueType { get; }
