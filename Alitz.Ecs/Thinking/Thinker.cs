@@ -9,5 +9,9 @@ public abstract class Thinker
     protected Environment Environment { get; }
 
     public abstract void Think();
-    protected virtual void ConfigureDependencies(IDependencyConfigurationBuilder builder) { }
+
+    internal void Configure(Configuration.Builder builder) =>
+        OnConfigureDependencies(builder);
+
+    protected virtual void OnConfigureDependencies(IDependencyConfigurationBuilder builder) { }
 }
