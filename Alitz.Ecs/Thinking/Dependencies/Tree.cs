@@ -1,45 +1,57 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Alitz.Thinking.Dependencies;
-internal static class Tree
+internal class Tree
 {
-    public static Tree<T> Build<T>(IReadOnlyDictionary<T, IReadOnlyCollection<T>> dependencyTable) where T : notnull
+    private Tree(IReadOnlyList<Node> nodes)
     {
-        var topNodes = CreateTopNodes(dependencyTable);
-        bool hasExtendedAnyNodes;
+        Nodes = nodes;
+    }
+
+    public IReadOnlyList<Node> Nodes { get; }
+
+    public static Tree Build(IReadOnlyDictionary<Type, IEnumerable<Type>> dependencyTable)
+    {
+        var treeNodes = CreateTopNodes(dependencyTable);
+        bool hasExtendedAnyNodes = false;
 
         do
         {
-            hasExtendedAnyNodes = topNodes.Select(topNode => ExtendInnerNodesOnce(topNode, topNodes))
-                .Where(result => result)
-                .Any();
-
-            foreach (var topNode in topNodes)
+            foreach (var treeNode in treeNodes)
             {
-                if (TryFindFirstNodeBeforeNodeWithSameInfo(topNode, out var dependentNode))
+                if (TryExtendInnerNodes(treeNode, treeNodes))
                 {
-                    throw new CircularDependencyException<T>(dependentNode.Value, topNode.Value);
+                    hasExtendedAnyNodes = true;
+                }
+                if (TryFindFirstNodeBeforeNodeWithSameInfo(treeNode, out var dependentNode))
+                {
+                    throw new CircularDependencyException(dependentNode.ThinkerType, treeNode.ThinkerType);
                 }
             }
         }
         while (hasExtendedAnyNodes);
 
-        return new Tree<T>(topNodes.Select(MutableNode<T>.ToNode).ToArray());
+        return new Tree(treeNodes.Select(MutableNode.ToNode).ToArray());
     }
 
-    private static bool ExtendInnerNodesOnce<T>(MutableNode<T> headNode, IReadOnlyCollection<MutableNode<T>> topNodes)
-        where T : notnull
+    private static MutableNode[] CreateTopNodes(IReadOnlyDictionary<Type, IEnumerable<Type>> dependencyTable) =>
+        dependencyTable.Select(
+                entry =>
+                    new MutableNode(entry.Key) { Nodes = entry.Value.Select(type => new MutableNode(type)).ToList(), })
+            .ToArray();
+
+    private static bool TryExtendInnerNodes(MutableNode headNode, IEnumerable<MutableNode> topNodes)
     {
         if (headNode.Nodes.Any())
         {
-            return headNode.Nodes.Select(innerNode => ExtendInnerNodesOnce(innerNode, topNodes))
-                .Where(result => result)
-                .Any();
+            return headNode.Nodes.Select(innerNode => TryExtendInnerNodes(innerNode, topNodes))
+                .Aggregate(false, (left, right) => left || right);
         }
 
-        var info = headNode.Value;
-        var matchingTopNode = topNodes.Where(topNode => topNode.Value.Equals(info)).Single();
+        var type = headNode.ThinkerType;
+        var matchingTopNode = topNodes.Where(topNode => topNode.ThinkerType == type).Single();
 
         foreach (var innerNode in matchingTopNode.Nodes)
         {
@@ -49,55 +61,26 @@ internal static class Tree
         return headNode.Nodes.Any();
     }
 
-    private static bool TryFindFirstNodeBeforeNodeWithSameInfo<T>(MutableNode<T> headNode, out MutableNode<T> result)
-        where T : notnull
+    private static bool TryFindFirstNodeBeforeNodeWithSameInfo(
+        MutableNode headNode,
+        out MutableNode result,
+        MutableNode? currentNode = null
+    )
     {
-        static bool TryFindFirstNodeBeforeNodeWithSameInfoInner(
-            MutableNode<T> headNode,
-            out MutableNode<T> result,
-            MutableNode<T>? currentNode = null
-        )
+        currentNode ??= headNode;
+        foreach (var innerNode in currentNode.Value.Nodes)
         {
-            currentNode ??= headNode;
-            foreach (var innerNode in currentNode.Value.Nodes)
+            if (innerNode.ThinkerType.Equals(headNode.ThinkerType))
             {
-                if (innerNode.Value.Equals(headNode.Value))
-                {
-                    result = currentNode.Value;
-                    return true;
-                }
-                if (TryFindFirstNodeBeforeNodeWithSameInfoInner(headNode, out result, innerNode))
-                {
-                    return true;
-                }
+                result = currentNode.Value;
+                return true;
             }
-            result = default!;
-            return false;
-        }
-
-        return TryFindFirstNodeBeforeNodeWithSameInfoInner(headNode, out result);
-    }
-
-    private static MutableNode<T>[] CreateTopNodes<T>(IReadOnlyDictionary<T, IReadOnlyCollection<T>> dependencyTable)
-        where T : notnull
-    {
-        Dictionary<T, MutableNode<T>> topNodes = new();
-        foreach (var (info, dependencies) in dependencyTable)
-        {
-            topNodes.TryAdd(
-                info,
-                new MutableNode<T>(info)
-                {
-                    Nodes = dependencies.Select(dependency => new MutableNode<T>(dependency)).ToList(),
-                });
-        }
-        foreach (var (_, dependencies) in dependencyTable)
-        {
-            foreach (var dependency in dependencies)
+            if (TryFindFirstNodeBeforeNodeWithSameInfo(headNode, out result, innerNode))
             {
-                topNodes.TryAdd(dependency, new MutableNode<T>(dependency));
+                return true;
             }
         }
-        return topNodes.Values.ToArray();
+        result = default!;
+        return false;
     }
 }

@@ -1,20 +1,21 @@
 ﻿using System;
 
 namespace Alitz.Thinking.Dependencies;
-public class CircularDependencyException<T> : Exception
+public class CircularDependencyException : Exception
 {
-    public CircularDependencyException(T dependent, T dependency)
+    public CircularDependencyException(Type dependentThinkerType, Type dependencyThinkerType)
     {
-        Dependent = dependent;
-        Dependency = dependency;
+        DependentThinkerType = dependentThinkerType;
+        DependencyThinkerType = dependencyThinkerType;
     }
 
-    public T Dependent { get; }
-    public T Dependency { get; }
+    public Type DependentThinkerType { get; }
+    public Type DependencyThinkerType { get; }
 
     /// <inheritdoc />
     public override string Message =>
-        "Circular dependency detected between dependent "
-        + Dependent.GetType().FullName
-        + $"and dependency {Dependency.GetType().FullName}";
+        $"Circular dependency detected between dependent {nameof(Thinker)} "
+        + DependentThinkerType.FullName
+        + $" and its dependency {nameof(Thinker)} "
+        + DependencyThinkerType.FullName;
 }
