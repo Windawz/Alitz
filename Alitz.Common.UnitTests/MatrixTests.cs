@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Linq;
+
+using Alitz.Collections;
 
 namespace Alitz.UnitTests;
 public static class MatrixTests
@@ -45,28 +46,11 @@ public static class MatrixTests
                 });
     }
 
-    public abstract class GenericReferenceTests<T> : GenericTests<T> where T : class
-    {
-        protected GenericReferenceTests(T fillValue)
-        {
-            _fillValue = fillValue;
-        }
-
-        private readonly T _fillValue;
-
-        [Fact]
-        public void DoesNotDeepCloneFillValue() =>
-            Assert.True(
-                new Matrix<T>(20, 20, _fillValue).Elements.Chunk(2)
-                    .All(chunk => chunk.Length < 2 || ReferenceEquals(chunk[0], chunk[1])));
-    }
+    public abstract class GenericReferenceTests<T> : GenericTests<T> where T : class { }
 
     public class CharTests : GenericTests<char> { }
 
     public class Int32Tests : GenericTests<int> { }
 
-    public class StringTests : GenericReferenceTests<string>
-    {
-        public StringTests() : base("Hello world") { }
-    }
+    public class StringTests : GenericReferenceTests<string> { }
 }

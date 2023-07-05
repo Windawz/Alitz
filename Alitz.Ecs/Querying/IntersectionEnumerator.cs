@@ -8,14 +8,14 @@ using Alitz.Collections;
 namespace Alitz.Querying;
 internal readonly struct IntersectionEnumerator : IEnumerator<Entity>
 {
-    public IntersectionEnumerator(IDictionary<Entity> dictionary, params IDictionary<Entity>[] dictionaries)
+    public IntersectionEnumerator(IColumn column, params IColumn[] columns)
     {
-        var shortestDictionary = Enumerable.Repeat(dictionary, 1).Concat(dictionaries).MinBy(dict => dict.Count)!;
+        var shortestDictionary = Enumerable.Repeat(column, 1).Concat(columns).MinBy(dict => dict.Count)!;
 
-        _shortestEnumerator = shortestDictionary.Keys.GetEnumerator();
+        _shortestEnumerator = shortestDictionary.Entities.GetEnumerator();
 
-        _intersectionPredicate = Enumerable.Repeat(dictionary, 1)
-            .Concat(dictionaries)
+        _intersectionPredicate = Enumerable.Repeat(column, 1)
+            .Concat(columns)
             .Where(dict => !ReferenceEquals(dict, shortestDictionary))
             .Select(dict => (Predicate<Entity>)dict.Contains)
             .Aggregate((left, right) => entity => left(entity) && right(entity));

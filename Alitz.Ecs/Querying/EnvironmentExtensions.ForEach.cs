@@ -28,7 +28,7 @@ public static partial class EnvironmentExtensions
         where TComponent1 : struct
     {
         var components1 = environment.Components<TComponent1>();
-        foreach (var entity in components1.Keys)
+        foreach (var entity in components1.Entities)
         {
             action(entity, ref components1.GetByRef(entity));
         }

@@ -4,31 +4,20 @@ using System.Collections.Generic;
 using Alitz.Collections;
 
 namespace Alitz;
-public partial class Environment
+public class Environment : IEnvironment
 {
-    private readonly Dictionary<Type, IDictionary<Entity>> _dictionaries = new();
-    private readonly EntitySpace _entitySpace = new();
+    private readonly IDictionary<Type, IColumn> _columns = new Dictionary<Type, IColumn>();
 
-    public IEnumerable<Entity> Entities =>
-        _entitySpace.Entities;
+    public IEntityManager EntityManager { get; } = new EntityManager(new EntityPool());
 
-    public Entity Create() =>
-        _entitySpace.Create();
-
-    public bool Exists(Entity entity) =>
-        _entitySpace.Exists(entity);
-
-    public void Destroy(Entity entity) =>
-        _entitySpace.Destroy(entity);
-
-    public ComponentDictionary<TComponent> Components<TComponent>() where TComponent : struct
+    public IColumn<TComponent> Components<TComponent>() where TComponent : struct
     {
         var componentType = typeof(TComponent);
-        if (!_dictionaries.ContainsKey(componentType))
+        if (!_columns.ContainsKey(componentType))
         {
-            var dictionary = new ComponentDictionary<TComponent>(_entitySpace);
-            _dictionaries.Add(componentType, dictionary);
+            var column = new EntityAssociatedColumn<TComponent>(new SparseColumn<TComponent>(), EntityManager);
+            _columns.Add(componentType, column);
         }
-        return (ComponentDictionary<TComponent>)_dictionaries[componentType];
+        return (IColumn<TComponent>)_columns[componentType];
     }
 }

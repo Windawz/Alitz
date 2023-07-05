@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Reflection;
 
 using Xunit.Sdk;
 
-namespace Alitz.UnitTests;
+namespace Alitz;
 public class RandomInt32DataAttribute : DataAttribute
 {
     public RandomInt32DataAttribute()
