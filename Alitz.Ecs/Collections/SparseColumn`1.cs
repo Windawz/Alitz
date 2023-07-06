@@ -83,7 +83,9 @@ public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDi
     }
 
     public bool Contains(Entity entity) =>
-        _sparse[entity.Index] != SparseFillValue && _denseEntities[_sparse[entity.Index]].Equals(entity);
+        entity.Index < _sparse.Length
+        && _sparse[entity.Index] != SparseFillValue
+        && _denseEntities[_sparse[entity.Index]].Equals(entity);
 
     public bool Remove(Entity entity)
     {
@@ -104,6 +106,7 @@ public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDi
         Array.Clear(_sparse);
         Array.Clear(_denseEntities);
         Array.Clear(_denseComponents);
+        Count = 0;
     }
 
     public bool TryGet(Entity entity, out TComponent component)
