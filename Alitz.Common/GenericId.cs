@@ -43,12 +43,7 @@ public readonly struct GenericId : IId<GenericId>
         Index == other.Index && Version == other.Version;
 
     public override bool Equals(object? obj) =>
-        // Since this will be used as a "base" type
-        // through composition, there's no way to check
-        // equality from here. Otherwise it may return true
-        // on two unrelated id types.
-        // It's a sin, but for now I don't see a better option.
-        throw new NotSupportedException();
+        obj is GenericId id && id.Equals(this);
 
     public override int GetHashCode() =>
         _data.GetHashCode();

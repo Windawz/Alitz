@@ -72,14 +72,4 @@ public class EntityTests
         Assert.False(!lhs.Equals(rhs1));
         Assert.True(!lhs.Equals(rhs2));
     }
-
-    [Fact]
-    public void ObjectEqualityNotSupported()
-    {
-        var lhs = new Entity(42);
-        var rhs = new Entity(42);
-        // ReSharper disable once SuspiciousTypeConversion.Global
-        Assert.Throws<NotSupportedException>(() => lhs.Equals("Hello world!"));
-        Assert.Throws<NotSupportedException>(() => lhs.Equals((object)rhs));
-    }
 }
