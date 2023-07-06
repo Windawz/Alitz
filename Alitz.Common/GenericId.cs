@@ -73,15 +73,4 @@ public readonly struct GenericId : IId<GenericId>
         var span = new ReadOnlySpan<byte>(&longValue, sizeof(long));
         return BitConverter.ToUInt64(span);
     }
-
-    public class Factory : IIdFactory<GenericId>
-    {
-        public int MinIndex { get; } = GenericId.MinIndex;
-        public int MinVersion { get; } = GenericId.MinVersion;
-        public int MaxIndex { get; } = GenericId.MaxIndex;
-        public int MaxVersion { get; } = GenericId.MaxVersion;
-
-        public GenericId Create(int index, int version) =>
-            new(index, version);
-    }
 }

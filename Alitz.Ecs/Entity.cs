@@ -38,6 +38,4 @@ public readonly struct Entity : IId<Entity>
 
     public bool Equals(Entity other) =>
         _genericId.Equals(other._genericId);
-
-    public class Factory : GenericId.Factory { }
 }
