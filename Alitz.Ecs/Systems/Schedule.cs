@@ -3,23 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-using Alitz.Thinking.Dependencies;
+using Alitz.Systems.Dependencies;
 
-namespace Alitz.Thinking;
+namespace Alitz.Systems;
 internal static class Schedule
 {
-    public static IEnumerable<Type> Create(Environment environment, IEnumerable<Type> thinkerTypes) =>
+    public static IEnumerable<Type> Create(IEnvironment environment, IEnumerable<Type> thinkerTypes) =>
         MakeThinkerSchedule(
             Tree.Build(
                 thinkerTypes.Distinct()
                     .ToDictionary(
                         type => type,
                         type => type.GetCustomAttributes<DependsOnAttribute>()
-                            .Select(attribute => attribute.ThinkerType)
+                            .Select(attribute => attribute.SystemType)
                             .Distinct())));
 
-    public static IEnumerable<Thinker> Instantiate(IEnumerable<Type> schedule, Environment environment) =>
-        schedule.Select(type => Activator.CreateInstance(type, environment)!).Cast<Thinker>();
+    public static IEnumerable<ISystem> Instantiate(IEnumerable<Type> schedule, IEnvironment environment) =>
+        schedule.Select(type => Activator.CreateInstance(type)!).Cast<ISystem>();
 
     private static List<Type> MakeThinkerSchedule(Tree tree)
     {
@@ -40,9 +40,9 @@ internal static class Schedule
             {
                 Visit(nestedNode, types, tree);
             }
-            if (!types.Contains(node.ThinkerType))
+            if (!types.Contains(node.SystemType))
             {
-                types.Add(node.ThinkerType);
+                types.Add(node.SystemType);
             }
         }
     }

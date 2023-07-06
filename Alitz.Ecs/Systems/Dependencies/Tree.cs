@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Alitz.Thinking.Dependencies;
+namespace Alitz.Systems.Dependencies;
 internal class Tree
 {
     private Tree(IReadOnlyList<Node> nodes)
@@ -27,7 +27,7 @@ internal class Tree
                 }
                 if (TryFindFirstNodeBeforeNodeWithSameInfo(treeNode, out var dependentNode))
                 {
-                    throw new CircularDependencyException(dependentNode.ThinkerType, treeNode.ThinkerType);
+                    throw new CircularDependencyException(dependentNode.SystemType, treeNode.SystemType);
                 }
             }
         }
@@ -50,8 +50,8 @@ internal class Tree
                 .Aggregate(false, (left, right) => left || right);
         }
 
-        var type = headNode.ThinkerType;
-        var matchingTopNode = topNodes.Where(topNode => topNode.ThinkerType == type).Single();
+        var type = headNode.SystemType;
+        var matchingTopNode = topNodes.Where(topNode => topNode.SystemType == type).Single();
 
         foreach (var innerNode in matchingTopNode.Nodes)
         {
@@ -70,7 +70,7 @@ internal class Tree
         currentNode ??= headNode;
         foreach (var innerNode in currentNode.Value.Nodes)
         {
-            if (innerNode.ThinkerType.Equals(headNode.ThinkerType))
+            if (innerNode.SystemType.Equals(headNode.SystemType))
             {
                 result = currentNode.Value;
                 return true;
