@@ -27,7 +27,7 @@ public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDi
             {
                 throw new ArgumentOutOfRangeException(nameof(entity));
             }
-            return _denseComponents[_sparse[entity.Id]];
+            return _denseComponents[_sparse[entity.Index]];
         }
         set
         {
@@ -37,7 +37,7 @@ public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDi
             }
             else
             {
-                _denseComponents[_sparse[entity.Id]] = value;
+                _denseComponents[_sparse[entity.Index]] = value;
             }
         }
     }
@@ -73,17 +73,17 @@ public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDi
             return false;
         }
         Count += 1;
-        Grow(ref _sparse, entity.Id + 1);
+        Grow(ref _sparse, entity.Index + 1);
         Grow(ref _denseEntities, Count);
         Grow(ref _denseComponents, Count);
-        _sparse[entity.Id] = Count - 1;
+        _sparse[entity.Index] = Count - 1;
         _denseEntities[Count - 1] = entity;
         _denseComponents[Count - 1] = component;
         return true;
     }
 
     public bool Contains(Entity entity) =>
-        _sparse[entity.Id] != SparseFillValue && _denseEntities[_sparse[entity.Id]] == entity;
+        _sparse[entity.Index] != SparseFillValue && _denseEntities[_sparse[entity.Index]].Equals(entity);
 
     public bool Remove(Entity entity)
     {
@@ -92,8 +92,8 @@ public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDi
             return false;
         }
         Count -= 1;
-        int denseIndex = _sparse[entity.Id];
-        _sparse[entity.Id] = SparseFillValue;
+        int denseIndex = _sparse[entity.Index];
+        _sparse[entity.Index] = SparseFillValue;
         _denseEntities[denseIndex] = _denseEntities[Count];
         _denseComponents[denseIndex] = _denseComponents[Count];
         return true;
@@ -113,7 +113,7 @@ public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDi
             component = default!;
             return false;
         }
-        component = _denseComponents[_sparse[entity.Id]];
+        component = _denseComponents[_sparse[entity.Index]];
         return true;
     }
 
@@ -123,7 +123,7 @@ public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDi
         {
             return false;
         }
-        _denseComponents[_sparse[entity.Id]] = component;
+        _denseComponents[_sparse[entity.Index]] = component;
         return true;
     }
 
@@ -133,7 +133,7 @@ public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDi
         {
             throw new ArgumentOutOfRangeException(nameof(entity));
         }
-        return ref _denseComponents[_sparse[entity.Id]];
+        return ref _denseComponents[_sparse[entity.Index]];
     }
 
     private static void Grow<T>(ref T[] array, int length)

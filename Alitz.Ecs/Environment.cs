@@ -8,7 +8,7 @@ public class Environment : IEnvironment
 {
     private readonly IDictionary<Type, IColumn> _columns = new Dictionary<Type, IColumn>();
 
-    public IEntityManager EntityManager { get; } = new EntityManager(new EntityPool());
+    public IEntityManager EntityManager { get; } = new EntityManager(new IdPool<Entity>());
 
     public IColumn<TComponent> Components<TComponent>() where TComponent : struct
     {

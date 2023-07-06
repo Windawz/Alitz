@@ -9,11 +9,11 @@ public class SparseColumnTests
     public SparseColumnTests()
     {
         _column = new SparseColumn<Component>();
-        _entityPool = new EntityPool();
+        _entityPool = new IdPool<Entity>();
     }
 
     private readonly SparseColumn<Component> _column;
-    private readonly EntityPool _entityPool;
+    private readonly IPool<Entity> _entityPool;
 
     [Fact]
     public void EmptyCtor_EmptyOnCreation()
@@ -150,7 +150,8 @@ public class SparseColumnTests
         var emptyColumn = new SparseColumn<Component>();
         Assert.Equal(emptyColumn.Count, _column.Count);
         Assert.True(
-            _column.Entities.OrderBy(entity => entity.Id).SequenceEqual(emptyColumn.Entities.OrderBy(entity => entity)));
+            _column.Entities.OrderBy(entity => entity.Index)
+                .SequenceEqual(emptyColumn.Entities.OrderBy(entity => entity)));
         Assert.True(
             _column.Components.OrderBy(component => component.Value)
                 .SequenceEqual(emptyColumn.Components.OrderBy(component => component.Value)));
