@@ -99,7 +99,9 @@ public class ReflectingIdFactory<TId> : IIdFactory<TId> where TId : struct, IId<
 
     private static Func<int, int, TId> MakeFactoryMethod()
     {
-        var constructor = typeof(TId).GetConstructor(BindingFlags.Public, new[] { typeof(int), typeof(int), });
+        var constructor = typeof(TId).GetConstructor(
+            BindingFlags.Public | BindingFlags.Instance,
+            new[] { typeof(int), typeof(int), });
         if (constructor is null)
         {
             throw new InvalidOperationException($"No suitable constructor found on {typeof(TId)}");
