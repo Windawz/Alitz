@@ -6,7 +6,8 @@ public abstract class Pool<T> : IPool<T>
 {
     private readonly HashSet<T> _occupied = new();
     private readonly Stack<T> _scheduledForReuse = new();
-    private T? _lastFetched;
+    private bool _isLastFetchedPresent;
+    private T _lastFetched = default!;
 
     public IReadOnlyCollection<T> Occupied =>
         _occupied;
@@ -21,14 +22,15 @@ public abstract class Pool<T> : IPool<T>
         }
         else
         {
-            if (_lastFetched is null && _occupied.Count != 0)
+            if (!_isLastFetchedPresent && _occupied.Count != 0)
             {
                 _lastFetched = _occupied.Last();
+                _isLastFetchedPresent = true;
             }
 
-            if (_lastFetched is not null)
+            if (_isLastFetchedPresent)
             {
-                value = Next((T)_lastFetched);
+                value = Next(_lastFetched);
             }
             else
             {
