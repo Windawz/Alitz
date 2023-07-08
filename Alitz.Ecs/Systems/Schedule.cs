@@ -6,29 +6,48 @@ using System.Reflection;
 using Alitz.Systems.Dependencies;
 
 namespace Alitz.Systems;
-internal static class Schedule
+public class Schedule
 {
-    public static IEnumerable<Type> Create(IEnvironment environment, IEnumerable<Type> thinkerTypes) =>
-        MakeThinkerSchedule(
-            Tree.Build(
-                thinkerTypes.Distinct()
-                    .ToDictionary(
-                        type => type,
-                        type => type.GetCustomAttributes<DependsOnAttribute>()
-                            .Select(attribute => attribute.SystemType)
-                            .Distinct())));
-
-    public static IEnumerable<ISystem> Instantiate(IEnumerable<Type> schedule, IEnvironment environment) =>
-        schedule.Select(type => Activator.CreateInstance(type)!).Cast<ISystem>();
-
-    private static List<Type> MakeThinkerSchedule(Tree tree)
+    public Schedule(Type[] systemTypes)
     {
-        List<Type> types = new(tree.Nodes.Count);
-        foreach (var node in tree.Nodes)
+        foreach (var type in systemTypes)
         {
-            Visit(node, types, tree);
+            if (!type.IsAssignableTo(typeof(ISystem)))
+            {
+                throw new ArgumentException($"Type {type} is not a system", nameof(systemTypes));
+            }
         }
-        return types;
+        _systems = Instantiate(MakeOrderedSystemTypeArray(MakeDependencyTree(systemTypes)));
+    }
+
+    private readonly ISystem[] _systems;
+
+    public void Update(IEnvironment environment, double delta)
+    {
+        for (int i = 0; i < _systems.Length; i++)
+        {
+            _systems[i].Update(environment, delta);
+        }
+    }
+
+    private static ISystem[] Instantiate(Type[] systemTypes)
+    {
+        var systems = new ISystem[systemTypes.Length];
+        for (int i = 0; i < systemTypes.Length; i++)
+        {
+            systems[i] = (ISystem)Activator.CreateInstance(systemTypes[i])!;
+        }
+        return systems;
+    }
+
+    private static Type[] MakeOrderedSystemTypeArray(Tree dependencyTree)
+    {
+        List<Type> types = new(dependencyTree.Nodes.Count);
+        foreach (var node in dependencyTree.Nodes)
+        {
+            Visit(node, types, dependencyTree);
+        }
+        return types.ToArray();
 
         static void Visit(Node node, List<Type> types, Tree tree)
         {
@@ -46,4 +65,13 @@ internal static class Schedule
             }
         }
     }
+
+    private static Tree MakeDependencyTree(IEnumerable<Type> systemTypes) =>
+        Tree.Build(
+            systemTypes.Distinct()
+                .ToDictionary(
+                    type => type,
+                    type => type.GetCustomAttributes<DependsOnAttribute>()
+                        .Select(attribute => attribute.SystemType)
+                        .Distinct()));
 }
