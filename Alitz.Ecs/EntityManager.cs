@@ -12,7 +12,7 @@ public class EntityManager : IEntityManager
 
     private readonly IPool<Entity> _entityPool;
 
-    public IEnumerable<Entity> Entities =>
+    public IReadOnlyCollection<Entity> Entities =>
         _entityPool.Occupied;
 
     public Entity Create() =>
