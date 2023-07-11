@@ -41,6 +41,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Alitz.Common.UnitTests\Alitz.Common.UnitTests.csproj"/>
         <ProjectReference Include="..\Alitz.Ecs\Alitz.Ecs.csproj"/>
         <ProjectReference Include="..\Alitz.UnitTests.Utilities\Alitz.UnitTests.Utilities.csproj"/>
     </ItemGroup>
