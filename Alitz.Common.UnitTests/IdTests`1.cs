@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace Alitz.UnitTests;
-public abstract class IdTests<TId> : IdConstructorAndLimitTests<TId> where TId : struct, IId<TId>
+public abstract class IdTests<TId> : IdPreparationTests<TId> where TId : struct, IId<TId>
 {
     public IdTests()
     {
@@ -19,25 +19,34 @@ public abstract class IdTests<TId> : IdConstructorAndLimitTests<TId> where TId :
     private readonly int _minVersion;
 
     [Fact]
-    public void MaxValuesAreGreaterThanMinValues()
+    public void Limits_MaxValuesAreGreaterThanMinValues()
     {
         Assert.True(_maxIndex > _minIndex);
         Assert.True(_maxVersion > _minVersion);
     }
 
     [Fact]
-    public void IdIsConsistent() =>
+    public void Limits_AreNotNegative()
+    {
+        Assert.True(_minIndex > 0);
+        Assert.True(_minVersion > 0);
+        Assert.True(_maxIndex > 0);
+        Assert.True(_maxVersion > 0);
+    }
+
+    [Fact]
+    public void Index_EqualToConstructorArgument() =>
         Assert.Equal(42, _constructor(42, _minVersion).Index);
 
     [Fact]
-    public void VersionIsConsistent()
+    public void Version_EqualToConstructorArgument()
     {
         var id = _constructor(_minIndex, 42);
         Assert.Equal(42, id.Version);
     }
 
     [Fact]
-    public void CannotExceedMaxAndMinValuesOnCreation()
+    public void Limits_Constructor_ThrowsIfLimitsAreExceeded()
     {
         Assert.ThrowsAny<ArgumentOutOfRangeException>(() => _ = _constructor(_maxIndex + 1, 42));
         Assert.ThrowsAny<ArgumentOutOfRangeException>(() => _ = _constructor(42, _maxVersion + 1));
@@ -46,31 +55,24 @@ public abstract class IdTests<TId> : IdConstructorAndLimitTests<TId> where TId :
     }
 
     [Fact]
-    public void CreatingWithMaxValuesDoesNotThrow()
+    public void Limits_Constructor_DoesNotFailWhenCalledWithMinAndMaxValues()
     {
-        _ = _constructor(_maxIndex, 42);
-        _ = _constructor(42, _maxVersion);
+        _constructor(_minIndex, 42);
+        _constructor(_maxIndex, 42);
+        _constructor(42, _minVersion);
+        _constructor(42, _maxVersion);
+        _constructor(_minIndex, _minVersion);
+        _constructor(_minIndex, _maxVersion);
+        _constructor(_maxIndex, _minVersion);
+        _constructor(_maxIndex, _maxVersion);
     }
 
     [Fact]
-    public void EqualityWorks()
+    public void Equals_TrueIfAndOnlyIfBothIndicesAndVersionsAreEqual()
     {
-        var lhs = _constructor(42, _minVersion);
-        // ReSharper disable once EqualExpressionComparison
-        Assert.True(lhs.Equals(lhs));
-        var rhs1 = _constructor(42, _minVersion);
-        var rhs2 = _constructor(43, _minVersion);
-        Assert.True(lhs.Equals(rhs1));
-        Assert.False(lhs.Equals(rhs2));
-    }
-
-    [Fact]
-    public void InequalityWorks()
-    {
-        var lhs = _constructor(42, _minVersion);
-        var rhs1 = _constructor(42, _minVersion);
-        var rhs2 = _constructor(43, _minVersion);
-        Assert.False(!lhs.Equals(rhs1));
-        Assert.True(!lhs.Equals(rhs2));
+        Assert.NotEqual(_constructor(42, 42), _constructor(42, 63));
+        Assert.NotEqual(_constructor(42, 42), _constructor(63, 42));
+        Assert.NotEqual(_constructor(42, 42), _constructor(63, 63));
+        Assert.Equal(_constructor(42, 42), _constructor(42, 42));
     }
 }

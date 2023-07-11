@@ -1,5 +1,5 @@
 ﻿namespace Alitz.UnitTests;
-public abstract class IdConstructorAndLimitTests<TId> where TId : struct, IId<TId>
+public abstract class IdPreparationTests<TId> where TId : struct, IId<TId>
 {
     [Fact]
     public void Constructor_Present() =>
