@@ -9,11 +9,11 @@ public class SparseColumnTests
     public SparseColumnTests()
     {
         _column = new SparseColumn<Component>();
-        _entityPool = new IdPool<Entity>();
+        _entityFactory = new EntityFactory();
     }
 
     private readonly SparseColumn<Component> _column;
-    private readonly IPool<Entity> _entityPool;
+    private readonly EntityFactory _entityFactory;
 
     [Fact]
     public void EmptyCtor_EmptyOnCreation()
@@ -25,12 +25,12 @@ public class SparseColumnTests
 
     [Fact]
     public void Indexer_Get_ThrowsIfKeyNotFound() =>
-        Assert.Throws<ArgumentOutOfRangeException>(() => _column[GetEntity()]);
+        Assert.Throws<ArgumentOutOfRangeException>(() => _column[_entityFactory.Create()]);
 
     [Fact]
     public void Indexer_Get_YieldsProperValueForKey()
     {
-        var entity = GetEntity();
+        var entity = _entityFactory.Create();
         Component value = new(42);
         _column.TryAdd(entity, value);
         Assert.Equal(value, _column[entity]);
@@ -39,7 +39,7 @@ public class SparseColumnTests
     [Fact]
     public void Indexer_Set_CreatesEntryIfKeyNotFound()
     {
-        var entity = GetEntity();
+        var entity = _entityFactory.Create();
         Component value = new(42);
         _column[entity] = value;
         Assert.True(_column.Contains(entity));
@@ -49,7 +49,7 @@ public class SparseColumnTests
     [Fact]
     public void Indexer_Set_UpdatesEntryIfExists()
     {
-        var entity = GetEntity();
+        var entity = _entityFactory.Create();
         _column.TryAdd(entity, new Component(42));
         var newValue = new Component(63);
         _column[entity] = newValue;
@@ -59,14 +59,14 @@ public class SparseColumnTests
     [Fact]
     public void TryAdd_IncreasesCount()
     {
-        _column.TryAdd(GetEntity(), new Component(42));
+        _column.TryAdd(_entityFactory.Create(), new Component(42));
         Assert.Single(_column);
     }
 
     [Fact]
     public void TryAdd_EntriesWithIdenticalKeysDisallowed()
     {
-        var entity = GetEntity();
+        var entity = _entityFactory.Create();
         var value1 = new Component(42);
         var value2 = new Component(63);
         Assert.True(_column.TryAdd(entity, value1));
@@ -76,12 +76,12 @@ public class SparseColumnTests
 
     [Fact]
     public void TryAdd_TrueWhenNotFound() =>
-        Assert.True(_column.TryAdd(GetEntity(), new Component(42)));
+        Assert.True(_column.TryAdd(_entityFactory.Create(), new Component(42)));
 
     [Fact]
     public void TryAdd_FalseWhenExists()
     {
-        var entity = GetEntity();
+        var entity = _entityFactory.Create();
         var value = new Component(42);
         _column.TryAdd(entity, value);
         Assert.False(_column.TryAdd(entity, value));
@@ -90,19 +90,19 @@ public class SparseColumnTests
     [Fact]
     public void Contains_TrueWhenExists()
     {
-        var entity = GetEntity();
+        var entity = _entityFactory.Create();
         _column.TryAdd(entity, new Component(42));
         Assert.True(_column.Contains(entity));
     }
 
     [Fact]
     public void Contains_FalseWhenNotFound() =>
-        Assert.False(_column.Contains(GetEntity()));
+        Assert.False(_column.Contains(_entityFactory.Create()));
 
     [Fact]
     public void Contains_FalseAfterRemoval()
     {
-        var entity = GetEntity();
+        var entity = _entityFactory.Create();
         _column.TryAdd(entity, new Component(42));
         _column.Remove(entity);
         Assert.False(_column.Contains(entity));
@@ -111,7 +111,7 @@ public class SparseColumnTests
     [Fact]
     public void Remove_DecreasesCount()
     {
-        var entity = GetEntity();
+        var entity = _entityFactory.Create();
         _column.TryAdd(entity, new Component(42));
         Assert.Single(_column);
         _column.Remove(entity);
@@ -121,19 +121,19 @@ public class SparseColumnTests
     [Fact]
     public void Remove_TrueIfExisted()
     {
-        var entity = GetEntity();
+        var entity = _entityFactory.Create();
         _column.TryAdd(entity, new Component());
         Assert.True(_column.Remove(entity));
     }
 
     [Fact]
     public void Remove_FalseIfDidNotFind() =>
-        Assert.False(_column.Remove(GetEntity()));
+        Assert.False(_column.Remove(_entityFactory.Create()));
 
     [Fact]
     public void Remove_CannotGetAfter()
     {
-        var entity = GetEntity();
+        var entity = _entityFactory.Create();
         _column.TryAdd(entity, new Component(42));
         _column.Remove(entity);
         Assert.Throws<ArgumentOutOfRangeException>(() => _ = _column[entity]);
@@ -144,7 +144,7 @@ public class SparseColumnTests
     {
         foreach (int i in Enumerable.Range(0, 5))
         {
-            _column.TryAdd(GetEntity(), new Component(i));
+            _column.TryAdd(_entityFactory.Create(), new Component(i));
         }
         _column.Clear();
         var emptyColumn = new SparseColumn<Component>();
@@ -160,19 +160,19 @@ public class SparseColumnTests
     [Fact]
     public void TryGet_TrueIfExists()
     {
-        var entity = GetEntity();
+        var entity = _entityFactory.Create();
         _column.TryAdd(entity, new Component(42));
         Assert.True(_column.TryGet(entity, out _));
     }
 
     [Fact]
     public void TryGet_FalseIfNotFound() =>
-        Assert.False(_column.TryGet(GetEntity(), out _));
+        Assert.False(_column.TryGet(_entityFactory.Create(), out _));
 
     [Fact]
     public void TryGet_ResultEqualsJustAdded()
     {
-        var entity = GetEntity();
+        var entity = _entityFactory.Create();
         var component = new Component(42);
         _column.TryAdd(entity, component);
         _column.TryGet(entity, out var result);
@@ -182,19 +182,19 @@ public class SparseColumnTests
     [Fact]
     public void TrySet_TrueIfExists()
     {
-        var entity = GetEntity();
+        var entity = _entityFactory.Create();
         _column.TryAdd(entity, new Component(42));
         Assert.True(_column.TrySet(entity, new Component(63)));
     }
 
     [Fact]
     public void TrySet_FalseIfNotFound() =>
-        Assert.False(_column.TrySet(GetEntity(), new Component(42)));
+        Assert.False(_column.TrySet(_entityFactory.Create(), new Component(42)));
 
     [Fact]
     public void TrySet_ValueChangesIfTrue()
     {
-        var entity = GetEntity();
+        var entity = _entityFactory.Create();
         _column.TryAdd(entity, new Component(42));
         var newComponent = new Component(63);
         Assert.True(_column.TrySet(entity, newComponent));
@@ -203,20 +203,29 @@ public class SparseColumnTests
 
     [Fact]
     public void GetByRef_ThrowsIfNotFound() =>
-        Assert.Throws<ArgumentOutOfRangeException>(() => _column.GetByRef(GetEntity()));
+        Assert.Throws<ArgumentOutOfRangeException>(() => _column.GetByRef(_entityFactory.Create()));
 
     [Fact]
     public void GetByRef_MutableStructChanges()
     {
-        var entity = GetEntity();
+        var entity = _entityFactory.Create();
         _column.TryAdd(entity, new Component(42));
         ref var component = ref _column.GetByRef(entity);
         component.Value = 63;
         Assert.Equal(63, _column[entity].Value);
     }
 
-    private Entity GetEntity() =>
-        _entityPool.Fetch();
-
     private record struct Component(float Value);
+
+    private class EntityFactory
+    {
+        private Entity current = new(Entity.MinIndex, Entity.MinVersion);
+
+        public Entity Create()
+        {
+            var result = current;
+            current = new Entity(current.Index + 1, current.Version);
+            return result;
+        }
+    }
 }
