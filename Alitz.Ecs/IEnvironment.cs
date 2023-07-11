@@ -3,7 +3,7 @@
 namespace Alitz;
 public interface IEnvironment
 {
-    IEntityManager EntityManager { get; }
+    IPool<Entity> EntityPool { get; }
 
     IColumn<TComponent> Components<TComponent>() where TComponent : struct;
 }

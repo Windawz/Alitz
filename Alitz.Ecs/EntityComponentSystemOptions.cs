@@ -7,9 +7,11 @@ namespace Alitz;
 public class EntityComponentSystemOptions
 {
     public Func<IDictionary<Type, IColumn>> ColumnTableFactory { get; init; } = () => new Dictionary<Type, IColumn>();
+    public IColumnFactory ColumnFactory { get; init; } = new DefaultColumnFactory();
 
-    public Func<IPool<Entity>> EntityPoolFactory { get; init; } = () =>
-        new IdPool<Entity>(new DiscoveringIdFactory<Entity>());
-
-    public Func<IPool<Entity>, IEntityManager> EntityManagerFactory { get; init; } = pool => new EntityManager(pool);
+    private class DefaultColumnFactory : IColumnFactory
+    {
+        public IColumn<TComponent> Create<TComponent>() where TComponent : struct =>
+            new SparseColumn<TComponent>();
+    }
 }

@@ -4,14 +4,14 @@ using System.Collections.Generic;
 namespace Alitz.Collections;
 public class EntityAssociatedColumn<TComponent> : IColumn<TComponent> where TComponent : struct
 {
-    public EntityAssociatedColumn(IColumn<TComponent> column, IEntityManager entityEntityManager)
+    public EntityAssociatedColumn(IColumn<TComponent> column, IPool<Entity> entityPool)
     {
         _column = column;
-        _entityManager = entityEntityManager;
+        _entityPool = entityPool;
     }
 
     private readonly IColumn<TComponent> _column;
-    private readonly IEntityManager _entityManager;
+    private readonly IPool<Entity> _entityPool;
 
     public Type ComponentType =>
         _column.ComponentType;
@@ -80,7 +80,7 @@ public class EntityAssociatedColumn<TComponent> : IColumn<TComponent> where TCom
 
     private void ThrowIfDoesNotExist(Entity entity)
     {
-        if (!_entityManager.Exists(entity))
+        if (!_entityPool.IsOccupied(entity))
         {
             throw new InvalidOperationException($"Entity {entity} does not exist");
         }
