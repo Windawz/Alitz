@@ -6,9 +6,9 @@ public interface IColumn
 {
     Type ComponentType { get; }
     int Count { get; }
-    IEnumerable<Entity> Entities { get; }
+    IEnumerable<Id> Entities { get; }
 
-    bool Contains(Entity entity);
-    bool Remove(Entity entity);
+    bool Contains(Id entity);
+    bool Remove(Id entity);
     void Clear();
 }

@@ -5,5 +5,5 @@ namespace Alitz.Collections;
 public partial class SparseColumn<TComponent>
 {
     IEnumerator IEnumerable.GetEnumerator() =>
-        ((IEnumerable<KeyValuePair<Entity, TComponent>>)this).GetEnumerator();
+        ((IEnumerable<KeyValuePair<Id, TComponent>>)this).GetEnumerator();
 }

@@ -1,78 +1,76 @@
 ﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
+using System.Numerics;
 
 namespace Alitz;
-public static class Id
+public readonly struct Id
 {
-    public delegate TId Constructor<TId>(int index, int version) where TId : struct, IId<TId>;
+    private const ulong IndexMask = 0x_7FFF_FFFF;
+    private const ulong VersionMask = 0x_7FFF_FFFF_0000_0000;
 
-    private static readonly string MinIndexLimitMemberName = "MinIndex";
-    private static readonly string MinVersionLimitMemberName = "MinVersion";
-    private static readonly string MaxIndexLimitMemberName = "MaxIndex";
-    private static readonly string MaxVersionLimitMemberName = "MaxVersion";
-    private static readonly Type IndexAndVersionAccessorReturnType = typeof(int);
+    public Id() : this(MinIndex) { }
 
-    public static Constructor<TId>? DiscoverConstructor<TId>() where TId : struct, IId<TId>
+    public Id(int index) : this(index, MinVersion) { }
+
+    public Id(int index, int version)
     {
-        var constructor = typeof(TId).GetConstructor(
-            BindingFlags.Public | BindingFlags.Instance,
-            new[] { IndexAndVersionAccessorReturnType, IndexAndVersionAccessorReturnType, });
-
-        if (constructor is null)
+        if (index < MinIndex || index > MaxIndex)
         {
-            return null;
+            throw new ArgumentOutOfRangeException(nameof(index));
         }
-
-        var indexParameter = Expression.Parameter(IndexAndVersionAccessorReturnType, "index");
-        var versionParameter = Expression.Parameter(IndexAndVersionAccessorReturnType, "version");
-
-        return Expression.Lambda<Constructor<TId>>(
-                Expression.New(constructor, indexParameter, versionParameter),
-                indexParameter,
-                versionParameter)
-            .Compile();
+        if (version < MinVersion || version > MaxVersion)
+        {
+            throw new ArgumentOutOfRangeException(nameof(version));
+        }
+        ulong data = 0;
+        SetIndex(ref data, InterpretAsUInt64(index));
+        SetVersion(ref data, InterpretAsUInt64(version));
+        _data = data;
     }
 
-    public static (int minIndex, int minVersion, int maxIndex, int maxVersion)? DiscoverLimits<TId>()
-        where TId : struct, IId<TId>
-    {
-        int? minIndex = DiscoverLimit<TId>(MinIndexLimitMemberName);
-        int? minVersion = DiscoverLimit<TId>(MinVersionLimitMemberName);
-        int? maxIndex = DiscoverLimit<TId>(MaxIndexLimitMemberName);
-        int? maxVersion = DiscoverLimit<TId>(MaxVersionLimitMemberName);
+    public static readonly int MinIndex = 0;
+    public static readonly int MinVersion = 0;
+    public static readonly int MaxIndex = InterpretAsInt32(IndexMask);
+    public static readonly int MaxVersion = InterpretAsInt32(VersionMask >> BitOperations.TrailingZeroCount(VersionMask));
+    private readonly ulong _data;
 
-        if (minIndex is not null && minVersion is not null && maxIndex is not null && maxVersion is not null)
-        {
-            return (minIndex.Value, minVersion.Value, maxIndex.Value, maxVersion.Value);
-        }
-        return null;
+    public int Index =>
+        InterpretAsInt32(GetIndex(_data));
+
+    public int Version =>
+        InterpretAsInt32(GetVersion(_data));
+
+    public bool Equals(Id other) =>
+        Index == other.Index && Version == other.Version;
+
+    public override bool Equals(object? obj) =>
+        obj is Id id && id.Equals(this);
+
+    public override int GetHashCode() =>
+        _data.GetHashCode();
+
+    private static ulong GetIndex(ulong data) =>
+        data & IndexMask;
+
+    private static ulong GetVersion(ulong data) =>
+        (data & VersionMask) >> BitOperations.TrailingZeroCount(VersionMask);
+
+    private static void SetIndex(ref ulong data, ulong id) =>
+        data |= id & IndexMask;
+
+    private static void SetVersion(ref ulong data, ulong version) =>
+        data |= version << BitOperations.TrailingZeroCount(VersionMask) & VersionMask;
+
+    private static unsafe int InterpretAsInt32(ulong value)
+    {
+        var span = new ReadOnlySpan<byte>(&value, sizeof(ulong));
+        return BitConverter.ToInt32(span);
     }
 
-    private static int? DiscoverLimit<TId>(string limitName) where TId : struct, IId<TId>
+    private static unsafe ulong InterpretAsUInt64(int value)
     {
-        var members = typeof(TId).GetMembers(BindingFlags.Public | BindingFlags.Static);
-        var matchedMember = members.Where(member => member.Name == limitName).SingleOrDefault();
-
-        int? limit = null;
-
-        switch (matchedMember)
-        {
-            case FieldInfo field:
-                if (field.FieldType == IndexAndVersionAccessorReturnType)
-                {
-                    limit = (int)field.GetValue(null)!;
-                }
-                break;
-            case PropertyInfo property:
-                if (property.PropertyType == IndexAndVersionAccessorReturnType)
-                {
-                    limit = (int)property.GetValue(null)!;
-                }
-                break;
-        }
-
-        return limit;
+        // BitConverter.ToUInt64() requires at least 8 bytes in the span.
+        long longValue = value;
+        var span = new ReadOnlySpan<byte>(&longValue, sizeof(long));
+        return BitConverter.ToUInt64(span);
     }
 }

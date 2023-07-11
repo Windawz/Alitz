@@ -11,13 +11,13 @@ public partial class EntityComponentSystem : ISystemContext
     {
         _columnTable = options.ColumnTableFactory();
         _columnFactory = options.ColumnFactory;
-        _entityPool = new IdPool<Entity>(new DiscoveringIdFactory<Entity>());
+        _entityPool = new IdPool();
         _schedule = schedule;
     }
 
     private readonly IColumnFactory _columnFactory;
     private readonly IDictionary<Type, IColumn> _columnTable;
-    private readonly IdPool<Entity> _entityPool;
+    private readonly IdPool _entityPool;
     private readonly Schedule _schedule;
 
     public void Update(double delta) =>

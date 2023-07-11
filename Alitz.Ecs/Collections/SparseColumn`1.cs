@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace Alitz.Collections;
-public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDictionary<Entity, TComponent>
+public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDictionary<Id, TComponent>
     where TComponent : struct
 {
     private const int DenseInitialCapacity = 4;
@@ -16,10 +16,10 @@ public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDi
 
     private TComponent[] _denseComponents = new TComponent[DenseInitialCapacity];
 
-    private Entity[] _denseEntities = new Entity[DenseInitialCapacity];
+    private Id[] _denseEntities = new Id[DenseInitialCapacity];
     private int[] _sparse = new int[SparseInitialCapacity];
 
-    public TComponent this[Entity entity]
+    public TComponent this[Id entity]
     {
         get
         {
@@ -44,7 +44,7 @@ public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDi
 
     public int Count { get; private set; }
 
-    public IEnumerable<Entity> Entities
+    public IEnumerable<Id> Entities
     {
         get
         {
@@ -66,7 +66,7 @@ public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDi
         }
     }
 
-    public bool TryAdd(Entity entity, TComponent component)
+    public bool TryAdd(Id entity, TComponent component)
     {
         if (Contains(entity))
         {
@@ -82,12 +82,12 @@ public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDi
         return true;
     }
 
-    public bool Contains(Entity entity) =>
+    public bool Contains(Id entity) =>
         entity.Index < _sparse.Length
         && _sparse[entity.Index] != SparseFillValue
         && _denseEntities[_sparse[entity.Index]].Equals(entity);
 
-    public bool Remove(Entity entity)
+    public bool Remove(Id entity)
     {
         if (!Contains(entity))
         {
@@ -109,7 +109,7 @@ public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDi
         Count = 0;
     }
 
-    public bool TryGet(Entity entity, out TComponent component)
+    public bool TryGet(Id entity, out TComponent component)
     {
         if (!Contains(entity))
         {
@@ -120,7 +120,7 @@ public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDi
         return true;
     }
 
-    public bool TrySet(Entity entity, TComponent component)
+    public bool TrySet(Id entity, TComponent component)
     {
         if (!Contains(entity))
         {
@@ -130,7 +130,7 @@ public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDi
         return true;
     }
 
-    public ref TComponent GetByRef(Entity entity)
+    public ref TComponent GetByRef(Id entity)
     {
         if (!Contains(entity))
         {

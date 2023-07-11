@@ -3,23 +3,23 @@
 namespace Alitz;
 public static class EnvironmentExtensions
 {
-    public delegate void ForEachAction<TComponent1>(Entity entity, ref TComponent1 component1) where TComponent1 : struct;
+    public delegate void ForEachAction<TComponent1>(Id entity, ref TComponent1 component1) where TComponent1 : struct;
 
     public delegate void ForEachAction<TComponent1, TComponent2>(
-        Entity entity,
+        Id entity,
         ref TComponent1 component1,
         ref TComponent2 component2
     ) where TComponent1 : struct where TComponent2 : struct;
 
     public delegate void ForEachAction<TComponent1, TComponent2, TComponent3>(
-        Entity entity,
+        Id entity,
         ref TComponent1 component1,
         ref TComponent2 component2,
         ref TComponent3 component3
     ) where TComponent1 : struct where TComponent2 : struct where TComponent3 : struct;
 
     public delegate void ForEachAction<TComponent1, TComponent2, TComponent3, TComponent4>(
-        Entity entity,
+        Id entity,
         ref TComponent1 component1,
         ref TComponent2 component2,
         ref TComponent3 component3,

@@ -219,12 +219,12 @@ public class SparseColumnTests
 
     private class EntityFactory
     {
-        private Entity current = new(Entity.MinIndex, Entity.MinVersion);
+        private Id current = new(Id.MinIndex, Id.MinVersion);
 
-        public Entity Create()
+        public Id Create()
         {
             var result = current;
-            current = new Entity(current.Index + 1, current.Version);
+            current = new Id(current.Index + 1, current.Version);
             return result;
         }
     }

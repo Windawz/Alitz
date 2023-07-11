@@ -4,14 +4,14 @@ using System.Collections.Generic;
 namespace Alitz.Collections;
 public class EntityAssociatedColumn<TComponent> : IColumn<TComponent> where TComponent : struct
 {
-    public EntityAssociatedColumn(IColumn<TComponent> column, IPool<Entity> entityPool)
+    public EntityAssociatedColumn(IColumn<TComponent> column, IPool<Id> entityPool)
     {
         _column = column;
         _entityPool = entityPool;
     }
 
     private readonly IColumn<TComponent> _column;
-    private readonly IPool<Entity> _entityPool;
+    private readonly IPool<Id> _entityPool;
 
     public Type ComponentType =>
         _column.ComponentType;
@@ -19,13 +19,13 @@ public class EntityAssociatedColumn<TComponent> : IColumn<TComponent> where TCom
     public int Count =>
         _column.Count;
 
-    public IEnumerable<Entity> Entities =>
+    public IEnumerable<Id> Entities =>
         _column.Entities;
 
     public IEnumerable<TComponent> Components =>
         _column.Components;
 
-    public TComponent this[Entity entity]
+    public TComponent this[Id entity]
     {
         get
         {
@@ -39,19 +39,19 @@ public class EntityAssociatedColumn<TComponent> : IColumn<TComponent> where TCom
         }
     }
 
-    public bool TryAdd(Entity entity, TComponent component)
+    public bool TryAdd(Id entity, TComponent component)
     {
         ThrowIfDoesNotExist(entity);
         return _column.TryAdd(entity, component);
     }
 
-    public bool Contains(Entity entity)
+    public bool Contains(Id entity)
     {
         ThrowIfDoesNotExist(entity);
         return _column.Contains(entity);
     }
 
-    public bool Remove(Entity entity)
+    public bool Remove(Id entity)
     {
         ThrowIfDoesNotExist(entity);
         return _column.Remove(entity);
@@ -60,29 +60,29 @@ public class EntityAssociatedColumn<TComponent> : IColumn<TComponent> where TCom
     public void Clear() =>
         _column.Clear();
 
-    public bool TryGet(Entity entity, out TComponent component)
+    public bool TryGet(Id entity, out TComponent component)
     {
         ThrowIfDoesNotExist(entity);
         return _column.TryGet(entity, out component);
     }
 
-    public bool TrySet(Entity entity, TComponent component)
+    public bool TrySet(Id entity, TComponent component)
     {
         ThrowIfDoesNotExist(entity);
         return _column.TrySet(entity, component);
     }
 
-    public ref TComponent GetByRef(Entity entity)
+    public ref TComponent GetByRef(Id entity)
     {
         ThrowIfDoesNotExist(entity);
         return ref _column.GetByRef(entity);
     }
 
-    private void ThrowIfDoesNotExist(Entity entity)
+    private void ThrowIfDoesNotExist(Id entity)
     {
         if (!_entityPool.IsOccupied(entity))
         {
-            throw new InvalidOperationException($"Entity {entity} does not exist");
+            throw new InvalidOperationException($"Id {entity} does not exist");
         }
     }
 }

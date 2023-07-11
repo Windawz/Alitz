@@ -4,13 +4,13 @@ namespace Alitz.Collections;
 public interface IColumn<TComponent> : IColumn where TComponent : struct
 {
     int Count { get; }
-    IEnumerable<Entity> Entities { get; }
+    IEnumerable<Id> Entities { get; }
     IEnumerable<TComponent> Components { get; }
 
-    TComponent this[Entity entity] { get; set; }
+    TComponent this[Id entity] { get; set; }
 
-    bool TryAdd(Entity entity, TComponent component);
-    bool TryGet(Entity entity, out TComponent component);
-    bool TrySet(Entity entity, TComponent component);
-    ref TComponent GetByRef(Entity entity);
+    bool TryAdd(Id entity, TComponent component);
+    bool TryGet(Id entity, out TComponent component);
+    bool TrySet(Id entity, TComponent component);
+    ref TComponent GetByRef(Id entity);
 }

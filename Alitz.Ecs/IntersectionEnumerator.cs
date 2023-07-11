@@ -6,7 +6,7 @@ using System.Linq;
 using Alitz.Collections;
 
 namespace Alitz;
-internal readonly struct IntersectionEnumerator : IEnumerator<Entity>
+internal readonly struct IntersectionEnumerator : IEnumerator<Id>
 {
     public IntersectionEnumerator(IColumn column, params IColumn[] columns)
     {
@@ -17,17 +17,17 @@ internal readonly struct IntersectionEnumerator : IEnumerator<Entity>
         _intersectionPredicate = Enumerable.Repeat(column, 1)
             .Concat(columns)
             .Where(dict => !ReferenceEquals(dict, shortestDictionary))
-            .Select(dict => (Predicate<Entity>)dict.Contains)
+            .Select(dict => (Predicate<Id>)dict.Contains)
             .Aggregate((left, right) => entity => left(entity) && right(entity));
     }
 
-    private readonly IEnumerator<Entity> _shortestEnumerator;
-    private readonly Predicate<Entity> _intersectionPredicate;
+    private readonly IEnumerator<Id> _shortestEnumerator;
+    private readonly Predicate<Id> _intersectionPredicate;
 
     object IEnumerator.Current =>
         Current;
 
-    public Entity Current =>
+    public Id Current =>
         _shortestEnumerator.Current;
 
     public bool MoveNext()

@@ -8,27 +8,27 @@ public class IdPoolTests
 {
     public IdPoolTests()
     {
-        _pool = MakeIdPool();
+        _pool = new IdPool();
     }
 
-    private readonly IdPool<MockId> _pool;
+    private readonly IdPool _pool;
 
     [Fact]
     public void Fetch_FirstIdHasMinimumValues()
     {
         var id = _pool.Fetch();
-        Assert.Equal(MockId.MinIndex, id.Index);
-        Assert.Equal(MockId.MinVersion, id.Version);
+        Assert.Equal(Id.MinIndex, id.Index);
+        Assert.Equal(Id.MinVersion, id.Version);
     }
 
     [Fact]
     public void Fetch_SubsequentCallsWithoutStoringOnlyIncrementIndex()
     {
-        for (int i = MockId.MinIndex; i < MockId.MinIndex + 100; i++)
+        for (int i = Id.MinIndex; i < Id.MinIndex + 100; i++)
         {
             var id = _pool.Fetch();
             Assert.Equal(i, id.Index);
-            Assert.Equal(MockId.MinVersion, id.Version);
+            Assert.Equal(Id.MinVersion, id.Version);
         }
     }
 
@@ -38,7 +38,7 @@ public class IdPoolTests
 
     [Fact]
     public void Store_ReturnsFalseIfIdIsUnrelated() =>
-        Assert.False(_pool.Store(new MockId(42, 63)));
+        Assert.False(_pool.Store(new Id(42, 63)));
 
     [Fact]
     public void Store_ReturnsFalseIfIdHasAlreadyBeenSuccessfullyStored()
@@ -66,7 +66,7 @@ public class IdPoolTests
 
     [Fact]
     public void IsOccupied_FalseForUnrelatedId() =>
-        Assert.False(_pool.IsOccupied(new MockId(42, 63)));
+        Assert.False(_pool.IsOccupied(new Id(42, 63)));
 
     [Fact]
     public void IsOccupied_FalseForStoredId()
@@ -93,20 +93,17 @@ public class IdPoolTests
         }
     }
 
-    private static IdPool<MockId> MakeIdPool() =>
-        new(new DiscoveringIdFactory<MockId>());
-
     public class OccupiedSingleTests
     {
         public OccupiedSingleTests()
         {
-            _pool = MakeIdPool();
+            _pool = new IdPool();
             _fetchedId = _pool.Fetch();
         }
 
-        private readonly MockId _fetchedId;
+        private readonly Id _fetchedId;
 
-        private readonly IdPool<MockId> _pool;
+        private readonly IdPool _pool;
 
         [Fact]
         public void Occupied_ContainsFetchedId() =>
@@ -126,8 +123,8 @@ public class IdPoolTests
 
         public OccupiedManyTests()
         {
-            _pool = MakeIdPool();
-            var fetchedIds = new List<MockId>(InitialCount);
+            _pool = new IdPool();
+            var fetchedIds = new List<Id>(InitialCount);
             for (int i = 0; i < InitialCount; i++)
             {
                 fetchedIds.Add(_pool.Fetch());
@@ -135,9 +132,9 @@ public class IdPoolTests
             _fetchedIds = fetchedIds;
         }
 
-        private readonly IReadOnlyList<MockId> _fetchedIds;
+        private readonly IReadOnlyList<Id> _fetchedIds;
 
-        private readonly IdPool<MockId> _pool;
+        private readonly IdPool _pool;
 
         [Fact]
         public void Occupied_StoreDecrementsCount()

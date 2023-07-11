@@ -3,15 +3,15 @@
 namespace Alitz.Collections;
 public partial class SparseColumn<TComponent>
 {
-    IEnumerable<Entity> IReadOnlyDictionary<Entity, TComponent>.Keys =>
+    IEnumerable<Id> IReadOnlyDictionary<Id, TComponent>.Keys =>
         Entities;
 
-    IEnumerable<TComponent> IReadOnlyDictionary<Entity, TComponent>.Values =>
+    IEnumerable<TComponent> IReadOnlyDictionary<Id, TComponent>.Values =>
         Components;
 
-    bool IReadOnlyDictionary<Entity, TComponent>.ContainsKey(Entity key) =>
+    bool IReadOnlyDictionary<Id, TComponent>.ContainsKey(Id key) =>
         Contains(key);
 
-    bool IReadOnlyDictionary<Entity, TComponent>.TryGetValue(Entity key, out TComponent value) =>
+    bool IReadOnlyDictionary<Id, TComponent>.TryGetValue(Id key, out TComponent value) =>
         TryGet(key, out value);
 }
