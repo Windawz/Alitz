@@ -8,7 +8,7 @@ public class IdPoolTests
 {
     public IdPoolTests()
     {
-        _pool = new IdPool<GenericId>();
+        _pool = MakeIdPool();
     }
 
     private readonly IdPool<GenericId> _pool;
@@ -93,11 +93,14 @@ public class IdPoolTests
         }
     }
 
+    private static IdPool<GenericId> MakeIdPool() =>
+        new(new ReflectingIdFactory<GenericId>());
+
     public class OccupiedSingleTests
     {
         public OccupiedSingleTests()
         {
-            _pool = new IdPool<GenericId>();
+            _pool = MakeIdPool();
             _fetchedId = _pool.Fetch();
         }
 
@@ -123,7 +126,7 @@ public class IdPoolTests
 
         public OccupiedManyTests()
         {
-            _pool = new IdPool<GenericId>();
+            _pool = MakeIdPool();
             var fetchedIds = new List<GenericId>(InitialCount);
             for (int i = 0; i < InitialCount; i++)
             {

@@ -1,8 +1,6 @@
 ﻿namespace Alitz.Collections;
 public class IdPool<TId> : Pool<TId> where TId : struct, IId<TId>
 {
-    public IdPool() : this(new ReflectingIdFactory<TId>()) { }
-
     public IdPool(IIdFactory<TId> factory)
     {
         _factory = factory;
