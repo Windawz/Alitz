@@ -10,19 +10,23 @@ internal readonly struct IntersectionEnumerator : IEnumerator<Id>
 {
     public IntersectionEnumerator(IColumn column, params IColumn[] columns)
     {
-        var shortestDictionary = Enumerable.Repeat(column, 1).Concat(columns).MinBy(dict => dict.Count)!;
+        var shortestColumn = Enumerable.Repeat(column, 1).Concat(columns).MinBy(dict => dict.Count)!;
 
-        _shortestEnumerator = shortestDictionary.Entities.GetEnumerator();
+        _shortestEnumerator = shortestColumn.Entities.GetEnumerator();
 
         _intersectionPredicate = Enumerable.Repeat(column, 1)
             .Concat(columns)
-            .Where(dict => !ReferenceEquals(dict, shortestDictionary))
-            .Select(dict => (Predicate<Id>)dict.Contains)
-            .Aggregate((left, right) => entity => left(entity) && right(entity));
+            .Where(c => !ReferenceEquals(c, shortestColumn))
+            .Select(c => (Func<Id, bool>)c.Contains)
+            .Aggregate(
+                (leftColumnContains, rightColumnContains) =>
+                {
+                    return entity => leftColumnContains(entity) && rightColumnContains(entity);
+                });
     }
 
     private readonly IEnumerator<Id> _shortestEnumerator;
-    private readonly Predicate<Id> _intersectionPredicate;
+    private readonly Func<Id, bool> _intersectionPredicate;
 
     object IEnumerator.Current =>
         Current;
