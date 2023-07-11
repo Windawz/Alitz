@@ -5,7 +5,7 @@ using Alitz.Collections;
 using Alitz.Systems;
 
 namespace Alitz;
-public partial class EntityComponentSystem : IEnvironment
+public partial class EntityComponentSystem : ISystemContext
 {
     public EntityComponentSystem(EntityComponentSystemOptions options, Schedule schedule)
     {
@@ -16,7 +16,6 @@ public partial class EntityComponentSystem : IEnvironment
     }
 
     private readonly IColumnFactory _columnFactory;
-
     private readonly IDictionary<Type, IColumn> _columnTable;
     private readonly IdPool<Entity> _entityPool;
     private readonly Schedule _schedule;

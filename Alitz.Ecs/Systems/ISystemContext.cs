@@ -1,7 +1,7 @@
 ﻿using Alitz.Collections;
 
-namespace Alitz;
-public interface IEnvironment
+namespace Alitz.Systems;
+public interface ISystemContext
 {
     IPool<Entity> EntityPool { get; }
 

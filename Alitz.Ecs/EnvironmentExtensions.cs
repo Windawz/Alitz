@@ -1,4 +1,6 @@
-﻿namespace Alitz;
+﻿using Alitz.Systems;
+
+namespace Alitz;
 public static class EnvironmentExtensions
 {
     public delegate void ForEachAction<TComponent1>(Entity entity, ref TComponent1 component1) where TComponent1 : struct;
@@ -24,10 +26,10 @@ public static class EnvironmentExtensions
         ref TComponent4 component4
     ) where TComponent1 : struct where TComponent2 : struct where TComponent3 : struct where TComponent4 : struct;
 
-    public static void ForEach<TComponent1>(this IEnvironment environment, ForEachAction<TComponent1> action)
+    public static void ForEach<TComponent1>(this ISystemContext context, ForEachAction<TComponent1> action)
         where TComponent1 : struct
     {
-        var components1 = environment.Components<TComponent1>();
+        var components1 = context.Components<TComponent1>();
         foreach (var entity in components1.Entities)
         {
             action(entity, ref components1.GetByRef(entity));
@@ -35,12 +37,12 @@ public static class EnvironmentExtensions
     }
 
     public static void ForEach<TComponent1, TComponent2>(
-        this IEnvironment environment,
+        this ISystemContext context,
         ForEachAction<TComponent1, TComponent2> action
     ) where TComponent1 : struct where TComponent2 : struct
     {
-        var components1 = environment.Components<TComponent1>();
-        var components2 = environment.Components<TComponent2>();
+        var components1 = context.Components<TComponent1>();
+        var components2 = context.Components<TComponent2>();
         using var enumerator = new IntersectionEnumerator(components1, components2);
         while (enumerator.MoveNext())
         {
@@ -50,13 +52,13 @@ public static class EnvironmentExtensions
     }
 
     public static void ForEach<TComponent1, TComponent2, TComponent3>(
-        this IEnvironment environment,
+        this ISystemContext context,
         ForEachAction<TComponent1, TComponent2, TComponent3> action
     ) where TComponent1 : struct where TComponent2 : struct where TComponent3 : struct
     {
-        var components1 = environment.Components<TComponent1>();
-        var components2 = environment.Components<TComponent2>();
-        var components3 = environment.Components<TComponent3>();
+        var components1 = context.Components<TComponent1>();
+        var components2 = context.Components<TComponent2>();
+        var components3 = context.Components<TComponent3>();
         using var enumerator = new IntersectionEnumerator(components1, components2, components3);
         while (enumerator.MoveNext())
         {
@@ -70,14 +72,14 @@ public static class EnvironmentExtensions
     }
 
     public static void ForEach<TComponent1, TComponent2, TComponent3, TComponent4>(
-        this IEnvironment environment,
+        this ISystemContext context,
         ForEachAction<TComponent1, TComponent2, TComponent3, TComponent4> action
     ) where TComponent1 : struct where TComponent2 : struct where TComponent3 : struct where TComponent4 : struct
     {
-        var components1 = environment.Components<TComponent1>();
-        var components2 = environment.Components<TComponent2>();
-        var components3 = environment.Components<TComponent3>();
-        var components4 = environment.Components<TComponent4>();
+        var components1 = context.Components<TComponent1>();
+        var components2 = context.Components<TComponent2>();
+        var components3 = context.Components<TComponent3>();
+        var components4 = context.Components<TComponent4>();
         using var enumerator = new IntersectionEnumerator(components1, components2, components3, components4);
         while (enumerator.MoveNext())
         {

@@ -22,11 +22,11 @@ public class Schedule
 
     private readonly ISystem[] _systems;
 
-    public void Update(IEnvironment environment, double delta)
+    public void Update(ISystemContext context, double delta)
     {
         for (int i = 0; i < _systems.Length; i++)
         {
-            _systems[i].Update(environment, delta);
+            _systems[i].Update(context, delta);
         }
     }
 
