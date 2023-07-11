@@ -4,7 +4,7 @@ using Alitz.Systems;
 namespace Alitz;
 public partial class EntityComponentSystem
 {
-    IPool<Id> ISystemContext.EntityPool =>
+    IdPool ISystemContext.EntityPool =>
         _entityPool;
 
     IColumn<TComponent> ISystemContext.Components<TComponent>() where TComponent : struct
