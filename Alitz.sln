@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alitz.Ecs.UnitTests", "Alit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alitz.UnitTests.Utilities", "Alitz.UnitTests.Utilities\Alitz.UnitTests.Utilities.csproj", "{7F08E5C4-1A28-4F8B-9EA9-A200682C51D4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alitz.Engine", "Alitz.Engine\Alitz.Engine.csproj", "{543599DF-848E-4721-B7EC-9D10950DFF43}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{7F08E5C4-1A28-4F8B-9EA9-A200682C51D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F08E5C4-1A28-4F8B-9EA9-A200682C51D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F08E5C4-1A28-4F8B-9EA9-A200682C51D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{543599DF-848E-4721-B7EC-9D10950DFF43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{543599DF-848E-4721-B7EC-9D10950DFF43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{543599DF-848E-4721-B7EC-9D10950DFF43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{543599DF-848E-4721-B7EC-9D10950DFF43}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
