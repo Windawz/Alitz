@@ -20,6 +20,6 @@ public partial class EntityComponentSystem : ISystemContext
     private readonly IdPool _entityPool;
     private readonly Schedule _schedule;
 
-    public void Update(double delta) =>
-        _schedule.Update(this, delta);
+    public void Update(long elapsedMilliseconds) =>
+        _schedule.Update(this, elapsedMilliseconds);
 }
