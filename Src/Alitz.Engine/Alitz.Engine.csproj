@@ -13,4 +13,9 @@
         <OutputType>Exe</OutputType>
     </PropertyGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\Alitz.Common\Alitz.Common.csproj"/>
+        <ProjectReference Include="..\Alitz.Ecs\Alitz.Ecs.csproj"/>
+    </ItemGroup>
+
 </Project>
