@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using Alitz.Systems;
 
@@ -9,16 +8,24 @@ public partial class EntityComponentSystem
 {
     public class Builder
     {
-        private readonly HashSet<Type> _systemTypes = new();
+        internal Builder() { }
+
+        private readonly List<SystemFactory> _factories = new();
         private EntityComponentSystemOptions _options = new();
 
-        public Builder UseSystem<TSystem>() where TSystem : ISystem
+        public Builder AddSystem<TSystem>() where TSystem : class, ISystem, new()
         {
-            _systemTypes.Add(typeof(TSystem));
+            _factories.Add(SystemFactory.Create(() => new TSystem()));
             return this;
         }
 
-        public Builder UseOptions(EntityComponentSystemOptions options)
+        public Builder AddSystem<TSystem>(Func<TSystem> factory) where TSystem : class, ISystem
+        {
+            _factories.Add(SystemFactory.Create(factory));
+            return this;
+        }
+
+        public Builder SetOptions(EntityComponentSystemOptions options)
         {
             _options = options;
             return this;
@@ -26,7 +33,7 @@ public partial class EntityComponentSystem
 
         public EntityComponentSystem Build()
         {
-            var schedule = new Schedule(_systemTypes.ToArray());
+            var schedule = new Schedule(_factories);
             return new EntityComponentSystem(_options, schedule);
         }
     }

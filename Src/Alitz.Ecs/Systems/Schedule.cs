@@ -6,18 +6,20 @@ using System.Reflection;
 using Alitz.Systems.Dependencies;
 
 namespace Alitz.Systems;
-public class Schedule
+internal class Schedule
 {
-    public Schedule(Type[] systemTypes)
+    public Schedule(IEnumerable<SystemFactory> factories)
     {
-        foreach (var type in systemTypes)
-        {
-            if (!type.IsAssignableTo(typeof(ISystem)))
-            {
-                throw new ArgumentException($"Type {type} is not a system", nameof(systemTypes));
-            }
-        }
-        _systems = Instantiate(MakeOrderedSystemTypeArray(MakeDependencyTree(systemTypes)));
+        var distinctfactoryArray = factories.DistinctBy(factory => factory.SystemType).ToArray();
+        var dependencyTree = MakeDependencyTree(distinctfactoryArray.Select(factory => factory.SystemType));
+        _systems = MakeOrderedSystemTypeArray(dependencyTree)
+            .Join(
+                distinctfactoryArray,
+                orderedSystemType => orderedSystemType,
+                factory => factory.SystemType,
+                (_, factory) => factory)
+            .Select(factory => factory.Create())
+            .ToArray();
     }
 
     private readonly ISystem[] _systems;
@@ -28,16 +30,6 @@ public class Schedule
         {
             _systems[i].Update(context, elapsedMilliseconds);
         }
-    }
-
-    private static ISystem[] Instantiate(Type[] systemTypes)
-    {
-        var systems = new ISystem[systemTypes.Length];
-        for (int i = 0; i < systemTypes.Length; i++)
-        {
-            systems[i] = (ISystem)Activator.CreateInstance(systemTypes[i])!;
-        }
-        return systems;
     }
 
     private static Type[] MakeOrderedSystemTypeArray(Tree dependencyTree)
