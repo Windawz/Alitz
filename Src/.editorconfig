@@ -112,7 +112,7 @@ resharper_wrap_switch_expression = chop_if_long
 resharper_wrap_verbatim_interpolated_strings = chop_if_long
 
 # ReSharper inspection severities
-resharper_arrange_object_creation_when_type_not_evident_highlighting = suggestion
+resharper_arrange_object_creation_when_type_not_evident_highlighting = none
 resharper_arrange_redundant_parentheses_highlighting = hint
 resharper_arrange_this_qualifier_highlighting = hint
 resharper_arrange_type_member_modifiers_highlighting = hint
