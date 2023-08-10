@@ -6,7 +6,7 @@ using Alitz.Collections;
 namespace Alitz.Systems;
 public class SystemContext
 {
-    public SystemContext(IDictionary<Type, IColumn> columnTable, IPool<Id> entityPool)
+    public SystemContext(IDictionary<Type, IColumn> columnTable, IdPool entityPool)
     {
         _columnTable = columnTable;
         EntityPool = entityPool;
@@ -14,7 +14,7 @@ public class SystemContext
 
     private readonly IDictionary<Type, IColumn> _columnTable;
 
-    public IPool<Id> EntityPool { get; }
+    public IdPool EntityPool { get; }
 
     public Column<TComponent> Components<TComponent>() where TComponent : struct
     {

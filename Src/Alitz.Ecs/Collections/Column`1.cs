@@ -8,13 +8,13 @@ public class Column<TComponent> : IColumn where TComponent : struct
     private const int SparseFillValue = -1;
     private const int SparseInitialCapacity = 4;
 
-    public Column(IPool<Id> entityPool)
+    public Column(IdPool entityPool)
     {
         Array.Fill(_sparse, SparseFillValue);
         _entityPool = entityPool;
     }
 
-    private readonly IPool<Id> _entityPool;
+    private readonly IdPool _entityPool;
 
     private TComponent[] _denseComponents = new TComponent[DenseInitialCapacity];
     private Id[] _denseEntities = new Id[DenseInitialCapacity];
