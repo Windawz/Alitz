@@ -12,7 +12,7 @@ public partial class EntityComponentSystem
         var componentType = typeof(TComponent);
         if (!_columnTable.ContainsKey(componentType))
         {
-            var column = new EntityAssociatedColumn<TComponent>(_columnFactory.Create<TComponent>(), _entityPool);
+            var column = new EntityAssociatedColumn<TComponent>(new SparseColumn<TComponent>(), _entityPool);
             _columnTable.Add(componentType, column);
         }
         return (IColumn<TComponent>)_columnTable[componentType];

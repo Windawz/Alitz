@@ -7,15 +7,13 @@ using Alitz.Systems;
 namespace Alitz;
 public partial class EntityComponentSystem : ISystemContext
 {
-    private EntityComponentSystem(EntityComponentSystemOptions options, Schedule schedule)
+    private EntityComponentSystem(Schedule schedule)
     {
-        _columnTable = options.ColumnTableFactory();
-        _columnFactory = options.ColumnFactory;
+        _columnTable = new Dictionary<Type, IColumn>();
         _entityPool = new IdPool();
         _schedule = schedule;
     }
 
-    private readonly IColumnFactory _columnFactory;
     private readonly IDictionary<Type, IColumn> _columnTable;
     private readonly IdPool _entityPool;
     private readonly Schedule _schedule;

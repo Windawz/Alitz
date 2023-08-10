@@ -11,7 +11,6 @@ public partial class EntityComponentSystem
         internal Builder() { }
 
         private readonly List<SystemFactory> _factories = new();
-        private EntityComponentSystemOptions _options = new();
 
         public Builder AddSystem<TSystem>() where TSystem : class, ISystem, new()
         {
@@ -25,16 +24,10 @@ public partial class EntityComponentSystem
             return this;
         }
 
-        public Builder SetOptions(EntityComponentSystemOptions options)
-        {
-            _options = options;
-            return this;
-        }
-
         public EntityComponentSystem Build()
         {
             var schedule = new Schedule(_factories);
-            return new EntityComponentSystem(_options, schedule);
+            return new EntityComponentSystem(schedule);
         }
     }
 }
