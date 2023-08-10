@@ -9,14 +9,12 @@ public class EntityComponentSystem
 {
     internal EntityComponentSystem(SystemSchedule systemSchedule)
     {
-        _columnTable = new Dictionary<Type, IColumn>();
-        _entityPool = new IdPool();
+        var columnTable = new Dictionary<Type, IColumn>();
+        var entityPool = new IdPool();
         _systemSchedule = systemSchedule;
-        _systemContext = new SystemContext(_columnTable, _entityPool);
+        _systemContext = new SystemContext(columnTable, entityPool);
     }
 
-    private readonly IDictionary<Type, IColumn> _columnTable;
-    private readonly IdPool _entityPool;
     private readonly SystemContext _systemContext;
     private readonly SystemSchedule _systemSchedule;
 
