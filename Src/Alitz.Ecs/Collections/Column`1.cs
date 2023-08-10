@@ -2,20 +2,21 @@
 using System.Collections.Generic;
 
 namespace Alitz.Collections;
-public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDictionary<Id, TComponent>
-    where TComponent : struct
+public class Column<TComponent> : IColumn where TComponent : struct
 {
     private const int DenseInitialCapacity = 4;
     private const int SparseFillValue = -1;
     private const int SparseInitialCapacity = 4;
 
-    public SparseColumn()
+    public Column(IPool<Id> entityPool)
     {
         Array.Fill(_sparse, SparseFillValue);
+        _entityPool = entityPool;
     }
 
-    private TComponent[] _denseComponents = new TComponent[DenseInitialCapacity];
+    private readonly IPool<Id> _entityPool;
 
+    private TComponent[] _denseComponents = new TComponent[DenseInitialCapacity];
     private Id[] _denseEntities = new Id[DenseInitialCapacity];
     private int[] _sparse = new int[SparseInitialCapacity];
 
@@ -23,6 +24,7 @@ public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDi
     {
         get
         {
+            ThrowIfEntityDoesNotExist(entity);
             if (!Contains(entity))
             {
                 throw new ArgumentOutOfRangeException(nameof(entity));
@@ -31,6 +33,7 @@ public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDi
         }
         set
         {
+            ThrowIfEntityDoesNotExist(entity);
             if (!Contains(entity))
             {
                 TryAdd(entity, value);
@@ -38,19 +41,6 @@ public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDi
             else
             {
                 _denseComponents[_sparse[entity.Index]] = value;
-            }
-        }
-    }
-
-    public int Count { get; private set; }
-
-    public IEnumerable<Id> Entities
-    {
-        get
-        {
-            for (int i = 0; i < Count; i++)
-            {
-                yield return _denseEntities[i];
             }
         }
     }
@@ -66,29 +56,33 @@ public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDi
         }
     }
 
-    public bool TryAdd(Id entity, TComponent component)
+    Type IColumn.ComponentType =>
+        typeof(TComponent);
+
+    public int Count { get; private set; }
+
+    public IEnumerable<Id> Entities
     {
-        if (Contains(entity))
+        get
         {
-            return false;
+            for (int i = 0; i < Count; i++)
+            {
+                yield return _denseEntities[i];
+            }
         }
-        Count += 1;
-        Grow(ref _sparse, entity.Index + 1);
-        Grow(ref _denseEntities, Count);
-        Grow(ref _denseComponents, Count);
-        _sparse[entity.Index] = Count - 1;
-        _denseEntities[Count - 1] = entity;
-        _denseComponents[Count - 1] = component;
-        return true;
     }
 
-    public bool Contains(Id entity) =>
-        entity.Index < _sparse.Length
-        && _sparse[entity.Index] != SparseFillValue
-        && _denseEntities[_sparse[entity.Index]].Equals(entity);
+    public bool Contains(Id entity)
+    {
+        ThrowIfEntityDoesNotExist(entity);
+        return entity.Index < _sparse.Length
+            && _sparse[entity.Index] != SparseFillValue
+            && _denseEntities[_sparse[entity.Index]].Equals(entity);
+    }
 
     public bool Remove(Id entity)
     {
+        ThrowIfEntityDoesNotExist(entity);
         if (!Contains(entity))
         {
             return false;
@@ -109,8 +103,26 @@ public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDi
         Count = 0;
     }
 
+    public bool TryAdd(Id entity, TComponent component)
+    {
+        ThrowIfEntityDoesNotExist(entity);
+        if (Contains(entity))
+        {
+            return false;
+        }
+        Count += 1;
+        Grow(ref _sparse, entity.Index + 1);
+        Grow(ref _denseEntities, Count);
+        Grow(ref _denseComponents, Count);
+        _sparse[entity.Index] = Count - 1;
+        _denseEntities[Count - 1] = entity;
+        _denseComponents[Count - 1] = component;
+        return true;
+    }
+
     public bool TryGet(Id entity, out TComponent component)
     {
+        ThrowIfEntityDoesNotExist(entity);
         if (!Contains(entity))
         {
             component = default!;
@@ -122,6 +134,7 @@ public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDi
 
     public bool TrySet(Id entity, TComponent component)
     {
+        ThrowIfEntityDoesNotExist(entity);
         if (!Contains(entity))
         {
             return false;
@@ -132,11 +145,20 @@ public partial class SparseColumn<TComponent> : IColumn<TComponent>, IReadOnlyDi
 
     public ref TComponent GetByRef(Id entity)
     {
+        ThrowIfEntityDoesNotExist(entity);
         if (!Contains(entity))
         {
             throw new ArgumentOutOfRangeException(nameof(entity));
         }
         return ref _denseComponents[_sparse[entity.Index]];
+    }
+
+    private void ThrowIfEntityDoesNotExist(Id entity)
+    {
+        if (!_entityPool.IsOccupied(entity))
+        {
+            throw new InvalidOperationException($"Entity with id {entity} does not exist");
+        }
     }
 
     private static void Grow<T>(ref T[] array, int length)

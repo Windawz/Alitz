@@ -6,8 +6,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alitz.Common", "Alitz.Commo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alitz.Common.UnitTests", "Alitz.Common.UnitTests\Alitz.Common.UnitTests.csproj", "{BEF56D23-6B81-434D-B1DB-876059D2ACF6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alitz.Ecs.UnitTests", "Alitz.Ecs.UnitTests\Alitz.Ecs.UnitTests.csproj", "{2F22BC37-2593-4727-85C9-DC7FF5EC0F62}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alitz.UnitTests.Utilities", "Alitz.UnitTests.Utilities\Alitz.UnitTests.Utilities.csproj", "{7F08E5C4-1A28-4F8B-9EA9-A200682C51D4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alitz.Engine", "Alitz.Engine\Alitz.Engine.csproj", "{543599DF-848E-4721-B7EC-9D10950DFF43}"
@@ -30,10 +28,6 @@ Global
 		{BEF56D23-6B81-434D-B1DB-876059D2ACF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEF56D23-6B81-434D-B1DB-876059D2ACF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BEF56D23-6B81-434D-B1DB-876059D2ACF6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2F22BC37-2593-4727-85C9-DC7FF5EC0F62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2F22BC37-2593-4727-85C9-DC7FF5EC0F62}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2F22BC37-2593-4727-85C9-DC7FF5EC0F62}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2F22BC37-2593-4727-85C9-DC7FF5EC0F62}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7F08E5C4-1A28-4F8B-9EA9-A200682C51D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7F08E5C4-1A28-4F8B-9EA9-A200682C51D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F08E5C4-1A28-4F8B-9EA9-A200682C51D4}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -16,14 +16,14 @@ public class SystemContext
 
     public IPool<Id> EntityPool { get; }
 
-    public IColumn<TComponent> Components<TComponent>() where TComponent : struct
+    public Column<TComponent> Components<TComponent>() where TComponent : struct
     {
         var componentType = typeof(TComponent);
         if (!_columnTable.ContainsKey(componentType))
         {
-            var column = new EntityAssociatedColumn<TComponent>(new SparseColumn<TComponent>(), EntityPool);
+            var column = new Column<TComponent>(EntityPool);
             _columnTable.Add(componentType, column);
         }
-        return (IColumn<TComponent>)_columnTable[componentType];
+        return (Column<TComponent>)_columnTable[componentType];
     }
 }

@@ -3,10 +3,10 @@
 namespace Alitz.Collections;
 public static class ColumnExtensions
 {
-    public static void AddDefault<TComponent>(this IColumn<TComponent> column, Id entity) where TComponent : struct =>
+    public static void AddDefault<TComponent>(this Column<TComponent> column, Id entity) where TComponent : struct =>
         column.Add(entity, default!);
 
-    public static void Add<TComponent>(this IColumn<TComponent> column, Id entity, TComponent component)
+    public static void Add<TComponent>(this Column<TComponent> column, Id entity, TComponent component)
         where TComponent : struct
     {
         if (!column.TryAdd(entity, component))
@@ -15,10 +15,10 @@ public static class ColumnExtensions
         }
     }
 
-    public static bool TryAddDefault<TComponent>(this IColumn<TComponent> column, Id entity) where TComponent : struct =>
+    public static bool TryAddDefault<TComponent>(this Column<TComponent> column, Id entity) where TComponent : struct =>
         column.TryAdd(entity, default!);
 
-    public static TComponent Get<TComponent>(this IColumn<TComponent> column, Id entity) where TComponent : struct
+    public static TComponent Get<TComponent>(this Column<TComponent> column, Id entity) where TComponent : struct
     {
         if (column.TryGet(entity, out var value))
         {
@@ -27,7 +27,7 @@ public static class ColumnExtensions
         throw new ArgumentOutOfRangeException(nameof(entity));
     }
 
-    public static void Set<TComponent>(this IColumn<TComponent> column, Id entity, TComponent component)
+    public static void Set<TComponent>(this Column<TComponent> column, Id entity, TComponent component)
         where TComponent : struct
     {
         if (!column.TrySet(entity, component))
