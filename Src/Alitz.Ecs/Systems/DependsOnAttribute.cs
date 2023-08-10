@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Alitz.Systems.Dependencies;
+namespace Alitz.Systems;
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public class DependsOnAttribute : Attribute
 {
