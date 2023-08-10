@@ -1,5 +1,5 @@
 ﻿namespace Alitz.Systems;
-public static class SystemContextExtensions
+public static class SystemContextForEachExtensions
 {
     public delegate void ForEachAction<TComponent1>(Id entity, ref TComponent1 component1) where TComponent1 : struct;
 
