@@ -5,7 +5,7 @@ using System.Linq;
 
 using Alitz.Collections;
 
-namespace Alitz;
+namespace Alitz.Systems;
 internal readonly struct IntersectionEnumerator : IEnumerator<Id>
 {
     public IntersectionEnumerator(IColumn column, params IColumn[] columns)
