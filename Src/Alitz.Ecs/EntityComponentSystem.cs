@@ -7,22 +7,22 @@ using Alitz.Systems;
 namespace Alitz;
 public partial class EntityComponentSystem
 {
-    private EntityComponentSystem(Schedule schedule)
+    private EntityComponentSystem(SystemSchedule systemSchedule)
     {
         _columnTable = new Dictionary<Type, IColumn>();
         _entityPool = new IdPool();
-        _schedule = schedule;
+        _systemSchedule = systemSchedule;
         _systemContext = new SystemContext(_columnTable, _entityPool);
     }
 
     private readonly IDictionary<Type, IColumn> _columnTable;
     private readonly IdPool _entityPool;
-    private readonly Schedule _schedule;
     private readonly SystemContext _systemContext;
+    private readonly SystemSchedule _systemSchedule;
 
     public static Builder CreateBuilder() =>
         new();
 
     public void Update(long elapsedMilliseconds) =>
-        _schedule.Update(_systemContext, elapsedMilliseconds);
+        _systemSchedule.Update(_systemContext, elapsedMilliseconds);
 }

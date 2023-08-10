@@ -6,9 +6,9 @@ using System.Reflection;
 using Alitz.Systems.Dependencies;
 
 namespace Alitz.Systems;
-internal class Schedule
+internal class SystemSchedule
 {
-    public Schedule(IEnumerable<SystemFactory> factories)
+    public SystemSchedule(IEnumerable<SystemFactory> factories)
     {
         var distinctfactoryArray = factories.DistinctBy(factory => factory.SystemType).ToArray();
         var dependencyTree = MakeDependencyTree(distinctfactoryArray.Select(factory => factory.SystemType));

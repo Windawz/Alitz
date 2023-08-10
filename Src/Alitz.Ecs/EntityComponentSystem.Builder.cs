@@ -26,7 +26,7 @@ public partial class EntityComponentSystem
 
         public EntityComponentSystem Build()
         {
-            var schedule = new Schedule(_factories);
+            var schedule = new SystemSchedule(_factories);
             return new EntityComponentSystem(schedule);
         }
     }
