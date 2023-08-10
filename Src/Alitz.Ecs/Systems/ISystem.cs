@@ -1,5 +1,5 @@
 ﻿namespace Alitz.Systems;
 public interface ISystem
 {
-    void Update(ISystemContext context, long elapsedMilliseconds);
+    void Update(SystemContext context, long elapsedMilliseconds);
 }

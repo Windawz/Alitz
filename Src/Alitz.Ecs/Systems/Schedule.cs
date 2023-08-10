@@ -24,7 +24,7 @@ internal class Schedule
 
     private readonly ISystem[] _systems;
 
-    public void Update(ISystemContext context, long elapsedMilliseconds)
+    public void Update(SystemContext context, long elapsedMilliseconds)
     {
         for (int i = 0; i < _systems.Length; i++)
         {
