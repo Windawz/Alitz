@@ -6,13 +6,13 @@ using System.Linq;
 using Alitz.Collections;
 
 namespace Alitz.Systems;
-internal readonly struct IntersectionEnumerator : IEnumerator<Id>
+internal readonly struct ColumnIntersectionEnumerator : IEnumerator<Id>
 {
-    public IntersectionEnumerator(IColumn column, params IColumn[] columns)
+    public ColumnIntersectionEnumerator(IColumn column, params IColumn[] columns)
     {
         var shortestColumn = Enumerable.Repeat(column, 1).Concat(columns).MinBy(dict => dict.Count)!;
 
-        _shortestEnumerator = shortestColumn.Entities.GetEnumerator();
+        _entityEnumerator = shortestColumn.Entities.GetEnumerator();
 
         _intersectionPredicate = Enumerable.Repeat(column, 1)
             .Concat(columns)
@@ -25,29 +25,29 @@ internal readonly struct IntersectionEnumerator : IEnumerator<Id>
                 });
     }
 
-    private readonly IEnumerator<Id> _shortestEnumerator;
+    private readonly IEnumerator<Id> _entityEnumerator;
     private readonly Func<Id, bool> _intersectionPredicate;
 
     object IEnumerator.Current =>
         Current;
 
     public Id Current =>
-        _shortestEnumerator.Current;
+        _entityEnumerator.Current;
 
     public bool MoveNext()
     {
         bool didMove;
         do
         {
-            didMove = _shortestEnumerator.MoveNext();
+            didMove = _entityEnumerator.MoveNext();
         }
-        while (didMove && !_intersectionPredicate(_shortestEnumerator.Current));
+        while (didMove && !_intersectionPredicate(_entityEnumerator.Current));
         return didMove;
     }
 
     void IEnumerator.Reset() =>
-        _shortestEnumerator.Reset();
+        _entityEnumerator.Reset();
 
     void IDisposable.Dispose() =>
-        _shortestEnumerator.Dispose();
+        _entityEnumerator.Dispose();
 }

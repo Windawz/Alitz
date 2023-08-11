@@ -41,7 +41,7 @@ public static class SystemContextForEachExtensions
     {
         var components1 = context.Components<TComponent1>();
         var components2 = context.Components<TComponent2>();
-        using var enumerator = new IntersectionEnumerator(components1, components2);
+        using var enumerator = new ColumnIntersectionEnumerator(components1, components2);
         while (enumerator.MoveNext())
         {
             var entity = enumerator.Current;
@@ -57,7 +57,7 @@ public static class SystemContextForEachExtensions
         var components1 = context.Components<TComponent1>();
         var components2 = context.Components<TComponent2>();
         var components3 = context.Components<TComponent3>();
-        using var enumerator = new IntersectionEnumerator(components1, components2, components3);
+        using var enumerator = new ColumnIntersectionEnumerator(components1, components2, components3);
         while (enumerator.MoveNext())
         {
             var entity = enumerator.Current;
@@ -78,7 +78,7 @@ public static class SystemContextForEachExtensions
         var components2 = context.Components<TComponent2>();
         var components3 = context.Components<TComponent3>();
         var components4 = context.Components<TComponent4>();
-        using var enumerator = new IntersectionEnumerator(components1, components2, components3, components4);
+        using var enumerator = new ColumnIntersectionEnumerator(components1, components2, components3, components4);
         while (enumerator.MoveNext())
         {
             var entity = enumerator.Current;
