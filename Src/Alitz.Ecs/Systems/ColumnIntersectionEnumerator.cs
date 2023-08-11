@@ -8,31 +8,21 @@ using Alitz.Collections;
 namespace Alitz.Systems;
 internal readonly struct ColumnIntersectionEnumerator : IEnumerator<Id>
 {
-    public ColumnIntersectionEnumerator(IColumn column, params IColumn[] columns)
+    public ColumnIntersectionEnumerator(params IColumn[] columns)
     {
-        var shortestColumn = Enumerable.Repeat(column, 1).Concat(columns).MinBy(dict => dict.Count)!;
-
+        _columns = columns;
+        var shortestColumn = _columns.MinBy(c => c.Count)!;
         _entityEnumerator = shortestColumn.Entities.GetEnumerator();
-
-        _intersectionPredicate = Enumerable.Repeat(column, 1)
-            .Concat(columns)
-            .Where(c => !ReferenceEquals(c, shortestColumn))
-            .Select(c => (Func<Id, bool>)c.Contains)
-            .Aggregate(
-                (leftColumnContains, rightColumnContains) =>
-                {
-                    return entity => leftColumnContains(entity) && rightColumnContains(entity);
-                });
     }
 
     private readonly IEnumerator<Id> _entityEnumerator;
-    private readonly Func<Id, bool> _intersectionPredicate;
-
-    object IEnumerator.Current =>
-        Current;
+    private readonly IColumn[] _columns;
 
     public Id Current =>
         _entityEnumerator.Current;
+
+    object IEnumerator.Current =>
+        Current;
 
     public bool MoveNext()
     {
@@ -41,8 +31,20 @@ internal readonly struct ColumnIntersectionEnumerator : IEnumerator<Id>
         {
             didMove = _entityEnumerator.MoveNext();
         }
-        while (didMove && !_intersectionPredicate(_entityEnumerator.Current));
+        while (didMove && !IsContainedByAllColumns(_entityEnumerator.Current));
         return didMove;
+    }
+
+    private bool IsContainedByAllColumns(Id entity)
+    {
+        for (int i = 0; i < _columns.Length; i++)
+        {
+            if (!_columns[i].Contains(entity))
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     void IEnumerator.Reset() =>
