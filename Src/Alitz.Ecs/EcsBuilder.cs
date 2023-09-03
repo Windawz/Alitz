@@ -6,6 +6,8 @@ using Alitz.Systems;
 namespace Alitz;
 public class EcsBuilder
 {
+    internal EcsBuilder() { }
+
     private readonly List<SystemFactory> _factories = new();
 
     public EcsBuilder AddSystem<TSystem>() where TSystem : class, ISystem, new()

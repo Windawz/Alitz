@@ -18,6 +18,9 @@ public class EntityComponentSystem
     private readonly SystemContext _systemContext;
     private readonly SystemSchedule _systemSchedule;
 
+    public static EcsBuilder CreateBuilder() =>
+        new();
+
     public void Update(long elapsedMilliseconds) =>
         _systemSchedule.Update(_systemContext, elapsedMilliseconds);
 }
