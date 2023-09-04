@@ -10,7 +10,7 @@ internal class MainLoop
 
     public delegate void UpdateAction(long deltaMs, Action loopStopper);
 
-    private MainLoop(InputAction? inputAction, UpdateAction? updateAction, RenderAction? renderAction)
+    public MainLoop(InputAction inputAction, UpdateAction updateAction, RenderAction renderAction)
     {
         _inputAction = inputAction;
         _updateAction = updateAction;
@@ -18,15 +18,12 @@ internal class MainLoop
         _stopwatch = new Stopwatch();
     }
 
-    private readonly InputAction? _inputAction;
-    private readonly RenderAction? _renderAction;
+    private readonly InputAction _inputAction;
+    private readonly RenderAction _renderAction;
     private readonly Stopwatch _stopwatch;
-    private readonly UpdateAction? _updateAction;
+    private readonly UpdateAction _updateAction;
     private bool _isRunning;
     private long _previousDeltaMs;
-
-    public static Builder CreateBuilder() =>
-        new();
 
     public void Start()
     {
@@ -45,36 +42,23 @@ internal class MainLoop
     private void LoopStopper() =>
         _isRunning = false;
 
-    private void CallInputAction()
-    {
-        if (_inputAction is not null)
-        {
-            _inputAction(GetInputIfAny(), LoopStopper);
-        }
-    }
+    private void CallInputAction() =>
+        _inputAction(GetInputIfAny(), LoopStopper);
 
     private void CallUpdateAction()
     {
-        if (_updateAction is not null)
+        const long maxStepMs = 20;
+        long deltaMs = _previousDeltaMs;
+        while (deltaMs > 0)
         {
-            const long maxStepMs = 20;
-            long deltaMs = _previousDeltaMs;
-            while (deltaMs > 0)
-            {
-                long stepMs = Math.Min(deltaMs, maxStepMs);
-                _updateAction(stepMs, LoopStopper);
-                deltaMs -= stepMs;
-            }
+            long stepMs = Math.Min(deltaMs, maxStepMs);
+            _updateAction(stepMs, LoopStopper);
+            deltaMs -= stepMs;
         }
     }
 
-    private void CallRenderAction()
-    {
-        if (_renderAction is not null)
-        {
-            _renderAction(LoopStopper);
-        }
-    }
+    private void CallRenderAction() =>
+        _renderAction(LoopStopper);
 
     private static ConsoleKeyInfo? GetInputIfAny()
     {
@@ -83,35 +67,5 @@ internal class MainLoop
             return Console.ReadKey(true);
         }
         return null;
-    }
-
-    public class Builder
-    {
-        internal Builder() { }
-
-        private InputAction? _inputAction;
-        private RenderAction? _renderAction;
-        private UpdateAction? _updateAction;
-
-        public Builder SetInputAction(InputAction inputAction)
-        {
-            _inputAction = inputAction;
-            return this;
-        }
-
-        public Builder SetRenderAction(RenderAction renderAction)
-        {
-            _renderAction = renderAction;
-            return this;
-        }
-
-        public Builder SetUpdateAction(UpdateAction updateAction)
-        {
-            _updateAction = updateAction;
-            return this;
-        }
-
-        public MainLoop Build() =>
-            new(_inputAction, renderAction: _renderAction, updateAction: _updateAction);
     }
 }
