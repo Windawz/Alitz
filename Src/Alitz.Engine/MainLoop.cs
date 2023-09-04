@@ -33,10 +33,10 @@ internal class MainLoop
 
     private static void UpdateCompensatingForDeltaSpikes(Action<long> updateAction, long deltaMs)
     {
-        const long MaxStepMs = 20;
+        const long maxStepMs = 20;
         while (deltaMs > 0)
         {
-            long stepMs = Math.Min(deltaMs, MaxStepMs);
+            long stepMs = Math.Min(deltaMs, maxStepMs);
             updateAction(stepMs);
             deltaMs -= stepMs;
         }
