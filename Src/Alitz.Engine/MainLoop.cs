@@ -4,23 +4,25 @@ using System.Diagnostics;
 namespace Alitz;
 internal class MainLoop
 {
-    public MainLoop(Action<ConsoleKeyInfo?> inputAction, Action<long> updateAction, Action renderAction)
+    public MainLoop(MainLoopInputAction inputAction, MainLoopUpdateAction updateAction, MainLoopRenderAction renderAction)
     {
         _inputAction = inputAction;
-        _updateAction = updateAction;
+        _updateAction = deltaMs => updateAction(deltaMs, () => _isRunning = false);
         _renderAction = renderAction;
         _stopwatch = new Stopwatch();
     }
 
-    private readonly Action<ConsoleKeyInfo?> _inputAction;
-    private readonly Action _renderAction;
+    private readonly MainLoopInputAction _inputAction;
+    private readonly MainLoopRenderAction _renderAction;
     private readonly Stopwatch _stopwatch;
     private readonly Action<long> _updateAction;
+    private bool _isRunning;
     private long _previousDeltaMs;
 
     public void Start()
     {
-        while (true)
+        _isRunning = true;
+        while (_isRunning)
         {
             _stopwatch.Restart();
             _inputAction(GetInputIfAny());
