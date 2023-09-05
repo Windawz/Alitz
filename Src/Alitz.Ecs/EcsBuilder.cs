@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -11,6 +12,26 @@ public class EcsBuilder
     internal EcsBuilder() { }
 
     private readonly List<SystemFactory> _factories = new();
+
+    public EcsBuilder AddSystems(IEnumerable<Type> systemTypes)
+    {
+        PrepareFactoryListForInsertionOfEnumerable(systemTypes);
+        foreach (var systemType in systemTypes)
+        {
+            AddSystem(systemType);
+        }
+        return this;
+    }
+
+    public EcsBuilder AddSystems(IEnumerable<(Type, Func<ISystem>)> systemTypesAndFactories)
+    {
+        PrepareFactoryListForInsertionOfEnumerable(systemTypesAndFactories);
+        foreach (var (systemType, factory) in systemTypesAndFactories)
+        {
+            AddSystem(systemType, factory);
+        }
+        return this;
+    }
 
     public EcsBuilder AddSystem(Type systemType, Func<ISystem>? factory = null)
     {
@@ -38,6 +59,14 @@ public class EcsBuilder
     {
         var schedule = new SystemSchedule(_factories);
         return new EntityComponentSystem(schedule);
+    }
+
+    private void PrepareFactoryListForInsertionOfEnumerable<T>(IEnumerable<T> enumerable)
+    {
+        if (enumerable.TryGetNonEnumeratedCount(out int count))
+        {
+            _factories.EnsureCapacity(_factories.Count + count);
+        }
     }
 
     private static Func<ISystem> MakeFactoryFromParameterlessConstructorOrThrowIfNone(Type systemType)
