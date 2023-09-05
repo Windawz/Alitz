@@ -4,17 +4,17 @@ using System.Diagnostics;
 namespace Alitz;
 internal class MainLoop
 {
-    public delegate void InputAction(ConsoleKeyInfo? input, Action loopStopper);
+    public delegate void InputAction(ConsoleKeyInfo? input);
 
-    public delegate void RenderAction(Action loopStopper);
+    public delegate void RenderAction();
 
-    public delegate void UpdateAction(long deltaMs, Action loopStopper);
+    public delegate void UpdateAction(long deltaMs);
 
-    public MainLoop(InputAction inputAction, UpdateAction updateAction, RenderAction renderAction)
+    public MainLoop(InputAction? inputAction = null, UpdateAction? updateAction = null, RenderAction? renderAction = null)
     {
-        _inputAction = inputAction;
-        _updateAction = updateAction;
-        _renderAction = renderAction;
+        _inputAction = inputAction ?? delegate { };
+        _updateAction = updateAction ?? delegate { };
+        _renderAction = renderAction ?? delegate { };
         _stopwatch = new Stopwatch();
     }
 
@@ -39,11 +39,11 @@ internal class MainLoop
         }
     }
 
-    private void LoopStopper() =>
+    public void Stop() =>
         _isRunning = false;
 
     private void CallInputAction() =>
-        _inputAction(GetInputIfAny(), LoopStopper);
+        _inputAction(GetInputIfAny());
 
     private void CallUpdateAction()
     {
@@ -52,13 +52,13 @@ internal class MainLoop
         while (deltaMs > 0)
         {
             long stepMs = Math.Min(deltaMs, maxStepMs);
-            _updateAction(stepMs, LoopStopper);
+            _updateAction(stepMs);
             deltaMs -= stepMs;
         }
     }
 
     private void CallRenderAction() =>
-        _renderAction(LoopStopper);
+        _renderAction();
 
     private static ConsoleKeyInfo? GetInputIfAny()
     {
