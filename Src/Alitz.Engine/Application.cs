@@ -1,7 +1,18 @@
-﻿namespace Alitz;
+﻿using System;
+
+namespace Alitz;
 internal class Application
 {
-    private readonly MainLoop _mainLoop = new((_, _) => { }, (_, _) => { }, _ => { });
+    public Application()
+    {
+        var ecs = EntityComponentSystem.CreateBuilder()
+            .AddSystems(Discovery.DiscoverSystemTypes(Environment.CurrentDirectory))
+            .Build();
+
+        _mainLoop.UpdateStarted += deltaMs => ecs.Update(deltaMs);
+    }
+
+    private readonly MainLoop _mainLoop = new();
 
     public void Run() =>
         _mainLoop.Start();

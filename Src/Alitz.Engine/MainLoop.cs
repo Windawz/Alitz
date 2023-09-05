@@ -4,26 +4,24 @@ using System.Diagnostics;
 namespace Alitz;
 internal class MainLoop
 {
-    public delegate void InputAction(ConsoleKeyInfo? input);
+    public delegate void InputCheckedEventHandler(ConsoleKeyInfo? input);
 
-    public delegate void RenderAction();
+    public delegate void RenderStartedEventHandler();
 
-    public delegate void UpdateAction(long deltaMs);
+    public delegate void UpdateStartedEventHandler(long deltaMs);
 
-    public MainLoop(InputAction? inputAction = null, UpdateAction? updateAction = null, RenderAction? renderAction = null)
+    public MainLoop()
     {
-        _inputAction = inputAction ?? delegate { };
-        _updateAction = updateAction ?? delegate { };
-        _renderAction = renderAction ?? delegate { };
         _stopwatch = new Stopwatch();
     }
 
-    private readonly InputAction _inputAction;
-    private readonly RenderAction _renderAction;
     private readonly Stopwatch _stopwatch;
-    private readonly UpdateAction _updateAction;
     private bool _isRunning;
     private long _previousDeltaMs;
+
+    public event InputCheckedEventHandler? InputChecked;
+    public event UpdateStartedEventHandler? UpdateStarted;
+    public event RenderStartedEventHandler? RenderStarted;
 
     public void Start()
     {
@@ -31,9 +29,9 @@ internal class MainLoop
         while (_isRunning)
         {
             _stopwatch.Restart();
-            CallInputAction();
-            CallUpdateAction();
-            CallRenderAction();
+            OnInputChecked();
+            OnUpdateStarted();
+            OnRenderStarted();
             _stopwatch.Stop();
             _previousDeltaMs = _stopwatch.ElapsedMilliseconds;
         }
@@ -42,23 +40,23 @@ internal class MainLoop
     public void Stop() =>
         _isRunning = false;
 
-    private void CallInputAction() =>
-        _inputAction(GetInputIfAny());
+    private void OnInputChecked() =>
+        InputChecked?.Invoke(GetInputIfAny());
 
-    private void CallUpdateAction()
+    private void OnUpdateStarted()
     {
         const long maxStepMs = 20;
         long deltaMs = _previousDeltaMs;
         while (deltaMs > 0)
         {
             long stepMs = Math.Min(deltaMs, maxStepMs);
-            _updateAction(stepMs);
+            UpdateStarted?.Invoke(stepMs);
             deltaMs -= stepMs;
         }
     }
 
-    private void CallRenderAction() =>
-        _renderAction();
+    private void OnRenderStarted() =>
+        RenderStarted?.Invoke();
 
     private static ConsoleKeyInfo? GetInputIfAny()
     {
