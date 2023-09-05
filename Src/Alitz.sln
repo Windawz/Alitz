@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alitz.UnitTests.Utilities",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alitz.Engine", "Alitz.Engine\Alitz.Engine.csproj", "{543599DF-848E-4721-B7EC-9D10950DFF43}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alitz.Common.Components", "Alitz.Common.Components\Alitz.Common.Components.csproj", "{F387AB60-2D80-47A4-B6B8-C322B74A5F68}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{543599DF-848E-4721-B7EC-9D10950DFF43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{543599DF-848E-4721-B7EC-9D10950DFF43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{543599DF-848E-4721-B7EC-9D10950DFF43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F387AB60-2D80-47A4-B6B8-C322B74A5F68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F387AB60-2D80-47A4-B6B8-C322B74A5F68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F387AB60-2D80-47A4-B6B8-C322B74A5F68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F387AB60-2D80-47A4-B6B8-C322B74A5F68}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
