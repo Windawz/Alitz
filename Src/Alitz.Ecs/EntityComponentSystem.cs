@@ -21,6 +21,6 @@ public class EntityComponentSystem
     public static EcsBuilder CreateBuilder() =>
         new();
 
-    public void Update(long elapsedMilliseconds) =>
-        _systemSchedule.Update(_systemContext, elapsedMilliseconds);
+    public void Update(long deltaMs) =>
+        _systemSchedule.Update(_systemContext, deltaMs);
 }
