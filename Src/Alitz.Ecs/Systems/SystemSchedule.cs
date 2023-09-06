@@ -20,7 +20,7 @@ internal class SystemSchedule
 
     private readonly ISystem[] _systems;
 
-    public void Update(SystemContext context, long elapsedMilliseconds)
+    public void Update(ISystemContext context, long elapsedMilliseconds)
     {
         for (int i = 0; i < _systems.Length; i++)
         {

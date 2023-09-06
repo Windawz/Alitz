@@ -24,7 +24,7 @@ public static class SystemContextForEachExtensions
         ref TComponent4 component4
     ) where TComponent1 : struct where TComponent2 : struct where TComponent3 : struct where TComponent4 : struct;
 
-    public static void ForEach<TComponent1>(this SystemContext context, ForEachAction<TComponent1> action)
+    public static void ForEach<TComponent1>(this ISystemContext context, ForEachAction<TComponent1> action)
         where TComponent1 : struct
     {
         var components1 = context.Components<TComponent1>();
@@ -35,7 +35,7 @@ public static class SystemContextForEachExtensions
     }
 
     public static void ForEach<TComponent1, TComponent2>(
-        this SystemContext context,
+        this ISystemContext context,
         ForEachAction<TComponent1, TComponent2> action
     ) where TComponent1 : struct where TComponent2 : struct
     {
@@ -50,7 +50,7 @@ public static class SystemContextForEachExtensions
     }
 
     public static void ForEach<TComponent1, TComponent2, TComponent3>(
-        this SystemContext context,
+        this ISystemContext context,
         ForEachAction<TComponent1, TComponent2, TComponent3> action
     ) where TComponent1 : struct where TComponent2 : struct where TComponent3 : struct
     {
@@ -70,7 +70,7 @@ public static class SystemContextForEachExtensions
     }
 
     public static void ForEach<TComponent1, TComponent2, TComponent3, TComponent4>(
-        this SystemContext context,
+        this ISystemContext context,
         ForEachAction<TComponent1, TComponent2, TComponent3, TComponent4> action
     ) where TComponent1 : struct where TComponent2 : struct where TComponent3 : struct where TComponent4 : struct
     {

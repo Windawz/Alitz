@@ -5,22 +5,34 @@ using Alitz.Collections;
 using Alitz.Systems;
 
 namespace Alitz;
-public class EntityComponentSystem
+public class EntityComponentSystem : ISystemContext
 {
     internal EntityComponentSystem(SystemSchedule systemSchedule)
     {
-        var columnTable = new Dictionary<Type, IColumn>();
-        var entityPool = new IdPool();
+        _columnTable = new Dictionary<Type, IColumn>();
         _systemSchedule = systemSchedule;
-        _systemContext = new SystemContext(columnTable, entityPool);
+        EntityPool = new IdPool();
     }
 
-    private readonly SystemContext _systemContext;
+    private readonly IDictionary<Type, IColumn> _columnTable;
     private readonly SystemSchedule _systemSchedule;
+
+    public IdPool EntityPool { get; }
+
+    public Column<TComponent> Components<TComponent>() where TComponent : struct
+    {
+        var componentType = typeof(TComponent);
+        if (!_columnTable.ContainsKey(componentType))
+        {
+            var column = new Column<TComponent>(EntityPool);
+            _columnTable.Add(componentType, column);
+        }
+        return (Column<TComponent>)_columnTable[componentType];
+    }
 
     public static EcsBuilder CreateBuilder() =>
         new();
 
     public void Update(long deltaMs) =>
-        _systemSchedule.Update(_systemContext, deltaMs);
+        _systemSchedule.Update(this, deltaMs);
 }
