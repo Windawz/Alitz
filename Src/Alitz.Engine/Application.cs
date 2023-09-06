@@ -9,7 +9,10 @@ internal class Application
             .AddSystems(Discovery.DiscoverSystemTypes(Environment.CurrentDirectory))
             .Build();
 
+        var renderer = new Renderer(ecs);
+
         _mainLoop.UpdateStarted += deltaMs => ecs.Update(deltaMs);
+        _mainLoop.RenderStarted += () => renderer.Render();
     }
 
     private readonly MainLoop _mainLoop = new();
