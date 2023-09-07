@@ -11,15 +11,12 @@ internal class Application
 
         var renderer = new Renderer(ecs);
 
-        var inputHandler = new UserInputHandler(ecs);
-
-        _mainLoop.UpdateStarted += deltaMs => ecs.Update(deltaMs);
-        _mainLoop.RenderStarted += () => renderer.Render();
-        _mainLoop.InputChecked += maybeKeyInfo => inputHandler.Handle(maybeKeyInfo);
+        _gameLoop.IterationStarted += context => ecs.Update(context.DeltaMs);
+        _gameLoop.IterationStarted += _ => renderer.Render();
     }
 
-    private readonly MainLoop _mainLoop = new();
+    private readonly GameLoop _gameLoop = new();
 
     public void Run() =>
-        _mainLoop.Start();
+        _gameLoop.Start();
 }
