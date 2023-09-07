@@ -11,8 +11,11 @@ internal class Application
 
         var renderer = new Renderer(ecs);
 
+        var inputHandler = new UserInputHandler(ecs);
+
         _mainLoop.UpdateStarted += deltaMs => ecs.Update(deltaMs);
         _mainLoop.RenderStarted += () => renderer.Render();
+        _mainLoop.InputChecked += maybeKeyInfo => inputHandler.Handle(maybeKeyInfo);
     }
 
     private readonly MainLoop _mainLoop = new();
