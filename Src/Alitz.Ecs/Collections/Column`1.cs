@@ -24,7 +24,7 @@ public class Column<TComponent> : IColumn where TComponent : struct
     {
         get
         {
-            ThrowIfEntityDoesNotExist(entity);
+            ThrowArgumentOutOfRangeIfEntityDoesNotExist(entity);
             if (!Contains(entity))
             {
                 throw new ArgumentOutOfRangeException(nameof(entity));
@@ -33,7 +33,7 @@ public class Column<TComponent> : IColumn where TComponent : struct
         }
         set
         {
-            ThrowIfEntityDoesNotExist(entity);
+            ThrowArgumentOutOfRangeIfEntityDoesNotExist(entity);
             if (!Contains(entity))
             {
                 TryAdd(entity, value);
@@ -72,17 +72,14 @@ public class Column<TComponent> : IColumn where TComponent : struct
         }
     }
 
-    public bool Contains(Id entity)
-    {
-        ThrowIfEntityDoesNotExist(entity);
-        return entity.Index < _sparse.Length
-            && _sparse[entity.Index] != SparseFillValue
-            && _denseEntities[_sparse[entity.Index]].Equals(entity);
-    }
+    public bool Contains(Id entity) =>
+        DoesEntityExist(entity)
+        && entity.Index < _sparse.Length
+        && _sparse[entity.Index] != SparseFillValue
+        && _denseEntities[_sparse[entity.Index]].Equals(entity);
 
     public bool Remove(Id entity)
     {
-        ThrowIfEntityDoesNotExist(entity);
         if (!Contains(entity))
         {
             return false;
@@ -105,7 +102,6 @@ public class Column<TComponent> : IColumn where TComponent : struct
 
     public bool TryAdd(Id entity, TComponent component)
     {
-        ThrowIfEntityDoesNotExist(entity);
         if (Contains(entity))
         {
             return false;
@@ -122,7 +118,6 @@ public class Column<TComponent> : IColumn where TComponent : struct
 
     public bool TryGet(Id entity, out TComponent component)
     {
-        ThrowIfEntityDoesNotExist(entity);
         if (!Contains(entity))
         {
             component = default!;
@@ -134,7 +129,6 @@ public class Column<TComponent> : IColumn where TComponent : struct
 
     public bool TrySet(Id entity, TComponent component)
     {
-        ThrowIfEntityDoesNotExist(entity);
         if (!Contains(entity))
         {
             return false;
@@ -145,7 +139,7 @@ public class Column<TComponent> : IColumn where TComponent : struct
 
     public ref TComponent GetByRef(Id entity)
     {
-        ThrowIfEntityDoesNotExist(entity);
+        ThrowArgumentOutOfRangeIfEntityDoesNotExist(entity);
         if (!Contains(entity))
         {
             throw new ArgumentOutOfRangeException(nameof(entity));
@@ -153,11 +147,17 @@ public class Column<TComponent> : IColumn where TComponent : struct
         return ref _denseComponents[_sparse[entity.Index]];
     }
 
-    private void ThrowIfEntityDoesNotExist(Id entity)
+    private bool DoesEntityExist(Id entity) =>
+        _entityPool.IsOccupied(entity);
+
+    private void ThrowArgumentOutOfRangeIfEntityDoesNotExist(Id entity, string? paramName = null)
     {
-        if (!_entityPool.IsOccupied(entity))
+        paramName ??= nameof(entity);
+        if (!DoesEntityExist(entity))
         {
-            throw new InvalidOperationException($"Entity with id {entity} does not exist");
+            throw new ArgumentOutOfRangeException(
+                message: $"Entity with id {entity} does not exist",
+                paramName: paramName);
         }
     }
 
