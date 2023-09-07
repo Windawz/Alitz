@@ -1,6 +1,8 @@
 ﻿namespace Alitz.Systems;
 public static class SystemContextExtensions
 {
+    public delegate void DoAction<TComponent>(ref TComponent component) where TComponent : struct;
+
     public delegate void ForEachAction<TComponent1>(Id entity, ref TComponent1 component1) where TComponent1 : struct;
 
     public delegate void ForEachAction<TComponent1, TComponent2>(
@@ -88,6 +90,20 @@ public static class SystemContextExtensions
                 ref components2.GetByRef(entity),
                 ref components3.GetByRef(entity),
                 ref components4.GetByRef(entity));
+        }
+    }
+
+    public static void Do<TComponent>(this ISystemContext context, Id entity, DoAction<TComponent> action)
+        where TComponent : struct =>
+        action(ref context.Components<TComponent>().GetByRef(entity));
+
+    public static void DoIfHas<TComponent>(this ISystemContext context, Id entity, DoAction<TComponent> action)
+        where TComponent : struct
+    {
+        var column = context.Components<TComponent>();
+        if (column.Contains(entity))
+        {
+            action(ref column.GetByRef(entity));
         }
     }
 }
