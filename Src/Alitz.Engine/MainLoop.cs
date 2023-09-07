@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Alitz;
@@ -15,13 +16,30 @@ internal class MainLoop
         _stopwatch = new Stopwatch();
     }
 
+    private readonly List<InputCheckedEventHandler> _inputCheckedHandlers = new(2);
+    private readonly List<RenderStartedEventHandler> _renderStartedHandlers = new(2);
     private readonly Stopwatch _stopwatch;
+    private readonly List<UpdateStartedEventHandler> _updateStartedHandlers = new(2);
     private bool _isRunning;
     private long _previousDeltaMs;
 
-    public event InputCheckedEventHandler? InputChecked;
-    public event UpdateStartedEventHandler? UpdateStarted;
-    public event RenderStartedEventHandler? RenderStarted;
+    public event InputCheckedEventHandler InputChecked
+    {
+        add => _inputCheckedHandlers.Add(value);
+        remove => _inputCheckedHandlers.Remove(value);
+    }
+
+    public event UpdateStartedEventHandler UpdateStarted
+    {
+        add => _updateStartedHandlers.Add(value);
+        remove => _updateStartedHandlers.Remove(value);
+    }
+
+    public event RenderStartedEventHandler RenderStarted
+    {
+        add => _renderStartedHandlers.Add(value);
+        remove => _renderStartedHandlers.Remove(value);
+    }
 
     public void Start()
     {
@@ -40,8 +58,13 @@ internal class MainLoop
     public void Stop() =>
         _isRunning = false;
 
-    private void OnInputChecked() =>
-        InputChecked?.Invoke(GetInputIfAny());
+    private void OnInputChecked()
+    {
+        for (int i = 0; i < _inputCheckedHandlers.Count; i++)
+        {
+            _inputCheckedHandlers[i](GetInputIfAny());
+        }
+    }
 
     private void OnUpdateStarted()
     {
@@ -50,13 +73,21 @@ internal class MainLoop
         while (deltaMs > 0)
         {
             long stepMs = Math.Min(deltaMs, maxStepMs);
-            UpdateStarted?.Invoke(stepMs);
+            for (int i = 0; i < _updateStartedHandlers.Count; i++)
+            {
+                _updateStartedHandlers[i](stepMs);
+            }
             deltaMs -= stepMs;
         }
     }
 
-    private void OnRenderStarted() =>
-        RenderStarted?.Invoke();
+    private void OnRenderStarted()
+    {
+        for (int i = 0; i < _renderStartedHandlers.Count; i++)
+        {
+            _renderStartedHandlers[i]();
+        }
+    }
 
     private static ConsoleKeyInfo? GetInputIfAny()
     {
