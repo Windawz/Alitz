@@ -1,7 +1,8 @@
 ﻿using System;
 
-using Alitz;
+using Alitz.Common;
 
+namespace Alitz.Ecs;
 public class EcsException : AlitzException
 {
     public EcsException() { }

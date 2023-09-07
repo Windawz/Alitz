@@ -1,6 +1,8 @@
 ﻿using System;
 
-namespace Alitz.Collections;
+using Alitz.Common;
+
+namespace Alitz.Ecs.Collections;
 public static class ColumnExtensions
 {
     public static void AddDefault<TComponent>(this Column<TComponent> column, Id entity) where TComponent : struct =>

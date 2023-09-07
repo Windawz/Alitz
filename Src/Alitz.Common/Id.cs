@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 
-namespace Alitz;
+namespace Alitz.Common;
 public readonly struct Id
 {
     private const ulong IndexMask = 0x_7FFF_FFFF;

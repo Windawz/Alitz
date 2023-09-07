@@ -1,9 +1,11 @@
 ﻿using System;
 
-using Alitz.Components;
-using Alitz.Systems;
+using Alitz.Common;
+using Alitz.Common.Components;
+using Alitz.Ecs;
+using Alitz.Ecs.Systems;
 
-namespace Alitz;
+namespace Alitz.Engine;
 public class Renderer
 {
     public Renderer(EntityComponentSystem ecs)

@@ -1,4 +1,4 @@
-﻿namespace Alitz;
+﻿namespace Alitz.Engine;
 internal interface IGameLoopIterationContext
 {
     long DeltaMs { get; }

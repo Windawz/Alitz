@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Alitz.Systems;
+namespace Alitz.Ecs.Systems;
 internal class SystemFactory
 {
     public SystemFactory(Type systemType, Func<ISystem> factory, bool prevalidateFactoryType = false)

@@ -1,4 +1,4 @@
-﻿namespace Alitz;
+﻿namespace Alitz.Engine;
 internal enum InputPollResult
 {
     Empty,

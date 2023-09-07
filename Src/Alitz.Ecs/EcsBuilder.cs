@@ -4,9 +4,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-using Alitz.Systems;
+using Alitz.Ecs.Systems;
 
-namespace Alitz;
+namespace Alitz.Ecs;
 public class EcsBuilder
 {
     internal EcsBuilder() { }

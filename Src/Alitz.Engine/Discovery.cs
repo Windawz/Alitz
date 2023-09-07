@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-using Alitz.Systems;
+using Alitz.Ecs.Systems;
 
-namespace Alitz;
+namespace Alitz.Engine;
 public static class Discovery
 {
     public static IReadOnlyCollection<Type> DiscoverSystemTypes(string directoryName)

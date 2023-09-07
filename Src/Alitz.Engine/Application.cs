@@ -1,6 +1,8 @@
 ﻿using System;
 
-namespace Alitz;
+using Alitz.Ecs;
+
+namespace Alitz.Engine;
 internal class Application
 {
     public Application()

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Alitz.Collections;
+using Alitz.Common;
+
+namespace Alitz.Ecs.Collections;
 public interface IColumn
 {
     Type ComponentType { get; }

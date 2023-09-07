@@ -1,4 +1,6 @@
-﻿namespace Alitz.Systems;
+﻿using Alitz.Common;
+
+namespace Alitz.Ecs.Systems;
 public static class SystemContextExtensions
 {
     public delegate void DoAction<TComponent>(ref TComponent component) where TComponent : struct;

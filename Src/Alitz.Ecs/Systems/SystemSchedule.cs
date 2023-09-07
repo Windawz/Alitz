@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Alitz.Systems;
+namespace Alitz.Ecs.Systems;
 internal class SystemSchedule
 {
     public SystemSchedule(IEnumerable<SystemFactory> factories)

@@ -4,7 +4,6 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>disable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>Alitz</RootNamespace>
         <Authors>Alitz.Engine</Authors>
         <Company>Alitz</Company>
         <AssemblyVersion>1.0.0</AssemblyVersion>

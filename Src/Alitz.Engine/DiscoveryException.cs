@@ -1,6 +1,8 @@
 ﻿using System;
 
-namespace Alitz;
+using Alitz.Common;
+
+namespace Alitz.Engine;
 public class DiscoveryException : AlitzException
 {
     public DiscoveryException() { }

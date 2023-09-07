@@ -3,9 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-using Alitz.Collections;
+using Alitz.Common;
+using Alitz.Ecs.Collections;
 
-namespace Alitz.Systems;
+namespace Alitz.Ecs.Systems;
 internal readonly struct ColumnIntersectionEnumerator : IEnumerator<Id>
 {
     public ColumnIntersectionEnumerator(params IColumn[] columns)

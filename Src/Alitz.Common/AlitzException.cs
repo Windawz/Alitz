@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Alitz;
+namespace Alitz.Common;
 public class AlitzException : Exception
 {
     public AlitzException() { }

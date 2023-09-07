@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Alitz;
+namespace Alitz.Engine;
 internal class GameLoop
 {
     public GameLoop()

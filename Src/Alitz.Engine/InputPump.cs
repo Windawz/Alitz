@@ -1,4 +1,6 @@
-﻿namespace Alitz;
+﻿using Alitz.Ecs;
+
+namespace Alitz.Engine;
 internal class InputPump
 {
     public InputPump(EntityComponentSystem ecs, IInputProducer inputProducer, IInputForwarder inputForwarder)

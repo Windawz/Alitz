@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Alitz.Systems;
+namespace Alitz.Ecs.Systems;
 internal static class Dependencies
 {
     public static Type[] GetSystemTypesOrderedByDependencies(IEnumerable<Type> systemTypes) =>

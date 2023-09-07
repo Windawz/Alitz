@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Alitz.Collections;
+namespace Alitz.Common.Collections;
 public class IdPool
 {
     private readonly HashSet<Id> _occupied = new();

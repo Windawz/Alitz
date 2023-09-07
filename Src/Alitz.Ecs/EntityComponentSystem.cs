@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Alitz.Collections;
-using Alitz.Systems;
+using Alitz.Common.Collections;
+using Alitz.Ecs.Collections;
+using Alitz.Ecs.Systems;
 
-namespace Alitz;
+namespace Alitz.Ecs;
 public class EntityComponentSystem : ISystemContext
 {
     internal EntityComponentSystem(SystemSchedule systemSchedule)
