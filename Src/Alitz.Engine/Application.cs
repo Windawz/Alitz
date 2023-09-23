@@ -1,6 +1,7 @@
 ﻿using System;
 
 using Alitz.Ecs;
+using Alitz.Engine.Systems;
 
 namespace Alitz.Engine;
 internal class Application
@@ -9,12 +10,10 @@ internal class Application
     {
         var ecs = EntityComponentSystem.CreateBuilder()
             .AddSystems(Discovery.DiscoverSystemTypes(Environment.CurrentDirectory))
+            .AddSystem<RendererSystem>()
             .Build();
 
-        var renderer = new Renderer(ecs);
-
         _gameLoop.IterationStarted += context => ecs.Update(context.DeltaMs);
-        _gameLoop.IterationStarted += _ => renderer.Render();
     }
 
     private readonly GameLoop _gameLoop = new();
