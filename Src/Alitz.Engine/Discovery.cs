@@ -13,7 +13,7 @@ public static class Discovery
     {
         if (!Directory.Exists(directoryName))
         {
-            throw new DiscoveryException($"Discovery directory {directoryName} does not exist");
+            throw new DirectoryNotFoundException($"Could not find directory \"{directoryName}\"");
         }
 
         return Directory.EnumerateFiles(directoryName, "*.dll", SearchOption.TopDirectoryOnly)
