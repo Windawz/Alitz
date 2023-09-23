@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Alitz.Ecs.Systems;
+namespace Alitz.Ecs.Systems.Scheduling;
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public class DependsOnAttribute : Attribute
 {

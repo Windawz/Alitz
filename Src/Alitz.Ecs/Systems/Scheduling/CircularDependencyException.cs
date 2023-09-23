@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Alitz.Ecs.Systems;
+namespace Alitz.Ecs.Systems.Scheduling;
 public class CircularDependencyException : EcsException
 {
     public CircularDependencyException(Type dependentSystemType, Type dependencySystemType)

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Alitz.Common.Collections;
 using Alitz.Ecs.Collections;
 using Alitz.Ecs.Systems;
+using Alitz.Ecs.Systems.Scheduling;
 
 namespace Alitz.Ecs;
 public class EntityComponentSystem : ISystemContext

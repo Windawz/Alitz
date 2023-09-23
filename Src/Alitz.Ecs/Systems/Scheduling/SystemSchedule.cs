@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace Alitz.Ecs.Systems;
+namespace Alitz.Ecs.Systems.Scheduling;
 internal class SystemSchedule
 {
     public SystemSchedule(IEnumerable<SystemFactory> factories)

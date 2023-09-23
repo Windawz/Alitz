@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 
 using Alitz.Ecs.Systems;
+using Alitz.Ecs.Systems.Scheduling;
 
 namespace Alitz.Ecs;
 public class EcsBuilder
