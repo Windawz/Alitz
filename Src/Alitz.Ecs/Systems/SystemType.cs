@@ -17,4 +17,7 @@ public class SystemType
 
     public static implicit operator SystemType(Type type) =>
         new(type);
+
+    public static implicit operator Type(SystemType systemType) =>
+        systemType.Type;
 }
