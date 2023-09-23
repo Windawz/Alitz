@@ -47,8 +47,7 @@ internal class SystemSchedule
                 inner: distinctFactories,
                 outerKeySelector: orderedSystemType => orderedSystemType,
                 innerKeySelector: factory => factory.SystemType,
-                resultSelector: (_, factory) => factory)
-            .Select(factory => factory.Create())
+                resultSelector: (_, factory) => factory.Create())
             .ToArray();
     }
 
