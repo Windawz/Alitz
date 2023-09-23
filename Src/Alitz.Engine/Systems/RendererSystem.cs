@@ -5,6 +5,7 @@ using Alitz.Common.Components;
 using Alitz.Ecs.Systems;
 
 namespace Alitz.Engine.Systems;
+[ForceStage(-1)]
 internal class RendererSystem : ISystem
 {
     public void Update(ISystemContext context, long deltaMs) => 
