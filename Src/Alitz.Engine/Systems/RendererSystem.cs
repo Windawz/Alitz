@@ -3,10 +3,9 @@ using System;
 using Alitz.Common;
 using Alitz.Common.Components;
 using Alitz.Ecs.Systems;
-using Alitz.Ecs.Systems.Scheduling;
 
 namespace Alitz.Engine.Systems;
-[ForceStage(-1)]
+[RunsAtStage(-1)]
 internal class RendererSystem : ISystem
 {
     public void Update(ISystemContext context, long deltaMs) => 

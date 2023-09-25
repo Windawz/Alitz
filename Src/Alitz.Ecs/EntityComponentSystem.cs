@@ -1,40 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Alitz.Common.Collections;
 using Alitz.Ecs.Collections;
 using Alitz.Ecs.Systems;
-using Alitz.Ecs.Systems.Scheduling;
 
 namespace Alitz.Ecs;
 public class EntityComponentSystem : ISystemContext
 {
-    internal EntityComponentSystem(SystemSchedule systemSchedule)
+    internal EntityComponentSystem(IReadOnlyCollection<ISystem> systems)
     {
-        _columnTable = new Dictionary<Type, IColumn>();
-        _systemSchedule = systemSchedule;
+        _columns = new Dictionary<Type, IColumn>();
+        _systems = systems.ToArray();
         EntityPool = new IdPool();
     }
 
-    private readonly IDictionary<Type, IColumn> _columnTable;
-    private readonly SystemSchedule _systemSchedule;
+    private readonly IDictionary<Type, IColumn> _columns;
+    private readonly IReadOnlyCollection<ISystem> _systems;
 
     public IdPool EntityPool { get; }
 
     public Column<TComponent> Components<TComponent>() where TComponent : struct
     {
         var componentType = typeof(TComponent);
-        if (!_columnTable.ContainsKey(componentType))
+        if (!_columns.ContainsKey(componentType))
         {
             var column = new Column<TComponent>(EntityPool);
-            _columnTable.Add(componentType, column);
+            _columns.Add(componentType, column);
         }
-        return (Column<TComponent>)_columnTable[componentType];
+        return (Column<TComponent>)_columns[componentType];
     }
 
     public static EcsBuilder CreateBuilder() =>
         new();
 
-    public void Update(long deltaMs) =>
-        _systemSchedule.Update(this, deltaMs);
+    public void Update(long deltaMs)
+    {
+        foreach (var system in _systems)
+        {
+            system.Update(this, deltaMs);
+        }
+    }
 }
