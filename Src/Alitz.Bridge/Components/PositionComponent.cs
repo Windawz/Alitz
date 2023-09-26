@@ -1,4 +1,4 @@
-﻿namespace Alitz.Common.Components;
+﻿namespace Alitz.Bridge.Components;
 public readonly struct PositionComponent
 {
     public PositionComponent(long x, long y)

@@ -1,7 +1,7 @@
 using System;
 
+using Alitz.Bridge.Components;
 using Alitz.Common;
-using Alitz.Common.Components;
 using Alitz.Ecs.Systems;
 
 namespace Alitz.Engine.Systems;

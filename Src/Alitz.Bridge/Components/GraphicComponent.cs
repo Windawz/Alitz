@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Alitz.Common.Components;
+namespace Alitz.Bridge.Components;
 public readonly struct GraphicComponent
 {
     public GraphicComponent(string codePoint)
