@@ -13,8 +13,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Alitz.Common\Alitz.Common.csproj"/>
-        <ProjectReference Include="..\Alitz.Ecs\Alitz.Ecs.csproj"/>
+        <ProjectReference Include="..\Alitz.Common\Alitz.Common.csproj" />
+        <ProjectReference Include="..\Alitz.Ecs\Alitz.Ecs.csproj" />
+        <ProjectReference Include="..\Alitz.Bridge\Alitz.Bridge.csproj" />
     </ItemGroup>
 
 </Project>

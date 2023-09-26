@@ -1,10 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# 
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alitz.Ecs", "Alitz.Ecs\Alitz.Ecs.csproj", "{F0ED2967-E23E-4541-8B83-877498B5EDF9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alitz.Common", "Alitz.Common\Alitz.Common.csproj", "{8D6D815B-1FFB-4A20-A81B-AA49076FEEED}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alitz.Engine", "Alitz.Engine\Alitz.Engine.csproj", "{543599DF-848E-4721-B7EC-9D10950DFF43}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alitz.Bridge", "Alitz.Bridge\Alitz.Bridge.csproj", "{85391517-6ECD-4A19-AEBC-4AC484DFA893}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +27,9 @@ Global
 		{543599DF-848E-4721-B7EC-9D10950DFF43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{543599DF-848E-4721-B7EC-9D10950DFF43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{543599DF-848E-4721-B7EC-9D10950DFF43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85391517-6ECD-4A19-AEBC-4AC484DFA893}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85391517-6ECD-4A19-AEBC-4AC484DFA893}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85391517-6ECD-4A19-AEBC-4AC484DFA893}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85391517-6ECD-4A19-AEBC-4AC484DFA893}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
