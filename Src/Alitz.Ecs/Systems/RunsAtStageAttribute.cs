@@ -4,11 +4,9 @@ namespace Alitz.Ecs.Systems;
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public class RunsAtStageAttribute : Attribute
 {
-    public RunsAtStageAttribute(int stageNumber) : this(new Stage(stageNumber)) { }
-
-    public RunsAtStageAttribute(Stage stage)
+    public RunsAtStageAttribute(int stageNumber)
     {
-        Stage = stage;
+        Stage = new(stageNumber);
     }
 
     public Stage Stage { get; }
