@@ -16,6 +16,7 @@ internal class Application
                     .SelectMany(assembly => Discovery.EnumerateSystemTypes(assembly))
             )
             .AddSystem<RendererSystem>()
+            .AddSystem<InputSystem>()
             .Build();
 
         _gameLoop.IterationStarted += context => ecs.Update(context.DeltaMs);
