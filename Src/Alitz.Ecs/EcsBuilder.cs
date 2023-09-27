@@ -13,7 +13,7 @@ public class EcsBuilder
 
     private readonly List<SystemInstantiationInfo> _instantiationInfos = new();
 
-    public EcsBuilder AddSystems(IEnumerable<Type> systemTypes)
+    public EcsBuilder AddSystems(IEnumerable<SystemType> systemTypes)
     {
         if (systemTypes.TryGetNonEnumeratedCount(out int count))
         {
@@ -26,7 +26,7 @@ public class EcsBuilder
         return this;
     }
 
-    public EcsBuilder AddSystems(IEnumerable<(Type, Func<ISystem>)> systemTypesAndFactories)
+    public EcsBuilder AddSystems(IEnumerable<(SystemType, Func<ISystem>)> systemTypesAndFactories)
     {
         if (systemTypesAndFactories.TryGetNonEnumeratedCount(out int count))
         {
@@ -39,21 +39,21 @@ public class EcsBuilder
         return this;
     }
 
-    public EcsBuilder AddSystem(Type systemType, Func<ISystem>? factory = null)
+    public EcsBuilder AddSystem(SystemType systemType, Func<ISystem>? factory = null)
     {
-        _instantiationInfos.Add(new SystemInstantiationInfo(new SystemType(systemType), factory));
+        _instantiationInfos.Add(new SystemInstantiationInfo(systemType, factory));
         return this;
     }
 
     public EcsBuilder AddSystem<TSystem>() where TSystem : class, ISystem, new()
     {
-        _instantiationInfos.Add(new SystemInstantiationInfo(new SystemType(typeof(TSystem)), null));
+        _instantiationInfos.Add(new SystemInstantiationInfo(typeof(TSystem), null));
         return this;
     }
 
     public EcsBuilder AddSystem<TSystem>(Func<TSystem>? factory) where TSystem : class, ISystem
     {
-        _instantiationInfos.Add(new SystemInstantiationInfo(new SystemType(typeof(TSystem)), factory));
+        _instantiationInfos.Add(new SystemInstantiationInfo(typeof(TSystem), factory));
         return this;
     }
 
@@ -66,7 +66,7 @@ public class EcsBuilder
                 inner: _instantiationInfos,
                 outerKeySelector: systemType => systemType,
                 innerKeySelector: info => info.SystemType,
-                resultSelector: (systemType, info) => (systemType: systemType, systemFactory: info.SystemFactory)
+                resultSelector: (systemType, info) => (systemType, systemFactory: info.SystemFactory)
             ).Select(tuple => tuple.systemFactory())
             .ToArray();
         return new EntityComponentSystem(systems);

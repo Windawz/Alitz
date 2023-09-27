@@ -1,11 +1,11 @@
 using System;
 
 namespace Alitz.Ecs.Systems;
-internal class SystemType
+public class SystemType
 {
     public SystemType(Type type)
     {
-        if (!type.IsAssignableTo(typeof(ISystem)))
+        if (!IsValid(type))
         {
             throw new ArgumentException(paramName: nameof(type), message: $"Type {type} does not implement {typeof(ISystem)}");
         }
@@ -14,6 +14,9 @@ internal class SystemType
     }
 
     public Type Type { get; }
+
+    public static implicit operator SystemType(Type type) =>
+        new(type);
 
     public static bool operator==(SystemType left, SystemType right) =>
         left.Type.Equals(right.Type);
@@ -32,6 +35,9 @@ internal class SystemType
 
     public static bool operator!=(Type left, SystemType right) =>
         !left.Equals(right.Type);
+
+    public static bool IsValid(Type type) =>
+        type.IsAssignableTo(typeof(ISystem));
 
     public override bool Equals(object? obj) =>
         Type.Equals(obj);

@@ -9,32 +9,44 @@ using Alitz.Ecs.Systems;
 namespace Alitz.Engine;
 public static class Discovery
 {
-    public static IEnumerable<Type> DiscoverSystemTypes(string directoryName)
-    {
-        if (!Directory.Exists(directoryName))
-        {
-            throw new DirectoryNotFoundException($"Could not find directory \"{directoryName}\"");
-        }
+    public static IEnumerable<SystemType> EnumerateSystemTypes(Assembly assembly) =>
+        assembly.ExportedTypes
+            .Where(type => SystemType.IsValid(type))
+            .Cast<SystemType>();
 
-        return Directory.EnumerateFiles(directoryName, "*.dll", SearchOption.TopDirectoryOnly)
-            .Select(
-                fileName =>
+    public static IEnumerable<Assembly> LoadAndEnumerateAssemblies(DirectoryInfo directory) =>
+        EnumerateAssemblyFiles(directory)
+            .Select(file =>
                 {
-                    Assembly? maybeAssembly;
                     try
                     {
-                        maybeAssembly = Assembly.LoadFile(fileName);
+                        return Assembly.LoadFile(file.FullName);
                     }
-                    catch (Exception exception) when (exception is FileLoadException or BadImageFormatException)
+                    catch (Exception exception) when (exception is FileLoadException or BadImageFormatException or FileNotFoundException)
                     {
-                        maybeAssembly = null;
+                        return null;
                     }
-                    return maybeAssembly;
                 })
-            .Where(maybeAssembly => maybeAssembly is not null)
-            .Cast<Assembly>()
-            .SelectMany(assembly => assembly.ExportedTypes)
-            .Distinct()
-            .Where(type => type.IsAssignableTo(typeof(ISystem)));
+            .Where(assembly => assembly is not null)
+            .Cast<Assembly>();
+
+    private static IEnumerable<FileInfo> EnumerateAssemblyFiles(DirectoryInfo directory) =>
+        EnumeratePotentialAssemblyFileNames(directory)
+            .Where(file => IsAssemblyFile(file));
+
+    private static bool IsAssemblyFile(FileInfo file)
+    {
+        try
+        {
+            AssemblyName.GetAssemblyName(file.FullName);
+        }
+        catch (ArgumentException)
+        {
+            return false;
+        }
+        return true;
     }
+
+    private static IEnumerable<FileInfo> EnumeratePotentialAssemblyFileNames(DirectoryInfo directory) =>
+        directory.EnumerateFiles("*.dll", SearchOption.TopDirectoryOnly);
 }

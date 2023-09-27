@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 
 using Alitz.Ecs;
 using Alitz.Engine.Systems;
@@ -9,7 +11,10 @@ internal class Application
     public Application()
     {
         var ecs = EntityComponentSystem.CreateBuilder()
-            .AddSystems(Discovery.DiscoverSystemTypes(Environment.CurrentDirectory))
+            .AddSystems(
+                Discovery.LoadAndEnumerateAssemblies(new DirectoryInfo(Environment.CurrentDirectory))
+                    .SelectMany(assembly => Discovery.EnumerateSystemTypes(assembly))
+            )
             .AddSystem<RendererSystem>()
             .Build();
 
