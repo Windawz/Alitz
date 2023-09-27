@@ -9,7 +9,7 @@ using Alitz.Ecs.Systems;
 namespace Alitz.Engine;
 public static class Discovery
 {
-    public static IReadOnlyCollection<Type> DiscoverSystemTypes(string directoryName)
+    public static IEnumerable<Type> DiscoverSystemTypes(string directoryName)
     {
         if (!Directory.Exists(directoryName))
         {
@@ -35,7 +35,6 @@ public static class Discovery
             .Cast<Assembly>()
             .SelectMany(assembly => assembly.ExportedTypes)
             .Distinct()
-            .Where(type => type.IsAssignableTo(typeof(ISystem)))
-            .ToArray();
+            .Where(type => type.IsAssignableTo(typeof(ISystem)));
     }
 }
