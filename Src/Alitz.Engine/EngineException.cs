@@ -3,7 +3,7 @@ using System;
 using Alitz.Common;
 
 namespace Alitz.Engine;
-class EngineException : AlitzException
+internal class EngineException : AlitzException
 {
     public EngineException() { }
 

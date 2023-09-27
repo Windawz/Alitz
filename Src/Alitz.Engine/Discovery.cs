@@ -7,7 +7,7 @@ using System.Reflection;
 using Alitz.Ecs.Systems;
 
 namespace Alitz.Engine;
-public static class Discovery
+internal static class Discovery
 {
     public static IEnumerable<SystemType> EnumerateSystemTypes(Assembly assembly) =>
         assembly.ExportedTypes
