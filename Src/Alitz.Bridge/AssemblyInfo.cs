@@ -1,0 +1,1 @@
+[assembly:Alitz.Bridge.Discoverable]

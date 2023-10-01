@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 
 using Alitz.Ecs;
 using Alitz.Engine.Systems;
@@ -10,11 +9,10 @@ internal class Application
 {
     public Application()
     {
+        _plugins = LoadPlugins(new DirectoryInfo(Environment.CurrentDirectory));
+
         var ecs = EntityComponentSystem.CreateBuilder()
-            .AddSystems(
-                Discovery.LoadAndEnumerateAssemblies(new DirectoryInfo(Environment.CurrentDirectory))
-                    .SelectMany(assembly => Discovery.EnumerateSystemTypes(assembly))
-            )
+            .AddSystems(_plugins.EnumerateSystemTypes())
             .AddSystem<InputSystem>()
             .AddSystem<RendererSystem>()
             .Build();
@@ -23,7 +21,19 @@ internal class Application
     }
 
     private readonly GameLoop _gameLoop = new();
+    private PluginCollection _plugins;
 
     public void Run() =>
         _gameLoop.Start();
+
+    private static PluginCollection LoadPlugins(DirectoryInfo directory)
+    {
+        using var candidates = new PluginCandidateCollection(directory);
+        var plugins = new PluginCollection(candidates);
+        AppDomain.CurrentDomain.ProcessExit += delegate
+        {
+            plugins.Dispose();
+        };
+        return plugins;
+    }
 }
