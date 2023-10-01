@@ -1,1 +1,1 @@
-[assembly:Alitz.Bridge.Discoverable]
+[assembly:Alitz.Bridge.Plugin]

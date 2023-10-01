@@ -8,10 +8,9 @@ namespace Alitz.Engine;
 internal static class PluginCollectionExtensions
 {
     public static IEnumerable<SystemType> EnumerateSystemTypes(this PluginCollection plugins) =>
-        plugins.SelectMany(plugin => EnumerateSystemTypesInAssembly(plugin));
-
-    private static IEnumerable<SystemType> EnumerateSystemTypesInAssembly(Assembly assembly) =>
-        assembly.ExportedTypes
-            .Where(type => SystemType.IsValid(type))
-            .Cast<SystemType>();
+        plugins.SelectMany(plugin =>
+            plugin.ExportedTypes
+                .Where(type => SystemType.IsValid(type))
+                .Cast<SystemType>()
+        );
 }

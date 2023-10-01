@@ -5,11 +5,11 @@ using Alitz.Ecs;
 using Alitz.Engine.Systems;
 
 namespace Alitz.Engine;
-internal class Application
+internal class Application : IDisposable
 {
     public Application()
     {
-        _plugins = LoadPlugins(new DirectoryInfo(Environment.CurrentDirectory));
+        _plugins = PluginCollection.FromDirectory(new DirectoryInfo(Environment.CurrentDirectory));
 
         var ecs = EntityComponentSystem.CreateBuilder()
             .AddSystems(_plugins.EnumerateSystemTypes())
@@ -22,18 +22,21 @@ internal class Application
 
     private readonly GameLoop _gameLoop = new();
     private PluginCollection _plugins;
+    private bool _disposed = false;
 
     public void Run() =>
         _gameLoop.Start();
 
-    private static PluginCollection LoadPlugins(DirectoryInfo directory)
+    public void Dispose()
     {
-        using var candidates = new PluginCandidateCollection(directory);
-        var plugins = new PluginCollection(candidates);
-        AppDomain.CurrentDomain.ProcessExit += delegate
+        if (_disposed)
         {
-            plugins.Dispose();
-        };
-        return plugins;
+            return;
+        }
+
+        _plugins?.Dispose();
+        _plugins = null!;
+
+        _disposed = true;
     }
 }
