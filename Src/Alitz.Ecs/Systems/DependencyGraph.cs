@@ -87,7 +87,7 @@ internal class DependencyGraph
             {
                 return node.Dependencies
                     .Select(childNode => Enumerate(topNode, childNode))
-                    .Aggregate((left, right) => left.Concat(right));
+                    .Aggregate(Enumerable.Empty<CircularDependencyInfo>(), (left, right) => left.Concat(right));
             }
         }
 
