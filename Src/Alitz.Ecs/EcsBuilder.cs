@@ -64,8 +64,8 @@ public class EcsBuilder
         var systems = schedule
             .Join(
                 inner: _instantiationInfos,
-                outerKeySelector: systemType => systemType,
-                innerKeySelector: info => info.SystemType,
+                outerKeySelector: systemType => systemType.Type,
+                innerKeySelector: info => info.SystemType.Type,
                 resultSelector: (systemType, info) => (systemType, systemFactory: info.SystemFactory)
             ).Select(tuple => tuple.systemFactory())
             .ToArray();
