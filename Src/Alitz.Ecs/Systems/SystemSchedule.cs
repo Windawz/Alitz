@@ -37,6 +37,14 @@ internal class SystemSchedule : IReadOnlyCollection<SystemType>
             }
         }
 
+        // We started from the top, and dependencies are below
+        // their dependents.
+        // We have to reverse each stage because of that.
+        foreach (var (_, systemTypes) in systemTypeListsPerStage)
+        {
+            systemTypes.Reverse();
+        }
+
         var systemTypeCount = systemTypeListsPerStage
             .Sum(systemTypes => systemTypes.Value.Count);
 
