@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 
 namespace Alitz.Ecs.Systems;
-internal class SystemMetadata
+internal readonly struct SystemMetadata
 {
     private SystemMetadata(SystemType systemType)
     {
@@ -22,6 +22,6 @@ internal class SystemMetadata
     public Stage Stage { get; }
     public IReadOnlyCollection<SystemType> Dependencies { get; }
 
-    public static SystemMetadata Get(SystemType systemType) =>
+    public static SystemMetadata Of(SystemType systemType) =>
         new(systemType);
 }

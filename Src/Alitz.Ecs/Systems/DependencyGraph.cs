@@ -2,14 +2,32 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Alitz.Ecs.Systems;
-internal class DependencyGraph
-{
-    public DependencyGraph(IEnumerable<SystemType> systemTypes)
-    {
-        TopNodes = systemTypes.Select(systemType => MakeNode(SystemMetadata.Get(systemType))).ToArray();
+using Alitz.Common.Collections;
 
-        foreach (var circularDependency in EnumerateCircularDependencies(TopNodes))
+namespace Alitz.Ecs.Systems;
+internal class DependencyGraph : IGraph< DependencyInfo>
+{
+    private DependencyGraph(DependencyInfo dependencyInfo, IEnumerable<DependencyGraph> dependencies)
+    {
+        DependencyInfo = dependencyInfo;
+        Dependencies = dependencies.ToArray();
+    }
+
+    public DependencyInfo DependencyInfo { get; }
+
+    DependencyInfo IGraph<DependencyInfo>.Value =>
+        DependencyInfo;
+
+    public IReadOnlyCollection<DependencyGraph> Dependencies { get; }
+
+    IReadOnlyCollection<IGraph<DependencyInfo>> IGraph<DependencyInfo>.Children =>
+        Dependencies;
+
+    public static DependencyGraph Build(SystemType systemType)
+    {
+        var graph = MakeGraph(systemType);
+
+        foreach (var circularDependency in EnumerateCircularDependencies(graph))
         {
             throw new CircularDependencyException(
                 dependent: circularDependency.Dependent.Type,
@@ -17,7 +35,7 @@ internal class DependencyGraph
             );
         }
 
-        foreach (var incompatibleStage in EnumerateIncompatibleStages(TopNodes))
+        foreach (var incompatibleStage in EnumerateIncompatibleStages(graph))
         {
             throw new IncompatibleStageException(
                 dependent: incompatibleStage.Dependent.Type,
@@ -26,101 +44,112 @@ internal class DependencyGraph
                 dependencyStage: incompatibleStage.DependencyStage
             );
         }
+
+        return graph;
     }
 
-    public IReadOnlyCollection<DependencyNode> TopNodes { get; }
-
-    private static DependencyNode MakeNode(SystemMetadata topMetadata, SystemMetadata? currentMetadata = null)
+    private static DependencyGraph MakeGraph(SystemType topType, SystemType? currentType = null)
     {
-        currentMetadata ??= topMetadata;
+        currentType ??= topType;
+
+        var currentMetadata = SystemMetadata.Of(currentType);
+
         if (currentMetadata.Dependencies.Count == 0)
         {
-            return new DependencyNode(
-                systemType: currentMetadata.SystemType,
-                stage: currentMetadata.Stage,
-                startsCircularDependency: false,
-                Array.Empty<DependencyNode>()
+            return new DependencyGraph(
+                new DependencyInfo(
+                    SystemType: currentType,
+                    Stage: currentMetadata.Stage,
+                    StartsCircularDependency: false
+                ),
+                Array.Empty<DependencyGraph>()
             );
         }
         else
         {
             var childNodes = currentMetadata.Dependencies
-                .Select(childSystemType =>
+                .Select(dependencyType =>
                     {
-                        bool startsCircularDependency = childSystemType.Type == topMetadata.SystemType.Type;
-                        var childMetadata = SystemMetadata.Get(childSystemType);
-                        if (startsCircularDependency)
+                        if (dependencyType.Type == topType.Type)
                         {
-                            return new DependencyNode(
-                                systemType: childMetadata.SystemType,
-                                stage: childMetadata.Stage,
-                                startsCircularDependency: true,
-                                dependencies: Array.Empty<DependencyNode>()
+                            var dependencyMetadata = SystemMetadata.Of(dependencyType.Type);
+                            return new DependencyGraph(
+                                new DependencyInfo(
+                                    SystemType: dependencyType,
+                                    Stage: dependencyMetadata.Stage,
+                                    StartsCircularDependency: true
+                                ),
+                                dependencies: Array.Empty<DependencyGraph>()
                             );
                         }
                         else
                         {
-                            return MakeNode(topMetadata, childMetadata);
+                            return MakeGraph(topType, dependencyType);
                         }
                     }
                 ).ToArray();
 
-            return new DependencyNode(
-                systemType: currentMetadata.SystemType,
-                stage: currentMetadata.Stage,
-                startsCircularDependency: false,
+            return new DependencyGraph(
+                new DependencyInfo(
+                    SystemType: currentType.Type,
+                    Stage: currentMetadata.Stage,
+                    StartsCircularDependency: false
+                ),
                 dependencies: childNodes
             );
         }
     }
 
-    private static IEnumerable<CircularDependencyInfo> EnumerateCircularDependencies(IReadOnlyCollection<DependencyNode> topNodes)
+    private static IEnumerable<CircularDependencyInfo> EnumerateCircularDependencies(DependencyGraph graph)
     {
-        static IEnumerable<CircularDependencyInfo> Enumerate(DependencyNode topNode, DependencyNode? node = null)
+        static IEnumerable<CircularDependencyInfo> Enumerate(DependencyGraph top, DependencyGraph? node = null)
         {
-            node ??= topNode;
-            if (node.StartsCircularDependency)
+            node ??= top;
+            if (node.DependencyInfo.StartsCircularDependency)
             {
-                return Enumerable.Repeat(new CircularDependencyInfo(topNode.SystemType, node.SystemType), 1);
+                return Enumerable.Repeat(
+                    new CircularDependencyInfo(
+                        top.DependencyInfo.SystemType,
+                        node.DependencyInfo.SystemType
+                    ),
+                    1
+                );
             }
             else
             {
                 return node.Dependencies
-                    .Select(childNode => Enumerate(topNode, childNode))
+                    .Select(childNode => Enumerate(top, childNode))
                     .Aggregate(Enumerable.Empty<CircularDependencyInfo>(), (left, right) => left.Concat(right));
             }
         }
 
-        return topNodes.Select(topNode => Enumerate(topNode))
-            .SelectMany(dependencies => dependencies)
-            .ToArray();
+        return Enumerate(graph);
     }
 
-    private static IEnumerable<IncompatibleStageInfo> EnumerateIncompatibleStages(IReadOnlyCollection<DependencyNode> topNodes)
+    private static IEnumerable<IncompatibleStageInfo> EnumerateIncompatibleStages(DependencyGraph graph)
     {
-        static IEnumerable<IncompatibleStageInfo> Enumerate(DependencyNode node)
+        static IEnumerable<IncompatibleStageInfo> Enumerate(DependencyGraph node)
         {
-            foreach (var childNode in node.Dependencies)
+            foreach (var child in node.Dependencies)
             {
-                if (childNode.Stage > node.Stage)
+                if (child.DependencyInfo.Stage > node.DependencyInfo.Stage)
                 {
                     yield return new IncompatibleStageInfo(
-                        Dependent: node.SystemType,
-                        DependentStage: node.Stage,
-                        Dependency: childNode.SystemType,
-                        DependencyStage: childNode.Stage
+                        Dependent: node.DependencyInfo.SystemType,
+                        DependentStage: node.DependencyInfo.Stage,
+                        Dependency: child.DependencyInfo.SystemType,
+                        DependencyStage: child.DependencyInfo.Stage
                     );
                 }
 
-                var childInfos = Enumerate(childNode);
-                foreach (var childInfo in childInfos)
+                var childInfos = Enumerate(child);
+                foreach (var info in childInfos)
                 {
-                    yield return childInfo;
+                    yield return info;
                 }
             }
         }
 
-        return topNodes.Select(topNode => Enumerate(topNode))
-            .Aggregate((left, right) => left.Concat(right));
+        return Enumerate(graph);
     }
 }

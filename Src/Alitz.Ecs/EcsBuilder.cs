@@ -57,16 +57,18 @@ public class EcsBuilder
 
     public EntityComponentSystem Build()
     {
-        var graph = new DependencyGraph(_instantiationInfos.Select(info => info.SystemType));
-        var schedule = new SystemSchedule(graph);
-        var systems = schedule
-            .Join(
-                inner: _instantiationInfos,
-                outerKeySelector: systemType => systemType.Type,
-                innerKeySelector: info => info.SystemType.Type,
-                resultSelector: (systemType, info) => (systemType, systemFactory: info.SystemFactory)
-            ).Select(tuple => tuple.systemFactory())
-            .ToArray();
-        return new EntityComponentSystem(systems);
+        var schedule = new SystemSchedule(
+            _instantiationInfos.Select(info => info.SystemType)
+        );
+
+        return new EntityComponentSystem(
+            schedule.Join(
+                _instantiationInfos,
+                systemType => systemType.Type,
+                info => info.SystemType.Type,
+                (_, info) => info.SystemFactory()
+            )
+            .ToArray()
+        );
     }
 }
