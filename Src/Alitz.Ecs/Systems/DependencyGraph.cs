@@ -54,7 +54,7 @@ internal class DependencyGraph : IGraph<DependencyInfo>
     {
         currentType ??= topType;
 
-        var currentMetadata = SystemMetadata.Of(currentType);
+        var currentMetadata = new SystemMetadata(currentType);
 
         if (currentMetadata.Dependencies.Count == 0)
         {
@@ -74,7 +74,7 @@ internal class DependencyGraph : IGraph<DependencyInfo>
                     {
                         if (dependencyType == topType)
                         {
-                            var dependencyMetadata = SystemMetadata.Of(dependencyType);
+                            var dependencyMetadata = new SystemMetadata(dependencyType);
                             return new DependencyGraph(
                                 new DependencyInfo(
                                     SystemType: dependencyType,
