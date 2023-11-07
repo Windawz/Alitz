@@ -17,10 +17,13 @@ internal class Application : IDisposable
             .AddSystem<RendererSystem>()
             .Build();
 
-        _gameLoop.IterationStarted += context => ecs.Update(context.DeltaMs);
+        _gameLoop = new GameLoop((_, deltaMs) =>
+        {
+            ecs.Update(deltaMs);
+        });
     }
 
-    private readonly GameLoop _gameLoop = new();
+    private readonly GameLoop _gameLoop;
     private PluginCollection _plugins;
     private bool _disposed = false;
 
