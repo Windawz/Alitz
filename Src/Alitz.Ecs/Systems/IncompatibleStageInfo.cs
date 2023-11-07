@@ -1,2 +1,4 @@
+using System;
+
 namespace Alitz.Ecs.Systems;
-internal readonly record struct IncompatibleStageInfo(SystemType Dependent, Stage DependentStage, SystemType Dependency, Stage DependencyStage);
+internal readonly record struct IncompatibleStageInfo(Type Dependent, Stage DependentStage, Type Dependency, Stage DependencyStage);

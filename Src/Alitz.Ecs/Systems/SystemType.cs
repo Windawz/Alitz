@@ -1,23 +1,19 @@
 using System;
 
 namespace Alitz.Ecs.Systems;
-public class SystemType
+public static class SystemType
 {
-    public SystemType(Type type)
+    public static bool IsValid(Type systemType) =>
+        systemType.IsAssignableTo(typeof(ISystem));
+
+    internal static void ThrowIfNotValid(Type systemType, string? message = null, string? paramName = null)
     {
-        if (!IsValid(type))
+        if (!IsValid(systemType))
         {
-            throw new ArgumentException(paramName: nameof(type), message: $"Type {type} does not implement {typeof(ISystem)}");
+            throw new ArgumentException(
+                message: message ?? $"Type {systemType.FullName} is not a system",
+                paramName: paramName
+            );
         }
-
-        Type = type;
     }
-
-    public Type Type { get; }
-
-    public static implicit operator SystemType(Type type) =>
-        new(type);
-
-    public static bool IsValid(Type type) =>
-        type.IsAssignableTo(typeof(ISystem));
 }

@@ -5,7 +5,7 @@ public class SystemScheduleTests
 {
     public SystemScheduleTests()
     {
-        var types = new SystemType[]
+        var types = new Type[]
         {
             typeof(SystemA),
             typeof(SystemB),
@@ -14,7 +14,7 @@ public class SystemScheduleTests
         };
 
         _typesPerIndexInSchedule = new SystemSchedule(types)
-            .Select((systemType, i) => (systemType.Type, Index: i))
+            .Select((systemType, i) => (Type: systemType, Index: i))
             .ToDictionary(tuple => tuple.Type, tuple => tuple.Index);
     }
 

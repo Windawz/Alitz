@@ -6,12 +6,16 @@ using System.Linq;
 using Alitz.Common.Collections;
 
 namespace Alitz.Ecs.Systems;
-public class SystemSchedule : IReadOnlyCollection<SystemType>
+public class SystemSchedule : IReadOnlyCollection<Type>
 {
-    public SystemSchedule(IEnumerable<SystemType> systemTypes)
+    public SystemSchedule(IEnumerable<Type> systemTypes)
     {
         _systemTypes = systemTypes
-            .Select(systemType => DependencyGraph.Build(systemType))
+            .Select(systemType =>
+            {
+                SystemType.ThrowIfNotValid(systemType);
+                return DependencyGraph.Build(systemType);
+            })
             .SelectMany(
                 // We need to connect together all the graphs into one single
                 // enumerable.
@@ -31,16 +35,16 @@ public class SystemSchedule : IReadOnlyCollection<SystemType>
             .Select(info => info.SystemType)
             // Possible duplicates because each system type had
             // its dependency graph made in isolation from others.
-            .DistinctBy(systemType => systemType.Type)
+            .Distinct()
             .ToArray();
     }
 
-    private IReadOnlyCollection<SystemType> _systemTypes;
+    private IReadOnlyCollection<Type> _systemTypes;
 
     public int Count =>
         _systemTypes.Count;
 
-    public IEnumerator<SystemType> GetEnumerator() =>
+    public IEnumerator<Type> GetEnumerator() =>
         _systemTypes.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() =>

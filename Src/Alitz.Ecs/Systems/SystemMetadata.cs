@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -5,23 +6,22 @@ using System.Reflection;
 namespace Alitz.Ecs.Systems;
 internal readonly struct SystemMetadata
 {
-    private SystemMetadata(SystemType systemType)
+    private SystemMetadata(Type systemType)
     {
+        Systems.SystemType.ThrowIfNotValid(systemType, paramName: nameof(systemType));
         SystemType = systemType;
         Stage = SystemType
-            .Type
             .GetCustomAttribute<RunsAtStageAttribute>()?.Stage ?? default;
         Dependencies = SystemType
-            .Type
             .GetCustomAttributes<HasDependencyAttribute>()
-            .Select(attribute => new SystemType(attribute.SystemType))
+            .Select(attribute => attribute.SystemType)
             .ToArray();
     }
 
-    public SystemType SystemType { get; }
+    public Type SystemType { get; }
     public Stage Stage { get; }
-    public IReadOnlyCollection<SystemType> Dependencies { get; }
+    public IReadOnlyCollection<Type> Dependencies { get; }
 
-    public static SystemMetadata Of(SystemType systemType) =>
+    public static SystemMetadata Of(Type systemType) =>
         new(systemType);
 }

@@ -5,8 +5,10 @@ using System.Reflection;
 namespace Alitz.Ecs.Systems;
 internal class SystemInstantiationInfo
 {
-    public SystemInstantiationInfo(SystemType systemType, Func<ISystem>? systemFactory)
+    public SystemInstantiationInfo(Type systemType, Func<ISystem>? systemFactory)
     {
+        Systems.SystemType.ThrowIfNotValid(systemType, paramName: nameof(systemType));
+    
         SystemFactory = systemFactory is not null
             ? ValidateFactory(systemFactory, systemType)
             : GetFactory(systemType);
@@ -16,29 +18,29 @@ internal class SystemInstantiationInfo
 
 
     public Func<ISystem> SystemFactory { get; }
-    public SystemType SystemType { get; }
+    public Type SystemType { get; }
 
-    private static Func<ISystem> GetFactory(SystemType systemType)
+    private static Func<ISystem> GetFactory(Type systemType)
     {
         var bindingFlags = BindingFlags.Public | BindingFlags.Instance;
         var parameterTypes = Array.Empty<Type>();
 
-        var parameterlessConstructor = systemType.Type.GetConstructor(bindingFlags, parameterTypes);
+        var parameterlessConstructor = systemType.GetConstructor(bindingFlags, parameterTypes);
 
         if (parameterlessConstructor is null)
         {
-            throw new NoSuitableConstructorException(systemType.Type, bindingFlags, parameterTypes);
+            throw new NoSuitableConstructorException(systemType, bindingFlags, parameterTypes);
         }
 
         return Expression.Lambda<Func<ISystem>>(Expression.New(parameterlessConstructor)).Compile();
     }
 
-    private static Func<ISystem> ValidateFactory(Func<ISystem> systemFactory, SystemType systemType)
+    private static Func<ISystem> ValidateFactory(Func<ISystem> systemFactory, Type systemType)
     {
         var system = systemFactory();
-        if (system.GetType() != systemType.Type)
+        if (system.GetType() != systemType)
         {
-            throw new FactoryReturnTypeMismatchException(systemType.Type, systemFactory, system);
+            throw new FactoryReturnTypeMismatchException(systemType, systemFactory, system);
         }
         return systemFactory;
     }

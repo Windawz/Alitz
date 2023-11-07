@@ -11,7 +11,7 @@ public class EcsBuilder
 
     private readonly List<SystemInstantiationInfo> _instantiationInfos = new();
 
-    public EcsBuilder AddSystems(IEnumerable<SystemType> systemTypes)
+    public EcsBuilder AddSystems(IEnumerable<Type> systemTypes)
     {
         if (systemTypes.TryGetNonEnumeratedCount(out int count))
         {
@@ -24,7 +24,7 @@ public class EcsBuilder
         return this;
     }
 
-    public EcsBuilder AddSystems(IEnumerable<(SystemType, Func<ISystem>)> systemTypesAndFactories)
+    public EcsBuilder AddSystems(IEnumerable<(Type, Func<ISystem>)> systemTypesAndFactories)
     {
         if (systemTypesAndFactories.TryGetNonEnumeratedCount(out int count))
         {
@@ -37,7 +37,7 @@ public class EcsBuilder
         return this;
     }
 
-    public EcsBuilder AddSystem(SystemType systemType, Func<ISystem>? factory = null)
+    public EcsBuilder AddSystem(Type systemType, Func<ISystem>? factory = null)
     {
         _instantiationInfos.Add(new SystemInstantiationInfo(systemType, factory));
         return this;
@@ -64,8 +64,8 @@ public class EcsBuilder
         return new EntityComponentSystem(
             schedule.Join(
                 _instantiationInfos,
-                systemType => systemType.Type,
-                info => info.SystemType.Type,
+                systemType => systemType,
+                info => info.SystemType,
                 (_, info) => info.SystemFactory()
             )
             .ToArray()

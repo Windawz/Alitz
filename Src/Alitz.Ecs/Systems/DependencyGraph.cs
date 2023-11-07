@@ -23,24 +23,26 @@ internal class DependencyGraph : IGraph<DependencyInfo>
     IReadOnlyCollection<IGraph<DependencyInfo>> IGraph<DependencyInfo>.Children =>
         Dependencies;
 
-    public static DependencyGraph Build(SystemType systemType)
+    public static DependencyGraph Build(Type systemType)
     {
+        SystemType.ThrowIfNotValid(systemType, paramName: nameof(systemType));
+
         var graph = MakeGraph(systemType);
 
         foreach (var circularDependency in EnumerateCircularDependencies(graph))
         {
             throw new CircularDependencyException(
-                dependent: circularDependency.Dependent.Type,
-                dependency: circularDependency.Dependency.Type
+                dependent: circularDependency.Dependent,
+                dependency: circularDependency.Dependency
             );
         }
 
         foreach (var incompatibleStage in EnumerateIncompatibleStages(graph))
         {
             throw new IncompatibleStageException(
-                dependent: incompatibleStage.Dependent.Type,
+                dependent: incompatibleStage.Dependent,
                 dependentStage: incompatibleStage.DependentStage,
-                dependency: incompatibleStage.Dependency.Type,
+                dependency: incompatibleStage.Dependency,
                 dependencyStage: incompatibleStage.DependencyStage
             );
         }
@@ -48,7 +50,7 @@ internal class DependencyGraph : IGraph<DependencyInfo>
         return graph;
     }
 
-    private static DependencyGraph MakeGraph(SystemType topType, SystemType? currentType = null)
+    private static DependencyGraph MakeGraph(Type topType, Type? currentType = null)
     {
         currentType ??= topType;
 
@@ -70,9 +72,9 @@ internal class DependencyGraph : IGraph<DependencyInfo>
             var childNodes = currentMetadata.Dependencies
                 .Select(dependencyType =>
                     {
-                        if (dependencyType.Type == topType.Type)
+                        if (dependencyType == topType)
                         {
-                            var dependencyMetadata = SystemMetadata.Of(dependencyType.Type);
+                            var dependencyMetadata = SystemMetadata.Of(dependencyType);
                             return new DependencyGraph(
                                 new DependencyInfo(
                                     SystemType: dependencyType,
@@ -91,7 +93,7 @@ internal class DependencyGraph : IGraph<DependencyInfo>
 
             return new DependencyGraph(
                 new DependencyInfo(
-                    SystemType: currentType.Type,
+                    SystemType: currentType,
                     Stage: currentMetadata.Stage,
                     StartsCircularDependency: false
                 ),

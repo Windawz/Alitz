@@ -1,6 +1,8 @@
+using System;
+
 namespace Alitz.Ecs.Systems;
 internal readonly record struct DependencyInfo(
-    SystemType SystemType,
+    Type SystemType,
     Stage Stage,
     bool StartsCircularDependency
 );
