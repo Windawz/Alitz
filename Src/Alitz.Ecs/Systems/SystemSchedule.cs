@@ -6,7 +6,7 @@ using System.Linq;
 using Alitz.Common.Collections;
 
 namespace Alitz.Ecs.Systems;
-internal class SystemSchedule : IReadOnlyCollection<SystemType>
+public class SystemSchedule : IReadOnlyCollection<SystemType>
 {
     public SystemSchedule(IEnumerable<SystemType> systemTypes)
     {
