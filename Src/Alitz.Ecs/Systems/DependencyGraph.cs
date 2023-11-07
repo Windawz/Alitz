@@ -5,7 +5,7 @@ using System.Linq;
 using Alitz.Common.Collections;
 
 namespace Alitz.Ecs.Systems;
-internal class DependencyGraph : IGraph< DependencyInfo>
+internal class DependencyGraph : IGraph<DependencyInfo>
 {
     private DependencyGraph(DependencyInfo dependencyInfo, IEnumerable<DependencyGraph> dependencies)
     {
