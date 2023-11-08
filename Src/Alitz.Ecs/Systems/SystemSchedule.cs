@@ -14,7 +14,7 @@ public class SystemSchedule : IReadOnlyCollection<Type>
             .Select(systemType =>
             {
                 SystemType.ThrowIfNotValid(systemType);
-                return DependencyGraph.Build(systemType);
+                return new DependencyGraph(systemType);
             })
             .SelectMany(
                 // We need to connect together all the graphs into one single
