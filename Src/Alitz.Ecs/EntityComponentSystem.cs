@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Alitz.Common.Collections;
-using Alitz.Ecs.Collections;
-using Alitz.Ecs.Systems;
+
+
 
 namespace Alitz.Ecs;
 public class EntityComponentSystem : ISystemContext

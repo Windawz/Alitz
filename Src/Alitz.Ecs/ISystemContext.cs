@@ -1,7 +1,7 @@
 ﻿using Alitz.Common.Collections;
-using Alitz.Ecs.Collections;
 
-namespace Alitz.Ecs.Systems;
+
+namespace Alitz.Ecs;
 public interface ISystemContext
 {
     IdPool EntityPool { get; }

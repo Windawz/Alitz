@@ -1,6 +1,6 @@
 using System;
 
-namespace Alitz.Ecs.Systems;
+namespace Alitz.Ecs;
 public class IncompatibleStageException : DependencyException
 {
     public IncompatibleStageException(Type dependent, Stage dependentStage, Type dependency, Stage dependencyStage)

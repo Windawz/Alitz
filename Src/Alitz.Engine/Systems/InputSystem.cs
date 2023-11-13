@@ -3,7 +3,7 @@ using System;
 using Alitz.Bridge.Components;
 using Alitz.Bridge.Systems;
 using Alitz.Common;
-using Alitz.Ecs.Systems;
+using Alitz.Ecs;
 
 namespace Alitz.Engine.Systems;
 [HasDependency(typeof(RendererSystem))]

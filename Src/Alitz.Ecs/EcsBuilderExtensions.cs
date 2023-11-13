@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-using Alitz.Ecs.Systems;
+
 
 namespace Alitz.Ecs;
 public static class EcsBuilderExtensions

@@ -1,6 +1,6 @@
 using System;
 
-namespace Alitz.Ecs.Systems;
+namespace Alitz.Ecs;
 public readonly record struct DependencyInfo(
     Type SystemType,
     Stage Stage,

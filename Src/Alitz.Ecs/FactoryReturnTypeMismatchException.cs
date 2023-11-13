@@ -1,6 +1,6 @@
 using System;
 
-using Alitz.Ecs.Systems;
+
 
 namespace Alitz.Ecs;
 public class FactoryReturnTypeMismatchException : InstantiationException

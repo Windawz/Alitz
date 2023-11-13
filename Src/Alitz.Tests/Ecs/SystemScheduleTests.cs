@@ -1,4 +1,4 @@
-using Alitz.Ecs.Systems;
+using Alitz.Ecs;
 
 namespace Alitz.Tests.Ecs;
 public class SystemScheduleTests

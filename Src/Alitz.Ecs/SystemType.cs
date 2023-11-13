@@ -1,6 +1,6 @@
 using System;
 
-namespace Alitz.Ecs.Systems;
+namespace Alitz.Ecs;
 public static class SystemType
 {
     public static bool IsValid(Type systemType) =>

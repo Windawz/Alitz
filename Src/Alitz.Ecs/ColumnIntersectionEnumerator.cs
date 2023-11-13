@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Alitz.Common;
-using Alitz.Ecs.Collections;
 
-namespace Alitz.Ecs.Systems;
+
+namespace Alitz.Ecs;
 internal readonly struct ColumnIntersectionEnumerator : IEnumerator<Id>
 {
     public ColumnIntersectionEnumerator(params IColumn[] columns)

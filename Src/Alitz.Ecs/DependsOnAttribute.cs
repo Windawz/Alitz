@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Alitz.Ecs.Systems;
+namespace Alitz.Ecs;
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public class HasDependencyAttribute : Attribute
 {

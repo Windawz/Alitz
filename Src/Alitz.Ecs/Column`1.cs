@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Alitz.Common;
 using Alitz.Common.Collections;
 
-namespace Alitz.Ecs.Collections;
+namespace Alitz.Ecs;
 public class Column<TComponent> : IColumn where TComponent : struct
 {
     private const int DenseInitialCapacity = 4;

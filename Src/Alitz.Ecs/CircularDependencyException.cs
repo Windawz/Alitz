@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Alitz.Ecs.Systems;
+namespace Alitz.Ecs;
 public class CircularDependencyException : DependencyException
 {
     public CircularDependencyException(Type dependent, Type dependency)
