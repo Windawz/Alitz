@@ -9,7 +9,7 @@ using Alitz.Ecs.Systems;
 namespace Alitz.Ecs;
 public class EntityComponentSystem : ISystemContext
 {
-    internal EntityComponentSystem(IReadOnlyCollection<ISystem> systems)
+    public EntityComponentSystem(IReadOnlyCollection<ISystem> systems)
     {
         _columns = new Dictionary<Type, IColumn>();
         _systems = systems.ToArray();
@@ -31,9 +31,6 @@ public class EntityComponentSystem : ISystemContext
         }
         return (Column<TComponent>)_columns[componentType];
     }
-
-    public static EcsBuilder CreateBuilder() =>
-        new();
 
     public void Update(long deltaMs)
     {

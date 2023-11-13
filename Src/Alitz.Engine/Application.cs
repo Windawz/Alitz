@@ -11,7 +11,7 @@ internal class Application : IDisposable
     {
         _plugins = PluginCollection.FromDirectory(new DirectoryInfo(Environment.CurrentDirectory));
 
-        var ecs = EntityComponentSystem.CreateBuilder()
+        var ecs = new EcsBuilder()
             .AddSystems(_plugins.EnumerateSystemTypes())
             .AddSystem<InputSystem>()
             .AddSystem<RendererSystem>()

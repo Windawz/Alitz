@@ -1,6 +1,6 @@
 using System;
 
-namespace Alitz.Ecs.Systems;
+namespace Alitz.Ecs;
 public class InstantiationException : EcsException
 {
     public InstantiationException() { }
