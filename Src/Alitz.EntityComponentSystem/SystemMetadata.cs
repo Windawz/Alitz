@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Alitz.Ecs;
+namespace Alitz.EntityComponentSystem;
 internal readonly struct SystemMetadata
 {
     public SystemMetadata(Type systemType)

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # 
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alitz.Ecs", "Alitz.Ecs\Alitz.Ecs.csproj", "{F0ED2967-E23E-4541-8B83-877498B5EDF9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alitz.EntityComponentSystem", "Alitz.EntityComponentSystem\Alitz.EntityComponentSystem.csproj", "{F0ED2967-E23E-4541-8B83-877498B5EDF9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alitz.Common", "Alitz.Common\Alitz.Common.csproj", "{8D6D815B-1FFB-4A20-A81B-AA49076FEEED}"
 EndProject

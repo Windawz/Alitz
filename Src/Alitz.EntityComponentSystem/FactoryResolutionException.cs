@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Alitz.Ecs;
+namespace Alitz.EntityComponentSystem;
 public class FactoryResolutionException : InstantiationException
 {
     public FactoryResolutionException(Type systemType, IReadOnlyList<Type> parameterTypes)

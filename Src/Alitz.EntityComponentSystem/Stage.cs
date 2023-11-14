@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Alitz.Ecs;
+namespace Alitz.EntityComponentSystem;
 public readonly struct Stage : IComparable<Stage>, IEquatable<Stage>
 {
     public Stage(int number)

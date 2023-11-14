@@ -1,6 +1,6 @@
 using System;
 
-namespace Alitz.Ecs;
+namespace Alitz.EntityComponentSystem;
 public class DependencyException : EcsException
 {
     public DependencyException() { }

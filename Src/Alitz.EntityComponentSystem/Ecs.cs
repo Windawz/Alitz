@@ -6,10 +6,10 @@ using Alitz.Common.Collections;
 
 
 
-namespace Alitz.Ecs;
-public class EntityComponentSystem : ISystemContext
+namespace Alitz.EntityComponentSystem;
+public class Ecs : ISystemContext
 {
-    public EntityComponentSystem(IReadOnlyCollection<ISystem> systems)
+    public Ecs(IReadOnlyCollection<ISystem> systems)
     {
         _columns = new Dictionary<Type, IColumn>();
         _systems = systems.ToArray();

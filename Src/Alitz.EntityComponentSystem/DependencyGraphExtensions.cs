@@ -3,7 +3,7 @@ using System.Linq;
 
 using Alitz.Common.Collections;
 
-namespace Alitz.Ecs;
+namespace Alitz.EntityComponentSystem;
 public static class DependencyGraphExtensions
 {
     public static IEnumerable<CircularDependencyInfo> EnumerateCircularDependencies(this IGraph<DependencyInfo> graph)

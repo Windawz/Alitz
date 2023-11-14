@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using Alitz.Common;
 
-namespace Alitz.Ecs;
+namespace Alitz.EntityComponentSystem;
 public interface IColumn
 {
     Type ComponentType { get; }

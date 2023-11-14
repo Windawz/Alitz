@@ -1,6 +1,6 @@
-using Alitz.Ecs;
+using Alitz.EntityComponentSystem;
 
-namespace Alitz.Tests.Ecs;
+namespace Alitz.Tests.EntityComponentSystem;
 public class SystemScheduleTests
 {
     public SystemScheduleTests()

@@ -4,7 +4,7 @@ using System.Linq;
 
 using Alitz.Common.Collections;
 
-namespace Alitz.Ecs;
+namespace Alitz.EntityComponentSystem;
 internal class DependencyGraph : IGraph<DependencyInfo>
 {
     public DependencyGraph(Type systemType)

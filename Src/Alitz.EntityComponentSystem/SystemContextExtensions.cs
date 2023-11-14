@@ -1,6 +1,6 @@
 ﻿using Alitz.Common;
 
-namespace Alitz.Ecs;
+namespace Alitz.EntityComponentSystem;
 public static class SystemContextExtensions
 {
     public delegate void DoAction<TComponent>(ref TComponent component) where TComponent : struct;

@@ -3,7 +3,7 @@ using System;
 using Alitz.Bridge.Components;
 using Alitz.Bridge.Systems;
 using Alitz.Common;
-using Alitz.Ecs;
+using Alitz.EntityComponentSystem;
 
 namespace Alitz.Engine.Systems;
 [RunsAtStage(ReservedStageNumbers.Engine)]

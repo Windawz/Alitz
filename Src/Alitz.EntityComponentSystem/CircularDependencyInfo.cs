@@ -1,4 +1,4 @@
 using System;
 
-namespace Alitz.Ecs;
+namespace Alitz.EntityComponentSystem;
 public readonly record struct CircularDependencyInfo(Type Dependent, Type Dependency);

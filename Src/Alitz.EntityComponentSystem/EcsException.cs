@@ -2,7 +2,7 @@
 
 using Alitz.Common;
 
-namespace Alitz.Ecs;
+namespace Alitz.EntityComponentSystem;
 public class EcsException : AlitzException
 {
     public EcsException() { }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-using Alitz.Ecs;
+using Alitz.EntityComponentSystem;
 using Alitz.Engine.Systems;
 
 namespace Alitz.Engine;

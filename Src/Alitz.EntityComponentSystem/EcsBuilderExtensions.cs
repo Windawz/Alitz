@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 
 
-namespace Alitz.Ecs;
+namespace Alitz.EntityComponentSystem;
 public static class EcsBuilderExtensions
 {
     public static EcsBuilder AddSystem<TSystem>(this EcsBuilder builder) where TSystem : class, ISystem, new()

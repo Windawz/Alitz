@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Alitz.Ecs;
+using Alitz.EntityComponentSystem;
 
 namespace Alitz.Engine;
 internal static class PluginCollectionExtensions

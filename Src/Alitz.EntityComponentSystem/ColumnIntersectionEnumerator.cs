@@ -6,7 +6,7 @@ using System.Linq;
 using Alitz.Common;
 
 
-namespace Alitz.Ecs;
+namespace Alitz.EntityComponentSystem;
 internal readonly struct ColumnIntersectionEnumerator : IEnumerator<Id>
 {
     public ColumnIntersectionEnumerator(params IColumn[] columns)

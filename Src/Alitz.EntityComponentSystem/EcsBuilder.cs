@@ -4,9 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-
-
-namespace Alitz.Ecs;
+namespace Alitz.EntityComponentSystem;
 public class EcsBuilder
 {
     private readonly List<Type> _systemTypes = new();
@@ -58,9 +56,9 @@ public class EcsBuilder
         return this;
     }
 
-    public EntityComponentSystem Build()
+    public Ecs Build()
     {
-        return new EntityComponentSystem(
+        return new Ecs(
             new SystemSchedule(_systemTypes)
                 .Select(systemType => _factories[systemType]())
                 .ToArray()
