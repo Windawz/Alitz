@@ -2,7 +2,6 @@ using System;
 
 using Alitz.Bridge.Components;
 using Alitz.Bridge.Systems;
-using Alitz.Common;
 using Alitz.EntityComponentSystem;
 
 namespace Alitz.Engine.Systems;
@@ -12,12 +11,13 @@ internal class InputSystem : ISystem
 {
     public void Update(ISystemContext context, long deltaMs)
     {
-        context.Components<InputComponent>().Clear();
+        context.Entities.ForEach((IEntityContext context, ref InputComponent component) =>
+            context.Destroy()
+        );
 
         string input = Console.ReadLine()
             ?? throw new EngineException("Got null on Console.ReadLine()");
         
-        Id inputEntity = context.EntityPool.Fetch();
-        context.Components<InputComponent>()[inputEntity] = input;
+        context.NewEntity().Component<InputComponent>() = input;
     }
 }

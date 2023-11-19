@@ -1,29 +1,64 @@
 using System;
-using System.Collections.Generic;
 
+using Alitz.Common;
 using Alitz.Common.Collections;
 
 namespace Alitz.EntityComponentSystem;
-public class SystemContext : ISystemContext
+public class SystemContext : ISystemContext, IEntitiesContext, IEntityContext
 {
-    public SystemContext(IdPool entityPool, IDictionary<Type, IColumn> columns)
+    public SystemContext(IdPool entityPool, ITable table)
     {
-        EntityPool = entityPool;
-        _columns = columns;
+        _entityPool = entityPool;
+        _table = table;
     }
 
-    private readonly IDictionary<Type, IColumn> _columns;
+    private readonly IdPool _entityPool;
+    private readonly ITable _table;
+    private Id? _selectedEntity = null;
 
-    public IdPool EntityPool { get; set; }
+    Id IEntityContext.Entity =>
+        _selectedEntity!.Value;
 
-    public Column<TComponent> Components<TComponent>() where TComponent : struct
+    IEntitiesContext ISystemContext.Entities =>
+        this;
+
+    IEntityContext? ISystemContext.GetEntity(Id entity)
     {
-        var componentType = typeof(TComponent);
-        if (!_columns.ContainsKey(componentType))
+        if (!_entityPool.IsOccupied(entity))
         {
-            var column = new Column<TComponent>(EntityPool);
-            _columns.Add(componentType, column);
+            return null;
         }
-        return (Column<TComponent>)_columns[componentType];
+        else
+        {
+            _selectedEntity = entity;
+            return this;
+        }
+    }
+
+    IEntityContext ISystemContext.NewEntity()
+    {
+        _selectedEntity = _entityPool.Fetch();
+        return this;
+    }
+
+    void IEntitiesContext.RawForEach<TEntityEnumerator>(Func<IdPool, ITable, TEntityEnumerator> enumeratorFactory, Action<IEntityContext, ITable> action)
+    {
+        using var enumerator = enumeratorFactory(_entityPool, _table);
+        while (enumerator.MoveNext())
+        {
+            _selectedEntity = enumerator.Current;
+            action(this, _table);
+        }
+    }
+
+    ref TComponent IEntityContext.Component<TComponent>() where TComponent : struct
+    {
+        ref var component = ref _table.Column<TComponent>().GetByRef(_selectedEntity!.Value);
+        return ref component;
+    }
+
+    void IEntityContext.Destroy()
+    {
+        _entityPool.Store(_selectedEntity!.Value);
     }
 }

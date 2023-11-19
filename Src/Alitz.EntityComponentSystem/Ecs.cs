@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using Alitz.Common.Collections;
@@ -9,7 +8,9 @@ public class Ecs
 {
     public Ecs(IReadOnlyCollection<ISystem> systems)
     {
-        _systemContext = new SystemContext(new IdPool(), new Dictionary<Type, IColumn>());
+        var entityPool = new IdPool();
+        var table = new Table(entityPool);
+        _systemContext = new SystemContext(entityPool, table);
         _systems = systems.ToArray();
     }
 

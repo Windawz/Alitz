@@ -1,10 +1,10 @@
-﻿using Alitz.Common.Collections;
-
+﻿using Alitz.Common;
 
 namespace Alitz.EntityComponentSystem;
 public interface ISystemContext
 {
-    IdPool EntityPool { get; }
+    IEntitiesContext Entities { get; }
 
-    Column<TComponent> Components<TComponent>() where TComponent : struct;
+    IEntityContext? GetEntity(Id entity);
+    IEntityContext NewEntity();
 }

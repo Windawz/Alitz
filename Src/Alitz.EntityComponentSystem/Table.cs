@@ -4,15 +4,14 @@ using System.Collections.Generic;
 using Alitz.Common.Collections;
 
 namespace Alitz.EntityComponentSystem;
-internal class Table
+public class Table : ITable
 {
-    public Table(IdPool entityPool, IDictionary<Type, IColumn> columns)
+    public Table(IdPool entityPool)
     {
         _entityPool = entityPool;
-        _columns = columns;
     }
 
-    private readonly IDictionary<Type, IColumn> _columns;
+    private readonly Dictionary<Type, IColumn> _columns = new();
     private readonly IdPool _entityPool;
 
     public Column<TComponent> Column<TComponent>() where TComponent : struct
